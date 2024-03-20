@@ -4,13 +4,12 @@ title: Final Project Class Diagram
 ---
 classDiagram
     Currency <|-- Category : One-to-Many
-    Currency <|-- Vendor : One-to-Many
+    Currency --|> Airdrop : One-to-Many
     Currency <|-- User : Accesses
     User <|-- Admin : Inherits from
     class Currency{
         +int CurrencyId PK
         +int CategoryId FK
-        +int VendorId FK
         +String CurrencyName
         +double ExchangeRate
     }
@@ -18,13 +17,15 @@ classDiagram
         +int CategoryId PK
         +String CategoryName
     }
-    class Vendor{
-        +int VendorId PK
-        +String VendorName
+    class Airdrop{
+        +int CurrencyId FK
+        +int AirdropId PK
     }
     class User{
         +int UserId PK
         +String UserName
+        -String FirstName
+        -String LastName
         +String Email
         -int permissionsLevel
         +List<Currency> followedCurrencies
