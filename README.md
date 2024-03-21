@@ -11,7 +11,8 @@ classDiagram
         +int CurrencyId PK
         +int CategoryId FK
         +String CurrencyName
-        +double ExchangeRate
+        +String Slug
+        +String Symbol
     }
     class Category{
         +int CategoryId PK

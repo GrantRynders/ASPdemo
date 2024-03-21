@@ -9,6 +9,10 @@ public class Currency
     public int CategoryId { get; set; }
     [MaxLength(50)]
     public string CurrencyName { get; set; }
-    public double ExchangeRate { get; set; } //PLACEHOLDER, a currency will not have one exchange rate that's silly
+    
+    [MaxLength(50)]
+    public string Slug { get; set; }
+    [MaxLength(50)]
+    public string Symbol { get; set; }
 
 }
