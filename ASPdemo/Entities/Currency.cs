@@ -6,7 +6,6 @@ namespace ASPdemo.Entities;
 public class Currency
 {
     public int CurrencyId { get; set; }
-    public int CategoryId { get; set; }
     [MaxLength(50)]
     public string CurrencyName { get; set; }
     
