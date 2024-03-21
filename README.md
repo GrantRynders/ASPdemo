@@ -17,10 +17,25 @@ classDiagram
     class Category{
         +int CategoryId PK
         +String CategoryName
+        +String CategoryTitle
+        +String Description
+        +Int NumTokens
+        +Double AvgPriceChange
+        +Double MarketCap
+        +Double MarketCapChange
+        +Double Volume
+        +Double VolumeChange
+        +Double LastUpdated
     }
     class Airdrop{
         +int CurrencyId FK
         +int AirdropId PK
+        +String Status
+        +String StartDate
+        +String EndDate
+        +Double TotalPrize 
+        +Double WinnerCount
+        +String Link
     }
     class User{
         +int UserId PK
