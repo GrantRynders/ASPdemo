@@ -8,13 +8,13 @@ public class User
     public int UserId { get; set; }
     public int PermissionsLevel { get; set; } //should not be changeable (except by an admin perhaps), need to update the property to reflect this
     [MaxLength(50)]
-    private string FirstName { get; set; }
+    public string FirstName { get; set; }
     [MaxLength(50)]
-    private string LastName { get; set; }
+    public string LastName { get; set; }
     [MaxLength(15)]
     public string UserName { get; set; }
     [MaxLength(50)]
-    private string Email { get; set; } 
+    public string Email { get; set; } 
     public List<Currency> followedCurrencies = new List<Currency>();
     public User()
     {
