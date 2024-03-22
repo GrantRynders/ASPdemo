@@ -1,8 +1,16 @@
 using System;
 using System.Net;
 using System.Web;
+using ASPdemo.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseInMemoryDatabase("Crypto.db");
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
