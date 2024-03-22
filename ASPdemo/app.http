@@ -1,0 +1,55 @@
+@WebApiHost = http://localhost:5220
+
+###
+//  REQUEST 1: Get all categories
+GET {{WebApiHost}}/v1/cryptocurrency/categories
+
+###
+// REQUEST 2: ??? can't find documentation for fetching just the currency data
+GET {{WebApiHost}}/v1/cryptocurrency/listings/
+
+###
+
+// REQUEST 3: Get airdrops
+GET {{WebApiHost}}/v1/cryptocurrency/airdrop
+
+###
+
+// REQUEST 4: Get all users
+GET {{WebApiHost}}/users
+
+###
+
+// REQUEST 5: CREATE user
+POST {{WebApiHost}}/users
+Content-Type: application/json
+
+{
+    "firstName" : "Rob",
+    "lastName" : "Johnson"
+}
+
+###
+
+// REQUEST 6: UPDATE user
+PUT {{WebApiHost}}/users/1
+Content-Type: application/json
+
+{
+    "authorId" : 1,
+    "firstName" : "Robert",
+    "lastName" : "Johnson"
+}
+
+###
+
+// REQUEST 7: DELETE user
+
+DELETE {{WebApiHost}}/users/1
+
+###
+
+// REQUEST 8: Get a user
+GET {{WebApiHost}}/users/1
+
+###
