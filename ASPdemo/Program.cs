@@ -44,6 +44,9 @@ app.MapGet("/airdrops/{maxId}/{pageId}", async (int maxId, int pageId, Applicati
 
 app.MapGet("/categories/{maxId}/{pageId}", async (int maxId, int pageId, ApplicationDbContext db) =>
 {
+    var categories = db.Categories.Where(x => x.CategoryId <= maxId)
+                        .Where(x => x.CategoryId >= pageId) .ToList();
+    return categories;
 });
 
 // REQUEST 8: get a user
