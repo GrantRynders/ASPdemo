@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ASPdemo.Pages;
 
-public class AirdropsModel : PageModel
+public class ConversionsModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public AirdropsModel(ILogger<IndexModel> logger)
+    public ConversionsModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
     }
