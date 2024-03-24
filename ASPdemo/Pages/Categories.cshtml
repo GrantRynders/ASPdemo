@@ -6,14 +6,67 @@
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Search by Category</h1>
     <text>@ViewData["Test"]</text>
+    @* @code{
+        private string searchTerm;
+        private List<Category> filteredCategories;
 
-    <Button Color="ButtonColor.Primary" @onclick="OnClick"> Click here </Button>
-    @code {
-        protected void OnClick(EventArgs args)
+        async Task SearchCategories()
         {
-            
+            filteredCategories = await CategoriesModel.SearchCategoriesAsync(searchTerm);
         }
     }
+    <input type="text" @bind-value="@searchTerm" />
+    <input type="button" value="Search" @onclick="@SearchCategories"/>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h1>Name</h1>
+                </th>
+                <th>
+                    <h1>CurrencyId</h1>
+                </th>
+                <th>
+                    <h1>Slug</h1>
+                </th>
+                <th>
+                    <h1>Symbol</h1>
+                </th>
+            </tr>
+        </thead>
+        @if (CategoriesModel.filteredCategories == null)
+        {
+            <p>
+                <em>Loading...</em>
+            </p>
+        }
+        else
+        {
+            @foreach (Entities.Category category in filteredCategories) 
+            {
+                <tbody>
+                    @foreach (Entities.Currency currency in category) 
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(currency => currency.CurrencyName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(currency => currency.CurrencyId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(currency => currency.Slug)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(currency => currency.Symbol)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        }
+    </table> *@
 </div>
