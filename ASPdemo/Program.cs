@@ -1,16 +1,19 @@
 using System;
 using System.Net;
 using System.Web;
+using ASPdemo;
 using ASPdemo.Database;
 using ASPdemo.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
+using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseInMemoryDatabase("Crypto.db");
+    options.UseSqlite("Data Source=Crypto.db");
 });
 
 // Add services to the container.
@@ -25,6 +28,25 @@ var app = builder.Build();
 app.MapGet("/users", async (ApplicationDbContext dbContext) => 
 {
     return await dbContext.Users.ToListAsync(); 
+});
+
+app.MapGet("/listings/{maxId}/{pageId}", async (int maxId, int pageId, ApplicationDbContext db) =>
+{
+    var listings = db.Currencies.Where(x => x.CurrencyId <= maxId).Where(x => x.CurrencyId >= pageId)
+    .ToList();
+
+    return listings;
+});
+
+app.MapGet("/airdrops/{maxId}/{pageId}", async (int maxId, int pageId, ApplicationDbContext dbContext) =>
+{
+});
+
+app.MapGet("/categories/{maxId}/{pageId}", async (int maxId, int pageId, ApplicationDbContext db) =>
+{
+    var categories = db.Categories.Where(x => x.CategoryId <= maxId)
+                        .Where(x => x.CategoryId >= pageId) .ToList();
+    return categories;
 });
 
 // REQUEST 8: get a user
