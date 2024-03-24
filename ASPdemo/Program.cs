@@ -5,16 +5,12 @@ using ASPdemo;
 using ASPdemo.Database;
 using ASPdemo.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Newtonsoft.Json;
 using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//CREATE MIGRATION DB
-//using var db = new ApplicationDbContext();
-
-//CREATE IN MEMORY DB
+//CREATE SQLITE DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=Crypto.db");

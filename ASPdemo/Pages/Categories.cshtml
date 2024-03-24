@@ -8,4 +8,12 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <text>@ViewData["Test"]</text>
+
+    <Button Color="ButtonColor.Primary" @onclick="OnClick"> Click here </Button>
+    @code {
+        protected void OnClick(EventArgs args)
+        {
+            
+        }
+    }
 </div>
