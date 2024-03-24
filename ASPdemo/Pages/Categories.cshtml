@@ -8,7 +8,7 @@
 <div class="text-center">
     <h1 class="display-4">Search by Category</h1>
     <text>@ViewData["Test"]</text>
-    @code{
+    @* @code{
         private string searchTerm;
         private List<Category> filteredCategories;
 
@@ -18,9 +18,8 @@
         }
     }
     <input type="text" @bind-value="@searchTerm" />
-    <input type="button" value="Search" @onclick="@SearchIssues"/>
+    <input type="button" value="Search" @onclick="@SearchCategories"/>
     
-    <!--
     <table class="table">
         <thead>
             <tr>
@@ -38,7 +37,7 @@
                 </th>
             </tr>
         </thead>
-        @if (CategoriesModel.Categories == null)
+        @if (CategoriesModel.filteredCategories == null)
         {
             <p>
                 <em>Loading...</em>
@@ -46,7 +45,7 @@
         }
         else
         {
-            @foreach (Entities.Category category in CategoriesModel.Categories) 
+            @foreach (Entities.Category category in filteredCategories) 
             {
                 <tbody>
                     @foreach (Entities.Currency currency in category) 
@@ -69,6 +68,5 @@
                 </tbody>
             }
         }
-    </table>
-    -->
+    </table> *@
 </div>
