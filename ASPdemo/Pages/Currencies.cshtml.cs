@@ -54,7 +54,7 @@ public class CurrenciesModel : PageModel
         ViewData["MaxId"] = MaxId;
         ViewData["PageId"] = PageId;
 
-        var url = new UriBuilder("https://pro-api.coinmarketcap.com/v2/cryptocurrency/info/" + MaxId + "/" + PageId);
+        var url = new UriBuilder("https://pro-api.coinmarketcap.com/v2/cryptocurrency/info/" + MaxId + "/" + PageId); //using the metadate endpoint
 
         string tokens = await client.GetStringAsync(url.ToString()); 
 

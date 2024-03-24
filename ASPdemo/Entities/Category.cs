@@ -19,4 +19,5 @@ public class Category
     public double Volume { get; set; }
     public double VolumeChange { get; set; }
     public double LastUpdated { get; set; }
+    public List<Currency> Coins { get; set; }
 }
