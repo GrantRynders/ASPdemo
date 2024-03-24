@@ -71,6 +71,8 @@ public class CategoriesModel : PageModel
             var numTokens = result.numTokens;
             var volume = result.volume;
             var avgPriceChange = result.avgPriceChange;
+            // temp: we need to get the list of coins from the JSON
+            //var coins = result.coins
 
             category.CategoryId = categoryId; 
             category.CategoryName = categoryName;
@@ -79,6 +81,7 @@ public class CategoriesModel : PageModel
             category.NumTokens = numTokens;
             category.Volume = volume;
             category.AvgPriceChange = avgPriceChange;
+            //category.Coins = coins
 
             Categories.Add(category);
         }
