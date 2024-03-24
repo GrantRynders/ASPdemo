@@ -53,3 +53,7 @@ DELETE {{WebApiHost}}/users/1
 GET {{WebApiHost}}/users/1
 
 ###
+
+GET {{WebApiHost}}/https://pro-api.coinmarketcap.com/v1/cryptocurrency/category
+
+###

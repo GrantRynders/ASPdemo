@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore.InMemory;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//CREATE MIGRATION DB
+//using var db = new ApplicationDbContext();
+
+//CREATE IN MEMORY DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseInMemoryDatabase("Crypto.db");
