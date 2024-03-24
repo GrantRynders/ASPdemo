@@ -12,8 +12,7 @@ public class CurrenciesModel : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public async Task OnGet()
     {
-
     }
 }

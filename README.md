@@ -3,13 +3,12 @@
 title: Final Project Class Diagram
 ---
 classDiagram
-    Currency <|-- Category : One-to-Many
+    Currency <|--|> Category : Many-to-Many (Using Join Table)
     Currency --|> Airdrop : One-to-Many
     Currency <|-- User : Accesses
     User <|-- Admin : Inherits from
     class Currency{
         +int CurrencyId PK
-        +int CategoryId FK
         +String CurrencyName
         +String Slug
         +String Symbol

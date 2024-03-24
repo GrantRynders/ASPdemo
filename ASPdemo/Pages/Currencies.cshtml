@@ -2,9 +2,11 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Currencies";
+
+    var message = ViewData["message"]; 
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Here you can view currency data.</p>
+    <p>@message</p>
 </div>

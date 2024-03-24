@@ -33,9 +33,6 @@ public class ApplicationDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder) //seeding user data table
     {
-        modelBuilder.Entity<User>().HasData(
-            new Admin {UserId = 1, PermissionsLevel = 1, FirstName = "Grant", LastName = "Rynders", Email = "ryndergb@mail.uc.edu", followedCurrencies = new List<Currency>()}
-            );
     }
 
 
