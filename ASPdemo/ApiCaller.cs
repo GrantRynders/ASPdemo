@@ -43,10 +43,11 @@ public class ApiCaller //I don't know if this is really a necessary class, I jus
         return page; 
     }
 
-    public static async Task<string> getAirdrops()
-    {
-        return "";
-    }
+    //RIP airdrop functionality
+    //public static async Task<string> getAirdrops()
+    //{
+    //    return "";
+    //}
 
   public static async Task<string> getListings()
   {

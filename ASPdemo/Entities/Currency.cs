@@ -13,5 +13,7 @@ public class Currency
     public string Slug { get; set; }
     [MaxLength(50)]
     public string Symbol { get; set; }
+    [MaxLength(100)]
+    public string Description { get; set; }
 
 }
