@@ -57,7 +57,8 @@ public class IndexModel : PageModel
         ViewData["PageId"] = PageId; 
 
 
-        var url = new UriBuilder("http://127.0.0.1:5220/listings/"+MaxId+"/"+PageId);
+        var url = new UriBuilder("http://127.0.0.1:5220/listings/"+MaxId+"/"+PageId); //returns 500 error, tried listings/latest with no parameters and returned a 404
+        //categories seems to return fine, so we might be calling this endpoint wrong
 
         string tokens = await client.GetStringAsync(url.ToString());
 
