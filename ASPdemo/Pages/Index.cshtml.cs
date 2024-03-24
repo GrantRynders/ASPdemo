@@ -59,7 +59,7 @@ public class IndexModel : PageModel
 
         var url = new UriBuilder("http://127.0.0.1:5220/listings/"+MaxId+"/"+PageId); //returns 500 error, tried listings/latest with no parameters and returned a 404
         //categories seems to return fine, so we might be calling this endpoint wrong
-
+        // it would be better I think to use /quotes than /listings if we want the user to be able to query specific currencies
         string tokens = await client.GetStringAsync(url.ToString());
 
         dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
