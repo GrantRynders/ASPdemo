@@ -4,7 +4,6 @@ title: Final Project Class Diagram
 ---
 classDiagram
     Currency <|--|> Category : Many-to-Many (Using Join Table)
-    Currency --|> Airdrop : One-to-Many
     Currency <|-- User : Accesses
     User <|-- Admin : Inherits from
     class Currency{
@@ -25,16 +24,6 @@ classDiagram
         +Double Volume
         +Double VolumeChange
         +Double LastUpdated
-    }
-    class Airdrop{
-        +int CurrencyId FK
-        +int AirdropId PK
-        +String Status
-        +String StartDate
-        +String EndDate
-        +Double TotalPrize 
-        +Double WinnerCount
-        +String Link
     }
     class User{
         +int UserId PK
