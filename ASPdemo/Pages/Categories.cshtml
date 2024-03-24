@@ -8,9 +8,19 @@
 <div class="text-center">
     <h1 class="display-4">Search by Category</h1>
     <text>@ViewData["Test"]</text>
+    @code{
+        private string searchTerm;
+        private List<Category> filteredCategories;
 
+        async Task SearchCategories()
+        {
+            filteredCategories = await CategoriesModel.SearchCategoriesAsync(searchTerm);
+        }
+    }
     <input type="text" @bind-value="@searchTerm" />
     <input type="button" value="Search" @onclick="@SearchIssues"/>
+    
+    <!--
     <table class="table">
         <thead>
             <tr>
@@ -60,14 +70,5 @@
             }
         }
     </table>
+    -->
 </div>
-@code 
-{
-    private string searchTerm;
-    private List<Issue> issues;
-
-    async Task SearchIssues()
-    {
-        issues = await issuesController.SearchIssuesAsync(searchTerm);
-    }
-}

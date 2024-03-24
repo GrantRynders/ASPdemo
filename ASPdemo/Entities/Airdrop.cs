@@ -3,6 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASPdemo.Entities;
 
 [Table("Airdrops")]
+
+
+//Remove since we can't access it lmao
+
+
+
 public class Airdrop
 {
     public int AirdropId { get; set; }
