@@ -6,6 +6,8 @@ namespace ASPdemo.Entities;
 public class User
 {
     public int UserId { get; set; }
+
+    public int PortfolioId { get; set; }
     public int PermissionsLevel { get; set; } //should not be changeable (except by an admin perhaps), need to update the property to reflect this
     [MaxLength(50)]
     public string FirstName { get; set; }
