@@ -6,7 +6,7 @@ classDiagram
     Currency <|--|> Category : Many-to-Many (Using Join Table)
     Currency <|-- User : Accesses
     User <|-- Admin : Inherits from
-    User <|-- Portfolio : Has One
+    User --|> Portfolio : Has One
     Currency <|--|> Portfolio : Many-to-Many (Using Join Table)
     class Currency{
         +int CurrencyId PK
