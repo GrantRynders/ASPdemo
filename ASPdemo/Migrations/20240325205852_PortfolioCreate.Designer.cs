@@ -2,6 +2,7 @@
 using ASPdemo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240325205852_PortfolioCreate")]
+    partial class PortfolioCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -145,27 +148,6 @@ namespace ASPdemo.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Currencies");
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
-                {
-                    b.Property<int>("PortfolioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double>("PortfolioValue")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("WalletAddress")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("PortfolioId");
-
-                    b.ToTable("portfolio");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>

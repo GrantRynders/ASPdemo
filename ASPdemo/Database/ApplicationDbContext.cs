@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.InMemory;
 namespace ASPdemo.Database;
 public class ApplicationDbContext : DbContext
 {
-    
+    public DbSet<Portfolio> Portfolio { get; set; }
     public DbSet<User> Users {get; set;}
     public DbSet<Currency> Currencies {get; set;}
     public DbSet<Category> Categories {get; set;}
