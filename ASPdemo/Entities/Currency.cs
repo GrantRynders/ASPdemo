@@ -6,14 +6,16 @@ namespace ASPdemo.Entities;
 public class Currency
 {
     public int CurrencyId { get; set; }
+
+    public int CategoryId { get; set; }
+
     [MaxLength(50)]
-    public string CurrencyName { get; set; }
+    public string? CurrencyName { get; set; }
     
     [MaxLength(50)]
-    public string Slug { get; set; }
+    public string? Slug { get; set; }
     [MaxLength(50)]
-    public string Symbol { get; set; }
-    [MaxLength(100)]
-    public string Description { get; set; }
+    public string? Symbol { get; set; }
 
+    public string? Description { get; set; }
 }
