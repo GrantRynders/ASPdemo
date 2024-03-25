@@ -6,6 +6,8 @@ classDiagram
     Currency <|--|> Category : Many-to-Many (Using Join Table)
     Currency <|-- User : Accesses
     User <|-- Admin : Inherits from
+    User <|-- Portfolio : Has One
+    Currency <|--|> Portfolio : Many-to-Many (Using Join Table)
     class Currency{
         +int CurrencyId PK
         +String CurrencyName
@@ -24,6 +26,11 @@ classDiagram
         +Double Volume
         +Double VolumeChange
         +Double LastUpdated
+    }
+    class Portfolio{
+        +String walletAddress;
+        +List<Currency> portfolioCurrencies;
+        +Double portfolioValue;
     }
     class User{
         +int UserId PK
