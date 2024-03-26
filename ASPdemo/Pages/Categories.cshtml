@@ -8,17 +8,21 @@
 <div class="text-center">
     <h1 class="display-4">Search by Category</h1>
     <text>@ViewData["Test"]</text>
+
     @* @code{
         private string searchTerm;
-        private List<Category> filteredCategories;
+        private List<Category> filteredCategories = new List<Category>();
 
+        
+    }
+    @functions{
         async Task SearchCategories()
         {
             filteredCategories = await CategoriesModel.SearchCategoriesAsync(searchTerm);
         }
     }
-    <input type="text" @bind-value="@searchTerm" />
-    <input type="button" value="Search" @onclick="@SearchCategories"/>
+    <input type="text" bind-value="@searchTerm" id="SearchInput"/>
+    <input type="button" value="Search" onclick="@SearchCategories()"/>
     
     <table class="table">
         <thead>

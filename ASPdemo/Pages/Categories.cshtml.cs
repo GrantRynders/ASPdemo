@@ -86,4 +86,17 @@ public class CategoriesModel : PageModel
             Categories.Add(category);
         }
     }
+    public async Task<List<Category>> SearchCategoriesAsync(string searchTerm)
+    {
+        List<Category> filteredCategories = new List<Category>();
+        await OnGet(); //Populate the Categories list
+        foreach (Category category in Categories) //Iterate through Categories
+        {
+            if (category.CategoryName.ToLower().Contains(searchTerm.ToLower())) //This should probably be done a lot better but this works for now
+            {
+                filteredCategories.Add(category); //Add to the filtered list
+            }
+        }
+        return filteredCategories;
+    }
 }
