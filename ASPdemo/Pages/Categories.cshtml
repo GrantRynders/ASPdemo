@@ -2,6 +2,11 @@
 @model CategoriesModel
 @{
     ViewData["Title"] = "Categories";
+
+    var maxId = ViewData["MaxId"];
+    var pageId = ViewData["PageId"]; 
+
+    var url = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -54,4 +59,5 @@
             }
         }
     </table>
+    <a href="@url" class="btn btn-primary">Next</a>
 </div>
