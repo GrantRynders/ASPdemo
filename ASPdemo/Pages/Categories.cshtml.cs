@@ -10,6 +10,9 @@ public class CategoriesModel : PageModel
     private readonly ILogger<IndexModel> _logger;
 
     [FromQuery]
+    public string SearchTerm {  get; set; }
+
+    [FromQuery]
     public int PageId { get; set; }
 
     [FromQuery]
@@ -60,7 +63,7 @@ public class CategoriesModel : PageModel
         ViewData["PageId"] = PageId;
 
         var url = new UriBuilder("http://127.0.0.1:5220/categories/" + MaxId + "/" + PageId);
-
+        ViewData["Test"] = url; 
         string tokens = await client.GetStringAsync(url.ToString()); 
 
         dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
