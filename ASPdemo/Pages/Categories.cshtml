@@ -33,6 +33,14 @@
         </thead>
         @if (Model.filteredCategories == null)
         {
+            @foreach (Entities.Category category in Model.Categories)
+            {
+                <tbody>
+                    <tr>
+                        <td>@category.CategoryName</td>
+                    </tr>
+                </tbody>
+            }
         }
         else
         {
