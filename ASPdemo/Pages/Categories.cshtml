@@ -9,20 +9,10 @@
     <h1 class="display-4">Search by Category</h1>
     <text>@ViewData["Test"]</text>
 
-    @* @code{
-        private string searchTerm;
-        private List<Category> filteredCategories = new List<Category>();
-
-        
-    }
-    @functions{
-        async Task SearchCategories()
-        {
-            filteredCategories = await CategoriesModel.SearchCategoriesAsync(searchTerm);
-        }
-    }
-    <input type="text" bind-value="@searchTerm" id="SearchInput"/>
-    <input type="button" value="Search" onclick="@SearchCategories()"/>
+    <form method="post">
+        <input asp-for="Search!.SearchTerm"/>
+       <input type="submit" />
+    </form>
     
     <table class="table">
         <thead>
@@ -41,36 +31,19 @@
                 </th>
             </tr>
         </thead>
-        @if (CategoriesModel.filteredCategories == null)
+        @if (Model.filteredCategories == null)
         {
-            <p>
-                <em>Loading...</em>
-            </p>
         }
         else
         {
-            @foreach (Entities.Category category in filteredCategories) 
+            @foreach (Entities.Category category in Model.filteredCategories) 
             {
                 <tbody>
-                    @foreach (Entities.Currency currency in category) 
-                    {
                         <tr>
-                            <td>
-                                @Html.DisplayFor(currency => currency.CurrencyName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(currency => currency.CurrencyId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(currency => currency.Slug)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(currency => currency.Symbol)
-                            </td>
+                            <td>@category.CategoryName</td>
                         </tr>
-                    }
                 </tbody>
             }
         }
-    </table> *@
+    </table>
 </div>
