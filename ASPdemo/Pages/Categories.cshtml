@@ -5,8 +5,14 @@
 
     var maxId = ViewData["MaxId"];
     var pageId = ViewData["PageId"]; 
+    var searchTerm = ViewData["SearchTerm"]; 
 
     var url = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
+
+    if (searchTerm != null && searchTerm != "")
+    {
+        url = url + "&SearchTerm="+searchTerm; 
+    }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
