@@ -103,6 +103,8 @@ public class CategoriesModel : PageModel
 
         if (Search != null)
         {
+            ViewData["SearchTerm"] = Search.SearchTerm; 
+
             await OnGet(); 
 
             filteredCategories = new List<Category>();
