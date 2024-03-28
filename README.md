@@ -5,8 +5,12 @@ title: Final Project Class Diagram
 classDiagram
     Currency <|--|> Category : Many-to-Many (Using Join Table)
     Currency <|-- User : Accesses
-    User <|-- Admin : Inherits from
+    Admin --|> IdentityRole : Inherits from
     User --|> Portfolio : Has One
+    User --|> IdentityUser : Inherits from 
+    IdentityUser <|-- MicrosoftAspNetCoreIdentity
+    IdentityRole <|-- MicrosoftAspNetCoreIdentity
+    Admin --|> User : Contains
     Currency <|--|> Portfolio : Many-to-Many (Using Join Table)
     class Currency{
         +int CurrencyId PK
@@ -31,18 +35,16 @@ classDiagram
         +String walletAddress;
         +List<Currency> portfolioCurrencies;
         +Double portfolioValue;
+        +int PortfolioId PK
     }
     class User{
-        +int UserId PK
+        +int Id PK
         +String UserName
-        -String FirstName
-        -String LastName
         +String Email
         -int permissionsLevel
-        +List<Currency> followedCurrencies
+        +int PortfolioId FK
     }
     class Admin{
-        -void ManageUser()
-        -void ManageCurrency()
+        +int Id PK
     }
 ```

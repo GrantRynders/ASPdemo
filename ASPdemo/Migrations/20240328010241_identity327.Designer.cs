@@ -3,6 +3,7 @@ using System;
 using ASPdemo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240328010241_identity327")]
+    partial class identity327
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -140,7 +143,7 @@ namespace ASPdemo.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
-
+                    
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -214,7 +217,14 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("Users");
                 });
-
+            modelBuilder.Entity("ASPdemo.Entities.User", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.User", null)
+                        .WithMany("Users")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -253,7 +263,14 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("IdentityRoleClaim");
                 });
-
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -273,7 +290,14 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("IdentityUserClaim");
                 });
-
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", null)
+                        .WithMany("Users")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
             modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
                 {
                     b.HasOne("ASPdemo.Entities.Category", null)
