@@ -12,7 +12,7 @@ public class User : IdentityUser
     [MaxLength(50)]
     public override string UserName { get; set; }
     
-    public int UserId { get; set; }
+    //public int UserId { get; set; }
     public int PortfolioId { get; set; }
     public int PermissionsLevel { get; set; } //should not be changeable (except by an admin perhaps), need to update the property to reflect this
     public List<Currency> followedCurrencies = new List<Currency>();

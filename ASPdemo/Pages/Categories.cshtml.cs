@@ -79,7 +79,7 @@ public class CategoriesModel : PageModel
             var numTokens = result.numTokens;
             var volume = result.volume;
             var avgPriceChange = result.avgPriceChange;
-            // temp: we need to get the list of coins from the JSON
+            // temp: we (probably) need to get the list of coins from the JSON
             //var coins = result.coins
 
             category.CategoryId = categoryId; 

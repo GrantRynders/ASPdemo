@@ -75,7 +75,7 @@ app.MapPost("/users", async (User user, ApplicationDbContext dbContext) =>
 {
     dbContext.Users.Add(user);
     await dbContext.SaveChangesAsync(); 
-    return Results.Created($"/users/{user.UserId}", user);
+    return Results.Created($"/users/{user.Id}", user);
 });
 
 // REQUEST 6: update a user

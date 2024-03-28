@@ -217,14 +217,14 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("Users");
                 });
-            modelBuilder.Entity("ASPdemo.Entities.User", b =>
-                {
-                    b.HasOne("ASPdemo.Entities.User", null)
-                        .WithMany("Users")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            // modelBuilder.Entity("ASPdemo.Entities.User", b =>
+            //     {
+            //         b.HasOne("ASPdemo.Entities.User", null)
+            //             .WithMany("Users")
+            //             .HasForeignKey("UserId")
+            //             .OnDelete(DeleteBehavior.Cascade)
+            //             .IsRequired();
+            //     });
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -263,14 +263,8 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("IdentityRoleClaim");
                 });
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -290,7 +284,16 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("IdentityUserClaim");
                 });
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+             //         ADDITIONS
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b => //ROLES TO IDENTITYROLECLAIM One-to-Many
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b => //USERS TO IDENTITYUSERCLAIM One-to-Many
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", null)
                         .WithMany("Users")
@@ -298,6 +301,36 @@ namespace ASPdemo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+            modelBuilder.Entity("ASPdemo.Entities.User", b => //PORTFOLIO TO USER - One to One
+                {
+                    b.HasOne("ASPdemo.Entities.Portfolio", null)
+                        .WithOne("User")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b => //USERSROLES RoleId TO USERS One to Many
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany("Users")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b => //USERSROLES UserId TO ROLES One to Many
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+            //End additions
+
+
+
+
+
             modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
                 {
                     b.HasOne("ASPdemo.Entities.Category", null)
@@ -306,7 +339,6 @@ namespace ASPdemo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-
             modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
                     b.Navigation("Coins");

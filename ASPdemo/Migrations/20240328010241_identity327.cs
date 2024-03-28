@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -41,32 +42,42 @@ namespace ASPdemo.Migrations
                 name: "PK_portfolio",
                 table: "portfolio",
                 column: "PortfolioId");
-            migrationBuilder.AddForeignKey(
+
+
+            //           ADDITIONS
+            migrationBuilder.AddForeignKey( //Users to Portfolio
                 name: "UserId",
                 table: "Portfolio",
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
-            migrationBuilder.AddForeignKey(
+            migrationBuilder.AddForeignKey( //Roles to UsersRoles
                 name: "RoleId",
                 table: "UsersRoles",
                 column: "RoleId",
                 principalTable: "Roles",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
-            migrationBuilder.AddForeignKey(
+            migrationBuilder.AddForeignKey( //Users to UsersRoles
                 name: "UserId",
                 table: "UsersRoles",
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
-            migrationBuilder.AddForeignKey(
+            migrationBuilder.AddForeignKey( //Roles to IdentityRoleClaim
                 name: "RoleId",
                 table: "IdentityRoleClaim",
                 column: "RoleId",
                 principalTable: "Roles",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+            migrationBuilder.AddForeignKey( //Users to IdentityUserClaim
+                name: "UserId",
+                table: "IdentityUserClaim",
+                column: "UserId",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
         }

@@ -42,11 +42,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id }); 
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
         modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
-        // List<User> adminPromotees = new List<User>();
-        // adminPromotees.Add(await Users.FindAsync("ccda0ef3-b1ca-4084-9294-bb4a35ea1c75"));
-        // modelBuilder.Entity<IdentityRole>().HasData(
-        //     new Admin {Users = new List<User>(adminPromotees)}
-        // );
     }
 
 

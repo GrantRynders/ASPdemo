@@ -42,7 +42,7 @@
                 </th>
             </tr>
         </thead>
-        @if (Model.filteredCategories == null)
+        @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
         {
             @foreach (Entities.Category category in Model.Categories)
             {
@@ -53,9 +53,9 @@
                 </tbody>
             }
         }
-        else
+        else //displays filtered categories
         {
-            @foreach (Entities.Category category in Model.filteredCategories) 
+            @foreach (Entities.Category category in Model.filteredCategories)
             {
                 <tbody>
                         <tr>
