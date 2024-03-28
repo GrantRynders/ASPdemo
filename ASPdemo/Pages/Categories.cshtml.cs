@@ -10,6 +10,9 @@ public class CategoriesModel : PageModel
     private readonly ILogger<IndexModel> _logger;
 
     [FromQuery]
+    public string SearchTerm {  get; set; }
+
+    [FromQuery]
     public int PageId { get; set; }
 
     [FromQuery]
@@ -17,6 +20,11 @@ public class CategoriesModel : PageModel
 
     [BindProperty]
     public List<Category> Categories { get; set; }
+
+    [BindProperty]
+    public Search? Search {  get; set; }
+
+    public List<Category>? filteredCategories { get; set; }
 
     public CategoriesModel(ILogger<IndexModel> logger)
     {
@@ -55,7 +63,7 @@ public class CategoriesModel : PageModel
         ViewData["PageId"] = PageId;
 
         var url = new UriBuilder("http://127.0.0.1:5220/categories/" + MaxId + "/" + PageId);
-
+        ViewData["Test"] = url; 
         string tokens = await client.GetStringAsync(url.ToString()); 
 
         dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
@@ -86,17 +94,40 @@ public class CategoriesModel : PageModel
             Categories.Add(category);
         }
     }
-    public async Task<List<Category>> SearchCategoriesAsync(string searchTerm)
+
+    public async Task<IActionResult> OnPost()
     {
-        List<Category> filteredCategories = new List<Category>();
-        await OnGet(); //Populate the Categories list
-        foreach (Category category in Categories) //Iterate through Categories
+        //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
+        
+        if (!ModelState.IsValid)
         {
-            if (category.CategoryName.ToLower().Contains(searchTerm.ToLower())) //This should probably be done a lot better but this works for now
-            {
-                filteredCategories.Add(category); //Add to the filtered list
-            }
+            return Page(); 
         }
-        return filteredCategories;
+
+        if (Search != null)
+        {
+            ViewData["SearchTerm"] = Search.SearchTerm; 
+
+            await OnGet(); 
+
+            filteredCategories = new List<Category>();
+
+            foreach (Category category in Categories)
+            {
+                if (category.CategoryName.ToLower().Contains(Search.SearchTerm.ToLower())) //This should probably be done a lot better but this works for now
+                {
+                    filteredCategories.Add(category); //Add to the filtered list
+                }
+            }
+
+            return Page(); 
+        }
+
+        return RedirectToPage("./Categories"); 
     }
+}
+
+public class Search
+{
+    public string? SearchTerm { get; set; }
 }
