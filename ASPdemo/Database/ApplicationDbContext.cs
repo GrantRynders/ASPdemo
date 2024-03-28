@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }  //stupid identity crap table
     public DbSet<IdentityRoleClaim<string>> IdentityRoleClaim { get; set; }  //stupid identity crap table
     public DbSet<IdentityRole> Roles { get; set; } //Roles table containing Admin
+    public DbSet<UsersRoles> UsersRoles { get; set; }
     public String DbPath {get; set;}
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) // IN MEMORY DB CONSTRUCTOR
     {
@@ -42,6 +43,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id }); 
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
         modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<Portfolio>()
+        .HasOne(e => e.user)
+        .WithOne(e => e.portfolio)
+        .HasForeignKey<Portfolio>(e => e.UserId)
+        .IsRequired();
     }
 
 

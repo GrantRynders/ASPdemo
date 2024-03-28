@@ -11,5 +11,7 @@ public class UsersRoles
     public string UserId { get; set; }
     [MaxLength(50)]
     public string RoleId { get; set; }
+    public User user { get; set; }
+    public IdentityRole role { get; set; }
     
 }

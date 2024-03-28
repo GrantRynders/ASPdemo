@@ -14,6 +14,8 @@ public class User : IdentityUser
     
     //public int UserId { get; set; }
     public int PortfolioId { get; set; }
+    public Portfolio portfolio { get; set; }
+    public List<IdentityRole> Roles { get; set; }
     public int PermissionsLevel { get; set; } //should not be changeable (except by an admin perhaps), need to update the property to reflect this
     public List<Currency> followedCurrencies = new List<Currency>();
     public User()

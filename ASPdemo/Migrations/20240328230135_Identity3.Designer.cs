@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328010241_identity327")]
-    partial class identity327
+    [Migration("20240328230135_Identity3")]
+    partial class Identity3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,14 +141,18 @@ namespace ASPdemo.Migrations
                     b.Property<double>("PortfolioValue")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("UserId")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
-                    
+
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PortfolioId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Portfolios");
                 });
@@ -205,9 +209,6 @@ namespace ASPdemo.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -217,14 +218,28 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("Users");
                 });
-            // modelBuilder.Entity("ASPdemo.Entities.User", b =>
-            //     {
-            //         b.HasOne("ASPdemo.Entities.User", null)
-            //             .WithMany("Users")
-            //             .HasForeignKey("UserId")
-            //             .OnDelete(DeleteBehavior.Cascade)
-            //             .IsRequired();
-            //     });
+
+            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b =>
+                {
+                    b.Property<int>("UsersRolesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UsersRolesId");
+
+                    b.ToTable("UsersRoles");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -264,7 +279,6 @@ namespace ASPdemo.Migrations
                     b.ToTable("IdentityRoleClaim");
                 });
 
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -284,60 +298,6 @@ namespace ASPdemo.Migrations
 
                     b.ToTable("IdentityUserClaim");
                 });
-             //         ADDITIONS
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b => //ROLES TO IDENTITYROLECLAIM One-to-Many
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b => //USERS TO IDENTITYUSERCLAIM One-to-Many
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", null)
-                        .WithMany("Users")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-            // modelBuilder.Entity("ASPdemo.Entities.Portfolio", b => //PORTFOLIO TO USER - One to One
-            //     {
-            //         b.HasOne("ASPdemo.Entities.User", null)
-            //             .WithOne("Users")
-            //             .HasForeignKey("UserId")
-            //             .OnDelete(DeleteBehavior.Cascade)
-            //             .IsRequired();
-            //     });
-            // modelBuilder.Entity("ASPdemo.Entities.User", b => //PORTFOLIO TO USER - One to One
-            //     {
-            //         b.HasOne("ASPdemo.Entities.Portfolio", null)
-            //             .WithOne("Portfolios")
-            //             .HasForeignKey("PortfolioId")
-            //             .OnDelete(DeleteBehavior.Cascade)
-            //             .IsRequired();
-            //     });
-            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b => //USERSROLES RoleId TO USERS One to Many
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany("Users")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b => //USERSROLES UserId TO ROLES One to Many
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-            //End additions
-
-
-
-
 
             modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
                 {
@@ -347,9 +307,27 @@ namespace ASPdemo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
+
+            modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.User", "user")
+                        .WithOne("portfolio")
+                        .HasForeignKey("ASPdemo.Entities.Portfolio", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
                     b.Navigation("Coins");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.User", b =>
+                {
+                    b.Navigation("portfolio")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

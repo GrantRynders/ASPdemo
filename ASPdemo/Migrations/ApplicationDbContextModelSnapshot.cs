@@ -138,8 +138,9 @@ namespace ASPdemo.Migrations
                     b.Property<double>("PortfolioValue")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("WalletAddress")
                         .IsRequired()
@@ -147,7 +148,10 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("PortfolioId");
 
-                    b.ToTable("portfolio");
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>
@@ -202,9 +206,6 @@ namespace ASPdemo.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -213,6 +214,27 @@ namespace ASPdemo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b =>
+                {
+                    b.Property<int>("UsersRolesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UsersRolesId");
+
+                    b.ToTable("UsersRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -283,9 +305,26 @@ namespace ASPdemo.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.User", "user")
+                        .WithOne("portfolio")
+                        .HasForeignKey("ASPdemo.Entities.Portfolio", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
                     b.Navigation("Coins");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.User", b =>
+                {
+                    b.Navigation("portfolio")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
