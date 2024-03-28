@@ -301,9 +301,9 @@ namespace ASPdemo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-            modelBuilder.Entity("ASPdemo.Entities.User", b => //PORTFOLIO TO USER - One to One
+            modelBuilder.Entity("ASPdemo.Entities.Portfolio", b => //PORTFOLIO TO USER - One to One
                 {
-                    b.HasOne("ASPdemo.Entities.Portfolio", null)
+                    b.HasOne("ASPdemo.Entities.User", null)
                         .WithOne("User")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
