@@ -142,7 +142,7 @@ namespace ASPdemo.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("WalletAddress")
                         .IsRequired()
@@ -150,7 +150,7 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("PortfolioId");
 
-                    b.ToTable("portfolio");
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>
@@ -289,6 +289,13 @@ namespace ASPdemo.Migrations
             modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
                     b.Navigation("Coins");
+                });
+             modelBuilder.Entity("ASPdemo.Entities.User", b =>
+                {
+                    b.Navigation("Roles");
+
+                    b.Navigation("portfolio")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
