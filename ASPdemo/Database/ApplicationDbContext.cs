@@ -48,6 +48,8 @@ public class ApplicationDbContext : DbContext
         .WithOne(e => e.portfolio)
         .HasForeignKey<Portfolio>(e => e.UserId)
         .IsRequired();
+
+        modelBuilder.Entity<UsersRoles>().HasKey(p => new { p.UsersRolesId });
     }
 
 

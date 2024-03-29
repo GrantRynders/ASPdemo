@@ -10,7 +10,7 @@ namespace ASPdemo.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+          /**  migrationBuilder.DropColumn(
                 name: "UserId",
                 table: "Users");
 
@@ -48,7 +48,7 @@ namespace ASPdemo.Migrations
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade); **/
         }
 
         /// <inheritdoc />

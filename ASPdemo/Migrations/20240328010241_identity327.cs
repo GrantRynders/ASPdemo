@@ -12,7 +12,7 @@ namespace ASPdemo.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            /**migrationBuilder.CreateTable(
                 name: "Portfolios",
                 columns: table => new
                 {
@@ -80,7 +80,7 @@ namespace ASPdemo.Migrations
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.SetNull);**/
         }
 
         /// <inheritdoc />
