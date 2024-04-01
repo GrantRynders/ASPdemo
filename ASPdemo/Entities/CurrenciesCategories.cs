@@ -10,4 +10,6 @@ public class CurrenciesCategories
     public int CurrenciesCategoriesId { get; set; }
     public int CurrencyId { get; set; }
     public int CategoryId { get; set; }
+    public Currency currency { get; set; }
+    public Category category {get; set; }
 }
