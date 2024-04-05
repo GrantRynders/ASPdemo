@@ -12,7 +12,7 @@ public class User : IdentityUser
     [MaxLength(50)]
     public override string UserName { get; set; }
     
-    //public int UserId { get; set; }
+    public int UserId { get; set; }
     public int PortfolioId { get; set; }
     public Portfolio portfolio { get; set; }
     public List<IdentityRole> Roles { get; set; }

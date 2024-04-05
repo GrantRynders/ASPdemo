@@ -117,6 +117,7 @@ namespace ASPdemo.Pages.Account
                     //else
                     //{
                     await _signInManager.SignInAsync(user, isPersistent: true);
+                    LocalRedirect("~/");
                     //return LocalRedirect(returnUrl);
                     //}
                 }

@@ -1,5 +1,9 @@
 ﻿@page
-@model IndexModel
+@using Microsoft.AspNetCore.Identity
+@using ASPdemo.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model AdministrationModel
 @{
     ViewData["Title"] = "Administration";
 }
@@ -7,4 +11,19 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Here admins can take away your human rights ;)</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @if (User.IsInRole("Admin"))
+        {
+            <p>Welcome home boss</p>
+        }
+        else
+        {
+            <p>You're not an admin you silly goose</p>
+        }
+    }
+    else
+    {
+        <a class="nav-link text-dark" id="login" asp-area="" asp-page="/Account/Login">Login</a>
+    }
 </div>

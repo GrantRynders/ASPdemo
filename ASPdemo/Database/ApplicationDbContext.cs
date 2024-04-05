@@ -41,9 +41,9 @@ public class ApplicationDbContext : DbContext
     }
     protected override async void OnModelCreating(ModelBuilder modelBuilder) //data seeding
     {
-        //modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id }); 
-        //modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
-        //modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id }); 
+        modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<IdentityRole>().HasKey(p => new { p.Id });
 
         modelBuilder.Entity<Portfolio>() //keep: this works
         .HasOne(e => e.user)
