@@ -6,10 +6,23 @@
 @model AdministrationModel
 @{
     ViewData["Title"] = "Administration";
+
+    var maxId = ViewData["MaxId"];
+    var pageId = ViewData["PageId"]; 
+    var searchTerm = ViewData["SearchTerm"]; 
+
+    var url = "/Roles/?MaxId=" + maxId + "&PageId=" + pageId;
+
+    if (searchTerm != null && searchTerm != "")
+    {
+        url = url + "&SearchTerm="+searchTerm; 
+    }
 }
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
+    <text>@ViewData["Test"]</text>
     <p>Here admins can take away your human rights ;)</p>
     @if (SignInManager.IsSignedIn(User))
     {
@@ -20,6 +33,60 @@
         else
         {
             <p>You're not an admin you silly goose</p>
+            <form method="post">
+                <input asp-for="Search!.SearchTerm"/>
+            <input type="submit" />
+            </form>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <h1>Name</h1>
+                        </th>
+                        <th>
+                            <h1>RoleId</h1>
+                        </th>
+                    </tr>
+                </thead>
+                @if (Model.filteredRoles == null) //Displays all categories if no filter is selected
+                {
+                    @foreach (Entities.Role role in Model.roles)
+                    {
+                        <tbody>
+                            <tr>
+                                <td>@role.Name</td>
+                            </tr>
+                            <tr>
+                                    <td>@role.Id</td>
+                            </tr>
+                        </tbody>
+                    }
+                }
+                else //displays filtered categories
+                {
+                    @foreach (Entities.Role role in Model.filteredRoles)
+                    {
+                        <tbody>
+                                <tr>
+                                    <td>@role.Name</td>
+                                </tr>
+                                <tr>
+                                    <td>@role.Id</td>
+                                </tr>
+                                <tr>
+                                    @foreach (Entities.User user in role.Users)
+                                    {
+                                        <td>
+                                            @(user.UserName + ", ")
+                                        </td>
+                                    }
+                                </tr>
+                        </tbody>
+                    }
+                }
+            </table>
+            <a href="@url" class="btn btn-primary">Next</a>
         }
     }
     else

@@ -33,11 +33,11 @@ var app = builder.Build();
 //############## CRUD OPS #######################
 
 // REQUEST 1: get all users
-app.MapGet("/users", async (ApplicationDbContext dbContext) => 
+app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) => 
 {
     return await dbContext.Users.ToListAsync(); 
 });
-app.MapGet("/ROLES", async (ApplicationDbContext dbContext) => 
+app.MapGet("/roles/{maxId}/{pageId}", async (ApplicationDbContext dbContext) => 
 {
     return await dbContext.Roles.ToListAsync(); 
 });
