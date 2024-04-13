@@ -35,7 +35,7 @@ public class PersonalInfoModel : PageModel
         if (currentUserId != null)
         {
             ApplicationDbContext dbContext = new ApplicationDbContext();
-            User? currentUser = dbContext.Users.Find(currentUserId);
+            User? currentUser = dbContext.Users.Find(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
             return currentUser;
         }
         else
