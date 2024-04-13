@@ -41,7 +41,7 @@ DELETE {{WebApiHost}}/users/?userId=46682462-d004-4093-a936-ba54843cee2f
 ###
 
 // REQUEST 8: Get a user
-GET {{WebApiHost}}/users/1
+GET {{WebApiHost}}/users/?userId=46682462-d004-4093-a936-ba54843cee2f
 
 ###
 

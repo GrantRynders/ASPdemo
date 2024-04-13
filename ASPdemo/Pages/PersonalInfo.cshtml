@@ -1,10 +1,44 @@
 ﻿@page
-@model IndexModel
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Identity
+@using ASPdemo.Entities
+@using ASPdemo.Database
+@using Microsoft.EntityFrameworkCore
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+@model PersonalInfoModel
 @{
     ViewData["Title"] = "Personal Information";
+
+    var userName = ViewData["Username"];
+    var userEmail = ViewData["Email"]; 
+    void ButtonClick(MouseEventArgs args)
+    {
+        User user = @Model.GetCurrentUser();
+        @userManager.SetUserNameAsync(user, userName.ToString());
+    }
 }
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Here you can view your personal information.</p>
+    @if (signInManager.IsSignedIn(User))
+    {
+        <h2>Username</h2>
+        <h3>@userName</h3>
+        <h2>Email</h2>
+        <h3>@userEmail</h3>
+        <h2>UPDATE USERNAME</h2>
+        <form method="post">
+            <input asp-for="userName"/>
+        <input type="submit" />
+        </form>
+        <asp:textbox runat="server" id="inputfield" aria-placeholder="Username"/>
+        <asp:button runat="server" class="btn btn-primary" onclick="ButtonClick">Update Username</asp:button>
+    }
+    else
+    {
+        <a class="nav-link text-dark" id="login" asp-area="" asp-page="/Account/Login">Login</a>
+    }
 </div>
