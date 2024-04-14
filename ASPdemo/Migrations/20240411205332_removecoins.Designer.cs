@@ -3,6 +3,7 @@ using System;
 using ASPdemo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411205332_removecoins")]
+    partial class removecoins
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -59,13 +62,8 @@ namespace ASPdemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AvgPriceChange")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CMCCategoryId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<double>("AvgPriceChange")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -85,24 +83,20 @@ namespace ASPdemo.Migrations
                     b.Property<double>("LastUpdated")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("MarketCap")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<double>("MarketCap")
+                        .HasColumnType("REAL");
 
-                    b.Property<string>("MarketCapChange")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<double>("MarketCapChange")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("NumTokens")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Volume")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<double>("Volume")
+                        .HasColumnType("REAL");
 
-                    b.Property<string>("VolumeChange")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<double>("VolumeChange")
+                        .HasColumnType("REAL");
 
                     b.HasKey("CategoryId");
 
@@ -142,18 +136,6 @@ namespace ASPdemo.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("MarketCap")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("PercentChange1hr")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("PercentChange24Hr")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("PercentChange7d")
-                        .HasColumnType("REAL");
-
                     b.Property<double?>("Price")
                         .HasColumnType("REAL");
 
@@ -165,15 +147,7 @@ namespace ASPdemo.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("TotalSupply")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("Volume24")
-                        .HasColumnType("REAL");
-
                     b.HasKey("CurrencyId");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Currencies");
                 });
@@ -234,20 +208,6 @@ namespace ASPdemo.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
-                {
-                    b.HasOne("ASPdemo.Entities.Category", null)
-                        .WithMany("Coins")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.Category", b =>
-                {
-                    b.Navigation("Coins");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,6 +3,7 @@ using System;
 using ASPdemo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412232428_pricesupdate")]
+    partial class pricesupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -142,17 +145,14 @@ namespace ASPdemo.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("MarketCap")
-                        .HasColumnType("REAL");
+                    b.Property<string>("MarketCap")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double?>("PercentChange1hr")
-                        .HasColumnType("REAL");
+                    b.Property<string>("PercentChange1hr")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double?>("PercentChange24Hr")
-                        .HasColumnType("REAL");
-
-                    b.Property<double?>("PercentChange7d")
-                        .HasColumnType("REAL");
+                    b.Property<string>("PercentChange7d")
+                        .HasColumnType("TEXT");
 
                     b.Property<double?>("Price")
                         .HasColumnType("REAL");
@@ -165,11 +165,11 @@ namespace ASPdemo.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<double?>("TotalSupply")
-                        .HasColumnType("REAL");
+                    b.Property<string>("TotalSupply")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double?>("Volume24")
-                        .HasColumnType("REAL");
+                    b.Property<string>("Volume24")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("CurrencyId");
 

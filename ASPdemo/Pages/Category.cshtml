@@ -1,0 +1,43 @@
+﻿@page
+@model ASPdemo.Pages.CategoryModel
+@{
+}
+<h1>Top @Model.CategoryName Tokens</h1>
+
+<table class="table">
+	<thead>
+		<th>
+				Name
+			</th>
+			<th>
+			Price
+		</th> 
+			<th>
+			24h %
+		</th>
+			<th>
+			7d %
+		</th>
+			<th>
+			Market Cap
+		</th>
+	</thead>
+	@if (Model.Currencies != null)
+	{
+		@if (Model.Currencies.Count != 0)
+		{
+			@foreach (Entities.Currency currency in Model.Currencies)
+			{
+				<tbody>
+					<tr>
+						<td>@currency.CurrencyName</td>
+						<td>@currency.Price</td>
+						<td>@currency.PercentChange24Hr</td>
+						<td>@currency.PercentChange7d</td>
+						<td>@currency.MarketCap</td>
+					</tr>
+				</tbody>
+			}
+		}
+	}
+</table>
