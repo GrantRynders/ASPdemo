@@ -26,13 +26,9 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-
-
-
-
 //############## CRUD OPS #######################
 
-// REQUEST 1: get all users
+//get all users with page
 app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) => 
 {
     return await dbContext.Users.ToListAsync(); 

@@ -10,12 +10,14 @@
 @{
     ViewData["Title"] = "Personal Information";
 
-    var userName = ViewData["Username"];
-    var userEmail = ViewData["Email"]; 
-    void ButtonClick(MouseEventArgs args)
+    var userName = ViewData["username"];
+    var userEmail = ViewData["email"]; 
+    var newUserName = ViewData["newUserName"];
+    async Task ButtonClick(MouseEventArgs args)
     {
-        User user = @Model.GetCurrentUser();
-        @userManager.SetUserNameAsync(user, userName.ToString());
+        var db = new ApplicationDbContext();
+        User user = await @Model.GetCurrentUser(db);
+        await @userManager.SetUserNameAsync(user, userName.ToString());
     }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
@@ -26,19 +28,37 @@
     @if (signInManager.IsSignedIn(User))
     {
         <h2>Username</h2>
-        <h3>@userName</h3>
+        <h3>
+            @if (@userName != null)
+            {
+                @userName
+            }
+            else
+            {
+                <p>No username to display</p>
+            }
+        </h3>
         <h2>Email</h2>
-        <h3>@userEmail</h3>
+        <h3>
+            @if (@userEmail != null)
+            {
+                @userEmail
+            }
+            else
+            {
+                <p>No email to display</p>
+            }
+        </h3>
         <h2>UPDATE USERNAME</h2>
         <form method="post">
-            <input asp-for="userName"/>
-        <input type="submit" />
+            <input asp-for="newUserName"/>
+            <input type="submit" />
         </form>
         <asp:textbox runat="server" id="inputfield" aria-placeholder="Username"/>
-        <asp:button runat="server" class="btn btn-primary" onclick="ButtonClick">Update Username</asp:button>
+        <asp:button runat="server" class="btn btn-primary" onclick=ButtonClick()>Update Username</asp:button>
     }
     else
     {
-        <a class="nav-link text-dark" id="login" asp-area="" asp-page="/Account/Login">Login</a>
+        <a class="nav-link text-dark" id="login" asp-area="" asp-page="/Account/Login">Login to view personal info</a>
     }
 </div>
