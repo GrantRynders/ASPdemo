@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ASPdemo.Entities;
 using Newtonsoft.Json;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Claims;
 
 public class PersonalInfoModel : PageModel
 {
@@ -19,34 +20,33 @@ public class PersonalInfoModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly IUserStore<User> _userStore;
 
-    public PersonalInfoModel(ILogger<IndexModel> logger, UserManager<User> userManager, IUserStore<User> userStore, SignInManager<User> signInManager)
+    public PersonalInfoModel()
     {
-        _logger = logger;
-        _userManager = userManager;
-        _userStore = userStore;
-        _signInManager = signInManager;
+       
     }
     public async Task OnGet()
     {
-        var db = new ApplicationDbContext();
-        User currentUser = await GetCurrentUser(db);
-        if (currentUser != null)
-        {
-            userName = currentUser.UserName;
-            ViewData["userName"] = userName;
-            userEmail = currentUser.Email;
-            ViewData["userEmail"] = userEmail;
-        }
+        newUserName = (string?)ViewData["newUserName"];
+        var currentUserId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+        var currentUserName =  User.FindFirstValue(ClaimTypes.Name);
+        userName = currentUserName;
+        ViewData["userName"] = userName;
+        var currentUserEmail =  User.FindFirstValue(ClaimTypes.Email);
+        userEmail = currentUserEmail;
+        ViewData["userEmail"] = userEmail;
+
     }
     public async Task<Entities.User> GetCurrentUser(ApplicationDbContext dbContext)
     {
+        
         string? currentUserId = _userManager.GetUserId(User);
         Console.WriteLine("Current user id: ", currentUserId);
         if (currentUserId != null)
         {
             try
             {  
-                User? currentUser = await dbContext.Users.FindAsync(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
+                User? currentUser = await _userManager.GetUserAsync(User);
+                //User? currentUser = await dbContext.Users.FindAsync(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
                 return currentUser;
             }
             catch (Microsoft.Data.Sqlite.SqliteException ex) //catches if the users table does not exist yet
@@ -64,18 +64,19 @@ public class PersonalInfoModel : PageModel
     public async Task<IActionResult> OnPost()
     {
         //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
-        
+        Console.WriteLine("POST BABEEEE");
         if (!ModelState.IsValid)
         {
             return Page(); 
         }
-
+        newUserName = (string?)ViewData["newUserName"];
         if (newUserName != null)
         {
-            OnGet();
+            await OnGet();
             var db = new ApplicationDbContext();
             User currentUser = await GetCurrentUser(db);
-            currentUser.UserName = newUserName;
+            await _userManager.SetUserNameAsync(currentUser, newUserName);
+            
             return Page(); 
         }
         else
@@ -83,6 +84,6 @@ public class PersonalInfoModel : PageModel
             Console.WriteLine("NewUserName is null");
         }
 
-        return RedirectToPage("./Categories"); 
+        return RedirectToPage("./PersonalInfo"); 
     }
 }
