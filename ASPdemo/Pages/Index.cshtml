@@ -3,13 +3,57 @@
 @{
     ViewData["Title"] = "Home page";
 
-    var maxId = ViewData["MaxId"];
-    var pageId = ViewData["PageId"]; 
+    var skipId = ViewData["SkipId"];
+    var url = "";
 
-    var url = "/?MaxId="+maxId+"&PageId="+pageId; 
+    if (skipId != null)
+    {
+        int skipInt = Convert.ToInt16(skipId);
+        skipInt = skipInt + 10;
+        url = "/?SkipId=" + skipInt;
+    }
+    else
+    {
+        url = "/?SkipId=" + 10;
+    }
 }
+<h1>Today's Cryptocurrency Prices</h1>
+<table class="table">
+    <thead>
+        <th>
+              Name
+        </th>
+        <th>
+            Price
+        </th>
+        <th>
+            24hr %
+        </th>
+        <th>
+            1hr %
+        </th>
+        <th>
+            7d %
+        </th>
+        <th>
+            Total Supply
+        </th>
+    </thead>
+    @foreach (Entities.Currency currency in Model.Currency)
+    {
+        <tbody>
+            <tr>
+                <td>@currency.CurrencyName</td>
+                <td>@currency.Price</td>
+                <td>@currency.PercentChange24Hr</td>
+                <td>@currency.PercentChange1hr</td>
+                <td>@currency.PercentChange7d</td>
+                <td>@currency.TotalSupply</td>
+            </tr>
 
-
+        </tbody>
+    }
+</table>
 
 
 <a href="@url" class="btn btn-primary">Next</a>

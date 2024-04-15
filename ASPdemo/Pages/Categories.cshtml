@@ -1,27 +1,30 @@
 ﻿@page
 @model CategoriesModel
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     ViewData["Title"] = "Categories";
 
-    var maxId = ViewData["MaxId"];
-    var pageId = ViewData["PageId"]; 
-    var searchTerm = ViewData["SearchTerm"]; 
+    var skipId = ViewData["SkipId"];
+    var url = "";
 
-    var url = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
-
-    if (searchTerm != null && searchTerm != "")
+    if (skipId != null)
     {
-        url = url + "&SearchTerm="+searchTerm; 
+        int skipInt = Convert.ToInt16(skipId);
+        skipInt = skipInt + 10; 
+        url = "/Categories/?SkipId=" + skipInt;
+    }
+    else
+    {
+        url = "/Categories/?SkipId=" + 10;
     }
 }
-@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
-    <h1 class="display-4">Search by Category</h1>
-    <text>@ViewData["Test"]</text>
+    <h1 class="display-4">Search by Category</h1> 
 
     <form method="post">
-        <input asp-for="Search!.SearchTerm"/>
+        <input type="text" asp-for="@Model.Search!.SearchTerm" placeholder="Search by name"/>
        <input type="submit" />
     </form>
     
@@ -29,48 +32,55 @@
         <thead>
             <tr>
                 <th>
-                    <h1>Name</h1>
+                    Name
                 </th>
                 <th>
-                    <h1>CurrencyId</h1>
+                    Volume
                 </th>
                 <th>
-                    <h1>Slug</h1>
+                    Market Cap
                 </th>
                 <th>
-                    <h1>Symbol</h1>
+                    Market Cap Change
+                </th>
+                <th>
+                    Num. Tokens
                 </th>
             </tr>
         </thead>
         @if (Model.Categories.Count > 1)
         {
-            @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
+            @foreach (Entities.Category category in Model.Categories)
             {
-                @foreach (Entities.Category category in Model.Categories)
-                {
-                    <tbody>
-                        <tr>
-                            <td>@category.CategoryName</td>
-                        </tr>
-                    </tbody>
-                }
-            }
-            else //displays filtered categories
-            {
-                @foreach (Entities.Category category in Model.filteredCategories)
-                {
-                    <tbody>
-                            <tr>
-                                <td>@category.CategoryName</td>
-                            </tr>
-                    </tbody>
-                }
+                <tbody>
+                    <tr>
+                        <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
+                        <td>@category.Volume</td>
+                        <td>@category.MarketCap</td>
+                        <td>@category.MarketCapChange</td>
+                        <td>@category.NumTokens</td>
+                    </tr> 
+                </tbody>
             }
         }
         else
         {
-            <h1>UH OH! WHERE DID THE CATEGORIES GO!</h1>
+            @foreach (Entities.Category category in Model.filteredCategories) 
+            {
+                <tbody>
+                        <tr>
+                            <td>@category.CategoryName</td>
+                            <td>@category.Volume</td>
+                            <td>@category.MarketCap</td>
+                            <td>@category.MarketCapChange</td>
+                            <td>@category.NumTokens</td>
+                        </tr>
+                </tbody>
+            }
         }
     </table>
-    <a href="@url" class="btn btn-primary">Next</a>
+    @if (Model.filteredCategories == null)
+    {
+        <a href="@url" class="btn btn-primary">Next</a>
+    }
 </div>
