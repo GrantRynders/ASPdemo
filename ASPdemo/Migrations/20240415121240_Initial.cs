@@ -17,15 +17,16 @@ namespace ASPdemo.Migrations
                 {
                     CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CMCCategoryId = table.Column<string>(type: "TEXT", nullable: false),
                     CategoryName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     CategoryTitle = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     NumTokens = table.Column<int>(type: "INTEGER", nullable: false),
-                    AvgPriceChange = table.Column<double>(type: "REAL", nullable: false),
-                    MarketCap = table.Column<double>(type: "REAL", nullable: false),
-                    MarketCapChange = table.Column<double>(type: "REAL", nullable: false),
-                    Volume = table.Column<double>(type: "REAL", nullable: false),
-                    VolumeChange = table.Column<double>(type: "REAL", nullable: false),
+                    AvgPriceChange = table.Column<string>(type: "TEXT", nullable: false),
+                    MarketCap = table.Column<string>(type: "TEXT", nullable: false),
+                    MarketCapChange = table.Column<string>(type: "TEXT", nullable: false),
+                    Volume = table.Column<string>(type: "TEXT", nullable: false),
+                    VolumeChange = table.Column<string>(type: "TEXT", nullable: false),
                     LastUpdated = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
@@ -39,10 +40,18 @@ namespace ASPdemo.Migrations
                 {
                     CurrencyId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     CurrencyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     Slug = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     Symbol = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    Description = table.Column<string>(type: "TEXT", nullable: true)
+                    PercentChange24Hr = table.Column<double>(type: "REAL", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Price = table.Column<double>(type: "REAL", nullable: true),
+                    Volume24 = table.Column<double>(type: "REAL", nullable: true),
+                    PercentChange1hr = table.Column<double>(type: "REAL", nullable: true),
+                    PercentChange7d = table.Column<double>(type: "REAL", nullable: true),
+                    MarketCap = table.Column<double>(type: "REAL", nullable: true),
+                    TotalSupply = table.Column<double>(type: "REAL", nullable: true)
                 },
                 constraints: table =>
                 {

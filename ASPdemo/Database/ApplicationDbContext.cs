@@ -11,7 +11,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users {get; set;}
     public DbSet<Currency> Currencies {get; set;}
     public DbSet<Category> Categories {get; set;}
-    public DbSet<CurrenciesCategories> CurrenciesCategories {get; set;} // Join table
     public DbSet<CurrenciesPortfolios> CurrenciesPortfolios {get; set;} // Join table
     public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }  //this was necessary to get the identity system set up, but we really aren't going to use it beyond that
     //claims are basically really overcomplicated ways of saying "this role/user has permissions to do XYZ" which we could just do with simple booleans or property reads so they really aren't useful
