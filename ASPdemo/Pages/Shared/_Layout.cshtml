@@ -2,6 +2,11 @@
 @using ASPdemo.Entities
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = "Layout";
+
+    var layoutUserName = ViewData["layourUserName"];
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,12 +37,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Conversions">Conversions</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/PersonalInfo">Personal Info</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Administration">Administration</a>
-                        </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
@@ -47,8 +46,8 @@
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Administration">Administration</a>
                             </li>
                             <li class="nav-item">
-                                <a id="manage" class="nav-link text-dark" asp-area="" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-                            </li> // 7e86754f-75a7-4cb9-95fe-5be8a1c30ddb
+                                <a id="manage" class="nav-link text-dark" asp-area="" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+                            </li> // @UserManager.GetUserName(User)!
                             <li class="nav-item">
                                 <form id="logoutForm" class="form-inline" asp-area="" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
                                     <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>

@@ -97,7 +97,7 @@ namespace ASPdemo.Pages.Account
                     //await dbContext.SaveChangesAsync();
                     ApplicationDbContext dbContext = new ApplicationDbContext();
                     dbContext.Users.Add(user);
-                    Console.WriteLine(user.ToString());
+                    Console.WriteLine("New addition to Db: " + user.ToString());
                     var userId = await _userManager.GetUserIdAsync(user);
                     // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -117,7 +117,7 @@ namespace ASPdemo.Pages.Account
                     //else
                     //{
                     await _signInManager.SignInAsync(user, isPersistent: true);
-                    LocalRedirect("~/");
+                    LocalRedirect("/Index");
                     //return LocalRedirect(returnUrl);
                     //}
                 }
