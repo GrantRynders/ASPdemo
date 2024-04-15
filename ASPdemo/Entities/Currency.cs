@@ -8,7 +8,6 @@ public class Currency
     public int CurrencyId { get; set; }
 
     public int CategoryId { get; set; }
-    public List<Category> Categories { get; set; } //many to many relationship needs a list on both sides
 
     [MaxLength(50)]
     public string? CurrencyName { get; set; }
