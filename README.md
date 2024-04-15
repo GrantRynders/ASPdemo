@@ -5,14 +5,16 @@ title: Final Project Class Diagram
 classDiagram
     Currency <|--|> Category : Many-to-Many (Using Join Table)
     Currency <|-- User : Accesses
-    Admin --|> Role : Inherits from
-    User --|> Portfolio : Has One
+    
+    
     User --|> IdentityUser : Inherits from
     IdentityUser <|-- MicrosoftAspNetCoreIdentity
     Role --|> IdentityRole : Inherits from
     IdentityRole <|-- MicrosoftAspNetCoreIdentity
-    Admin --|> User : Contains
     Currency <|--|> Portfolio : Many-to-Many (Using Join Table)
+    User --|> Portfolio : Has One
+    User <|--|> Role : Many-to-Many (Using Join Table)
+    Admin --|> Role : Inherits from
     class Currency{
         +int CurrencyId PK
         +String CurrencyName

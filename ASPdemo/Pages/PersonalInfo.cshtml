@@ -12,7 +12,7 @@
 
     var userName = ViewData["username"];
     var userEmail = ViewData["email"]; 
-    var newUserName = ViewData["newUserName"];
+    //var newUserName = ViewData["newUserName"];
     @* async Task ButtonClick(MouseEventArgs args)
     {
         var db = new ApplicationDbContext();
@@ -50,11 +50,11 @@
             }
         </h3>
         <h2>UPDATE USERNAME</h2>
-        <form method="post">
-            <input asp-for="newUserName"/>
+        <form id="newUserNameForm" method="post" runat="server">
+            <input asp-for="Input.newUserName" id="newUserNameForm"/>
             <input type="submit" />
         </form>
-        <asp:textbox runat="server" id="inputfield" aria-placeholder="Username"/>
+        @* <asp:textbox runat="server" id="inputfield" aria-placeholder="Username"/> *@
         @* <asp:button runat="server" class="btn btn-primary" onclick=ButtonClick()>Update Username</asp:button> *@
     }
     else

@@ -10,23 +10,28 @@ using System.Security.Claims;
 
 public class PersonalInfoModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    
+    [BindProperty]
+    public InputModel Input { get; set; }
+    public class InputModel
+    {
+        public string? newUserName { get; set; }
+    }
     public string? userName { get; set; }
     public string? userEmail { get; set; }
-    public string? newUserName { get; set; }
+    
     public string url { get; set; }
 
-    private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
-    private readonly IUserStore<User> _userStore;
+    private ApplicationDbContext dbContext;
 
-    public PersonalInfoModel()
+    public PersonalInfoModel(UserManager<User> userManager)
     {
-       
+       _userManager = userManager;
+       dbContext = new ApplicationDbContext();
     }
     public async Task OnGet()
     {
-        newUserName = (string?)ViewData["newUserName"];
         var currentUserId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
         var currentUserName =  User.FindFirstValue(ClaimTypes.Name);
         userName = currentUserName;
@@ -36,28 +41,21 @@ public class PersonalInfoModel : PageModel
         ViewData["userEmail"] = userEmail;
 
     }
-    public async Task<Entities.User> GetCurrentUser(ApplicationDbContext dbContext)
+    public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext dbContext)
     {
         
-        string? currentUserId = _userManager.GetUserId(User);
-        Console.WriteLine("Current user id: ", currentUserId);
-        if (currentUserId != null)
-        {
-            try
-            {  
-                User? currentUser = await _userManager.GetUserAsync(User);
-                //User? currentUser = await dbContext.Users.FindAsync(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
-                return currentUser;
-            }
-            catch (Microsoft.Data.Sqlite.SqliteException ex) //catches if the users table does not exist yet
-            {
-                Console.WriteLine("NO USERS TABLE YET! CRAAAAAAAAAAAAAP!");
-                return null;
-            }
+        // string? currentUserId = _userManager.GetUserId(User);
+        // Console.WriteLine("Current user id: ", currentUserId);
+        try
+        {  
+            User? currentUser = await _userManager.GetUserAsync(User);
+            Console.WriteLine("Current user id: " + currentUser.Id);
+            //User? currentUser = await dbContext.Users.FindAsync(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
+            return currentUser;
         }
-        else
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
         {
-            Console.WriteLine("Uh oh. Current User has no ID");
+            Console.WriteLine("NO USERS TABLE YET! CRAAAAAAAAAAAAAP!");
             return null;
         }
     }
@@ -69,13 +67,17 @@ public class PersonalInfoModel : PageModel
         {
             return Page(); 
         }
-        newUserName = (string?)ViewData["newUserName"];
-        if (newUserName != null)
+        if (Input.newUserName != null)
         {
+            Console.WriteLine("New User Name: " + Input.newUserName);
             await OnGet();
-            var db = new ApplicationDbContext();
-            User currentUser = await GetCurrentUser(db);
-            await _userManager.SetUserNameAsync(currentUser, newUserName);
+            User? currentUser = await GetCurrentUser(dbContext);
+            if (currentUser != null)
+            {
+                await _userManager.SetUserNameAsync(currentUser, Input.newUserName);
+                Console.WriteLine("Current UserName: " + currentUser.UserName);
+                await dbContext.SaveChangesAsync();
+            }
             
             return Page(); 
         }
