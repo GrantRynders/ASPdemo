@@ -7,6 +7,7 @@ using ASPdemo.Entities;
 using Newtonsoft.Json;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 public class PersonalInfoModel : PageModel
 {
@@ -32,25 +33,27 @@ public class PersonalInfoModel : PageModel
     }
     public async Task OnGet()
     {
-        var currentUserId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-        var currentUserName =  User.FindFirstValue(ClaimTypes.Name);
-        userName = currentUserName;
-        ViewData["userName"] = userName;
-        var currentUserEmail =  User.FindFirstValue(ClaimTypes.Email);
-        userEmail = currentUserEmail;
-        ViewData["userEmail"] = userEmail;
+        var currentUser = await GetCurrentUser(dbContext);
+        if (currentUser != null)
+        {
+            //var currentUserId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+            //var currentUserName =  User.FindFirstValue(ClaimTypes.Name);
+            var currentUserName = await _userManager.GetUserNameAsync(currentUser);
+            userName = currentUserName;
+            ViewData["userName"] = userName;
+            var currentUserEmail = await _userManager.GetEmailAsync(currentUser);
+            //var currentUserEmail =  User.FindFirstValue(ClaimTypes.Email);
+            userEmail = currentUserEmail;
+            ViewData["userEmail"] = userEmail;
+        }
+        
 
     }
     public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext dbContext)
     {
-        
-        // string? currentUserId = _userManager.GetUserId(User);
-        // Console.WriteLine("Current user id: ", currentUserId);
         try
         {  
             User? currentUser = await _userManager.GetUserAsync(User);
-            Console.WriteLine("Current user id: " + currentUser.Id);
-            //User? currentUser = await dbContext.Users.FindAsync(currentUserId); //if we call this in the OnGet() method it has a stroke, perhaps the tables aren't ready at that point
             return currentUser;
         }
         catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
@@ -61,22 +64,22 @@ public class PersonalInfoModel : PageModel
     }
     public async Task<IActionResult> OnPost()
     {
-        //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
-        Console.WriteLine("POST BABEEEE");
         if (!ModelState.IsValid)
         {
             return Page(); 
         }
         if (Input.newUserName != null)
         {
-            Console.WriteLine("New User Name: " + Input.newUserName);
             await OnGet();
             User? currentUser = await GetCurrentUser(dbContext);
             if (currentUser != null)
             {
                 await _userManager.SetUserNameAsync(currentUser, Input.newUserName);
-                Console.WriteLine("Current UserName: " + currentUser.UserName);
-                await dbContext.SaveChangesAsync();
+                //Console.WriteLine("Current UserName: " + currentUser.UserName);
+                await dbContext.Database.MigrateAsync(); //ensures that the table exist PLEASE WORK
+                dbContext.Entry(currentUser).State = EntityState.Modified;
+                //Console.WriteLine("UserManager: new name of currentUser: " + await _userManager.GetUserNameAsync(currentUser));
+                //await dbContext.SaveChangesAsync(); this fricking sucks, why does it never work?
             }
             
             return Page(); 

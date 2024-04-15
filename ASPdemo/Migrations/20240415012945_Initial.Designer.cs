@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240329023353_killme")]
-    partial class killme
+    [Migration("20240415012945_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,6 +81,10 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("CurrenciesCategoriesId");
 
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CurrencyId");
+
                     b.ToTable("CurrenciesCategories");
                 });
 
@@ -98,6 +102,10 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("CurrenciesPortfoliosId");
 
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("PortfolioId");
+
                     b.ToTable("CurrenciesPortfolios");
                 });
 
@@ -105,9 +113,6 @@ namespace ASPdemo.Migrations
                 {
                     b.Property<int>("CurrencyId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CurrencyName")
@@ -126,8 +131,6 @@ namespace ASPdemo.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("CurrencyId");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Currencies");
                 });
@@ -209,6 +212,9 @@ namespace ASPdemo.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -244,6 +250,21 @@ namespace ASPdemo.Migrations
                     b.ToTable("UsersRoles");
                 });
 
+            modelBuilder.Entity("CategoryCurrency", b =>
+                {
+                    b.Property<int>("CategoriesCategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CoinsCurrencyId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CategoriesCategoryId", "CoinsCurrencyId");
+
+                    b.HasIndex("CoinsCurrencyId");
+
+                    b.ToTable("CategoryCurrency");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -253,40 +274,39 @@ namespace ASPdemo.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("IdentityRole");
 
-                    b.ToTable("Roles");
+                    b.UseTptMappingStrategy();
                 });
 
-            // modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-            //     {
-            //         b.Property<int>("Id")
-            //             .ValueGeneratedOnAdd()
-            //             .HasColumnType("INTEGER");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-            //         b.Property<string>("ClaimType")
-            //             .HasColumnType("TEXT");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("TEXT");
 
-            //         b.Property<string>("ClaimValue")
-            //             .HasColumnType("TEXT");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("TEXT");
 
-            //         b.Property<string>("RoleId")
-            //             .HasColumnType("TEXT");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
 
-            //         b.HasKey("Id");
+                    b.HasKey("Id");
 
-            //         b.ToTable("IdentityRoleClaim<string>");
-            //     });
+                    b.ToTable("IdentityRoleClaim");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
@@ -308,13 +328,64 @@ namespace ASPdemo.Migrations
                     b.ToTable("IdentityUserClaim");
                 });
 
-            modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("ASPdemo.Entities.Category", null)
-                        .WithMany("Coins")
+                    b.Property<string>("RolesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.Role", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.CurrenciesCategories", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.Category", "category")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ASPdemo.Entities.Currency", "currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("category");
+
+                    b.Navigation("currency");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.CurrenciesPortfolios", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.Currency", "currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASPdemo.Entities.Portfolio", "portfolio")
+                        .WithMany()
+                        .HasForeignKey("PortfolioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("currency");
+
+                    b.Navigation("portfolio");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
@@ -347,22 +418,47 @@ namespace ASPdemo.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("CategoryCurrency", b =>
                 {
-                    b.HasOne("ASPdemo.Entities.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
+                    b.HasOne("ASPdemo.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASPdemo.Entities.Currency", null)
+                        .WithMany()
+                        .HasForeignKey("CoinsCurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("ASPdemo.Entities.Category", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.Navigation("Coins");
+                    b.HasOne("ASPdemo.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASPdemo.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.Role", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithOne()
+                        .HasForeignKey("ASPdemo.Entities.Role", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>
                 {
-                    b.Navigation("Roles");
-
                     b.Navigation("portfolio")
                         .IsRequired();
                 });
