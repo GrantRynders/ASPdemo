@@ -48,34 +48,40 @@
                 </th>
             </tr>
         </thead>
-        @if (Model.Categories.Count > 1)
-        {
-            @foreach (Entities.Category category in Model.Categories)
+        @if (Model.Categories != null)
+	    {
+            @if (Model.Categories.Count > 1)
             {
-                <tbody>
-                    <tr>
-                        <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
-                        <td>@category.Volume</td>
-                        <td>@category.MarketCap</td>
-                        <td>@category.MarketCapChange</td>
-                        <td>@category.NumTokens</td>
-                    </tr> 
-                </tbody>
-            }
-        }
-        else
-        {
-            @foreach (Entities.Category category in Model.filteredCategories) 
-            {
-                <tbody>
+                @foreach (Entities.Category category in Model.Categories)
+                {
+                    <tbody>
                         <tr>
-                            <td>@category.CategoryName</td>
+                            <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
                             <td>@category.Volume</td>
                             <td>@category.MarketCap</td>
                             <td>@category.MarketCapChange</td>
                             <td>@category.NumTokens</td>
-                        </tr>
-                </tbody>
+                        </tr> 
+                    </tbody>
+                }
+            }
+        }
+        else
+        {
+            @if (Model.filteredCategories != null)
+	        {
+                @foreach (Entities.Category category in Model.filteredCategories) 
+                {
+                    <tbody>
+                            <tr>
+                                <td>@category.CategoryName</td>
+                                <td>@category.Volume</td>
+                                <td>@category.MarketCap</td>
+                                <td>@category.MarketCapChange</td>
+                                <td>@category.NumTokens</td>
+                            </tr>
+                    </tbody>
+                }
             }
         }
     </table>

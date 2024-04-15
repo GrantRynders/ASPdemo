@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace ASPdemo.Pages;
 
@@ -103,6 +104,10 @@ public class CategoriesModel : PageModel
         {
             Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES GET");
         }
+        catch (WebException)
+        {
+            Console.WriteLine("WEB EXCEPTION ON CATEGORIES GET");
+        }
     }
 
     public async Task<IActionResult> OnPost(Search search)
@@ -179,6 +184,10 @@ public class CategoriesModel : PageModel
             catch (HttpRequestException)
             {
                 Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES POST");
+            }
+            catch (WebException)
+            {
+                Console.WriteLine("WEB EXCEPTION ON CATEGORIES POST");
             }
 			return Page(); 
         }
