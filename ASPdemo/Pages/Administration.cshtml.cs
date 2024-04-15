@@ -68,34 +68,41 @@ public class AdministrationModel : PageModel
         string tokens = null;
         try
         {
-            tokens = await client.GetStringAsync(url.ToString()); 
-        }
-        catch (HttpRequestException ex)
-        {
-            Console.WriteLine("404 ERROR");
-        }
-        
-        if (tokens != null)
-        {
-            dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-            foreach (dynamic result in results)
+            try
             {
-                var role = new Role();
+                tokens = await client.GetStringAsync(url.ToString()); 
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine("404 ERROR");
+            }
+            
+            if (tokens != null)
+            {
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+                foreach (dynamic result in results)
+                {
+                    var role = new Role();
 
-                var id = result.id;
-                var name = result.name;
-                var users = result.users;
+                    var id = result.id;
+                    var name = result.name;
+                    var users = result.users;
 
-                role.Id = id;
-                role.Name = name;
-                role.Users = users;
+                    role.Id = id;
+                    role.Name = name;
+                    role.Users = users;
 
-                roles.Add(role);
+                    roles.Add(role);
+                }
+            }
+            else
+            {
+                Console.WriteLine("NO TOKENS TO DISPLAY");
             }
         }
-        else
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
         {
-            Console.WriteLine("NO TOKENS TO DISPLAY");
+            Console.WriteLine("TABLE DOES NOT EXIST");
         }
 
         
