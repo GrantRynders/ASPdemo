@@ -39,55 +39,55 @@ public class CategoriesModel : PageModel
 
         var url = new UriBuilder("http://127.0.0.1:5220/categories/"+SkipId);
         string tokens = await client.GetStringAsync(url.ToString()); 
-
-        dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-
-        foreach (dynamic result in results)
+        if (tokens != null)
         {
-            var category = new Category();
-
-            var categoryId = result.categoryId; 
-            var categoryName = result.categoryName;
-            var categoryTitle = result.categoryTitle;
-            var description = result.description;
-            var numTokens = result.numTokens;
-            var volume = result.volume;
-            var avgPriceChange = result.avgPriceChange;
-            var marketCap = result.marketCap; 
-            var marketCapChange = result.marketCapChange;
-            var coins = result.coins;
-
-            var currencyDb = new List<Currency>(); 
-
-            foreach (var coin in coins)
+            dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+            foreach (dynamic result in results)
             {
-                var currency = new Currency();
+                var category = new Category();
 
-                currency.CurrencyId = coin.currencyId; 
-                currency.CurrencyName = coin.currencyName;
-                currency.CategoryId = coin.categoryId;
-                currency.Symbol = coin.symbol;
-                currency.Price = coin.price;
-                currency.PercentChange1hr = coin.percentChange1;
-                currency.PercentChange7d = coin.percentChange7d;
-                currency.PercentChange24Hr = coin.percentChange24Hr;
-                currency.MarketCap = coin.marketCap; 
-                currency.TotalSupply = coin.totalSupply;
-                currency.Slug = coin.slug;
+                var categoryId = result.categoryId; 
+                var categoryName = result.categoryName;
+                var categoryTitle = result.categoryTitle;
+                var description = result.description;
+                var numTokens = result.numTokens;
+                var volume = result.volume;
+                var avgPriceChange = result.avgPriceChange;
+                var marketCap = result.marketCap; 
+                var marketCapChange = result.marketCapChange;
+                var coins = result.coins;
 
-                currencyDb.Add(currency);
-            } 
+                var currencyDb = new List<Currency>(); 
 
-            category.CategoryId = categoryId;
-            category.MarketCap = marketCap; 
-            category.MarketCapChange = marketCapChange;
-            category.CategoryName = categoryName;
-            category.CategoryTitle = categoryTitle;
-            category.Description = description;
-            category.NumTokens = numTokens;
-            category.Volume = volume;
-            category.AvgPriceChange = avgPriceChange;
-            category.Coins = currencyDb;
+                foreach (var coin in coins)
+                {
+                    var currency = new Currency();
+
+                    currency.CurrencyId = coin.currencyId; 
+                    currency.CurrencyName = coin.currencyName;
+                    currency.CategoryId = coin.categoryId;
+                    currency.Symbol = coin.symbol;
+                    currency.Price = coin.price;
+                    currency.PercentChange1hr = coin.percentChange1;
+                    currency.PercentChange7d = coin.percentChange7d;
+                    currency.PercentChange24Hr = coin.percentChange24Hr;
+                    currency.MarketCap = coin.marketCap; 
+                    currency.TotalSupply = coin.totalSupply;
+                    currency.Slug = coin.slug;
+
+                    currencyDb.Add(currency);
+                } 
+
+                category.CategoryId = categoryId;
+                category.MarketCap = marketCap; 
+                category.MarketCapChange = marketCapChange;
+                category.CategoryName = categoryName;
+                category.CategoryTitle = categoryTitle;
+                category.Description = description;
+                category.NumTokens = numTokens;
+                category.Volume = volume;
+                category.AvgPriceChange = avgPriceChange;
+                category.Coins = currencyDb;
 
                 Categories.Add(category);
             }

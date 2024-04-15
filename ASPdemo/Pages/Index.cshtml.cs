@@ -39,34 +39,40 @@ public class IndexModel : PageModel
         string tokens = await client.GetStringAsync(url.ToString());
 
         dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-
-        foreach (dynamic result in results)
+        if (tokens != null)
         {
-            var currencyName = result.currencyName; 
-            var currencyId = result.currencyId;
-            var slug = result.slug;
-            var symbol = result.symbol; 
-            var percentChange24hr = result.percentChange24Hr;
-            var price = result.price; 
-            var percentChange1hr = result.percentChange1hr;
-            var percentChange7d = result.percentChange7d;
-            var marketCap = result.marketCap;
-            var totalSupply = result.totalSupply; 
+            foreach (dynamic result in results)
+            {
+                var currencyName = result.currencyName; 
+                var currencyId = result.currencyId;
+                var slug = result.slug;
+                var symbol = result.symbol; 
+                var percentChange24hr = result.percentChange24Hr;
+                var price = result.price; 
+                var percentChange1hr = result.percentChange1hr;
+                var percentChange7d = result.percentChange7d;
+                var marketCap = result.marketCap;
+                var totalSupply = result.totalSupply; 
 
-            Currency currency = new Currency();
+                Currency currency = new Currency();
 
-            currency.CurrencyId = currencyId;
-            currency.Slug = slug;
-            currency.CurrencyName = currencyName;
-            currency.Price = price;
-            currency.Symbol = symbol; 
-            currency.PercentChange24Hr = percentChange24hr;
-            currency.MarketCap = marketCap;
-            currency.PercentChange7d = percentChange7d;
-            currency.PercentChange1hr = percentChange1hr;
-            currency.TotalSupply = totalSupply;
+                currency.CurrencyId = currencyId;
+                currency.Slug = slug;
+                currency.CurrencyName = currencyName;
+                currency.Price = price;
+                currency.Symbol = symbol; 
+                currency.PercentChange24Hr = percentChange24hr;
+                currency.MarketCap = marketCap;
+                currency.PercentChange7d = percentChange7d;
+                currency.PercentChange1hr = percentChange1hr;
+                currency.TotalSupply = totalSupply;
 
-            Currency.Add(currency);
+                Currency.Add(currency);
+            }
+        }
+        else
+        {
+            Console.WriteLine("NO TOKENS TO DISPLAY");
         }
     }
 
