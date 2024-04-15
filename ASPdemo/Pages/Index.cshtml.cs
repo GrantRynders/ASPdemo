@@ -4,6 +4,8 @@ using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 using ASPdemo.Entities;
 using Newtonsoft.Json;
+using ASPdemo.Database;
+
 namespace ASPdemo.Pages;
 
 public class IndexModel : PageModel

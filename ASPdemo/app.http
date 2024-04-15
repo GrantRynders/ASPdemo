@@ -15,42 +15,33 @@ GET {{WebApiHost}}/v1/cryptocurrency/airdrop
 
 ###
 
+GET {{WebApiHost}}/roles/
+
+###
+
 // REQUEST 4: Get all users
-GET {{WebApiHost}}/users
+GET {{WebApiHost}}/users/
 
 ###
 
-// REQUEST 5: CREATE user
-POST {{WebApiHost}}/users
+// REQUEST 6: UPDATE user      NOTE: no longer works with more secure user system
+PUT {{WebApiHost}}/users/?userId=46682462-d004-4093-a936-ba54843cee2f
 Content-Type: application/json
 
 {
-    "firstName" : "Rob",
-    "lastName" : "Johnson"
-}
-
-###
-
-// REQUEST 6: UPDATE user
-PUT {{WebApiHost}}/users/1
-Content-Type: application/json
-
-{
-    "authorId" : 1,
-    "firstName" : "Robert",
-    "lastName" : "Johnson"
+    "emailConfirmed" : true
 }
 
 ###
 
 // REQUEST 7: DELETE user
 
-DELETE {{WebApiHost}}/users/1
+DELETE {{WebApiHost}}/users/?userId=46682462-d004-4093-a936-ba54843cee2f
 
 ###
 
 // REQUEST 8: Get a user
-GET {{WebApiHost}}/users/1
+GET {{WebApiHost}}/users/?userId=46682462-d004-4093-a936-ba54843cee2f
 
 ###
 

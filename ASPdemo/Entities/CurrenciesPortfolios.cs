@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace ASPdemo.Entities;
 
-[Table("CurrenciesCategories")]
-public class CurrenciesCategories
+[Table("CurrenciesPortfolios")]
+public class CurrenciesPortfolios
 {
     [Key]
-    public int CurrenciesCategoriesId { get; set; }
+    public int CurrenciesPortfoliosId { get; set; }
     public int CurrencyId { get; set; }
-    public int CategoryId { get; set; }
+    public int PortfolioId { get; set; }
     public Currency currency { get; set; }
-    public Category category {get; set; }
+    public Portfolio portfolio { get; set; }
 }

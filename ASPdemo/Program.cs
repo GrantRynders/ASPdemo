@@ -11,22 +11,26 @@ using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
 //CREATE SQLITE DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=Crypto.db");
 });
 
+
+
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
-//app.Urls.Add("http://localhost:5220");
 
 //############## CRUD OPS #######################
 
-// REQUEST 1: get all users
-app.MapGet("/users", async (ApplicationDbContext dbContext) => 
+//get all users with page
+app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) => 
 {
     return await dbContext.Users.ToListAsync(); 
 });
@@ -181,14 +185,14 @@ app.MapPost("/users", async (User user, ApplicationDbContext dbContext) =>
 {
     dbContext.Users.Add(user);
     await dbContext.SaveChangesAsync(); 
-    return Results.Created($"/users/{user.UserId}", user);
+    return Results.Created($"/users/{user.Id}", user);
 });
 
 // REQUEST 6: update a user
 
-app.MapPut("/users/{userId}", async (int userId, User user, ApplicationDbContext dbContext) => 
+app.MapPut("/users/{Id}", async (string userId, User user, ApplicationDbContext dbContext) => 
 {
-    if (userId != user.UserId)
+    if (userId != user.Id)
     {
         return Results.BadRequest("UserId mismatch");
     }
@@ -199,13 +203,12 @@ app.MapPut("/users/{userId}", async (int userId, User user, ApplicationDbContext
 
 // REQUEST 7: delete a user
 
-app.MapDelete("/users/{userId}", async (int userId, ApplicationDbContext dbContext) => 
+app.MapDelete("/users/{Id}", async (string id, ApplicationDbContext dbContext) => 
 {
-    dbContext.Users.Remove(new User { UserId = userId});
+    dbContext.Users.Remove(new User { Id = id});
     //Console.WriteLine("Deleted user with ID: " + userId); DEBUG
     await dbContext.SaveChangesAsync();
 });
-
 
 
 // Configure the HTTP request pipeline.
@@ -226,3 +229,10 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+// ApplicationDbContext dbContext = new ApplicationDbContext();
+// List<User> adminPromotees = new List<User>();
+//                     User? user = dbContext.Users.Find("ccda0ef3-b1ca-4084-9294-bb4a35ea1c75");
+//                     Console.WriteLine(user.UserName);
+//                     adminPromotees.Add(user);
+//                     dbContext.Roles.Add(new Admin { Users = new List<User>(adminPromotees)});

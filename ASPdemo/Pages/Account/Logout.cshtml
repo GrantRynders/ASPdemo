@@ -1,0 +1,30 @@
+@page
+@using ASPdemo.Pages.Account;
+@model ASPdemo.Pages.Account.LogoutModel
+@inject SignInManager<User> signInManager
+@inject UserManager<User> userManager
+@using Microsoft.AspNetCore.Identity;
+@using ASPdemo.Entities;
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<h1>@ViewData["Title"]</h1>
+@if (signInManager.IsSignedIn(User))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form id="logoutForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2> We hate to see you go</h2>
+                <button id="logoutSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Logout</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <p>Wait . . . You're not signed in! How did you get here?</p>
+}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

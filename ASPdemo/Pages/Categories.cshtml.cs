@@ -89,8 +89,13 @@ public class CategoriesModel : PageModel
             category.AvgPriceChange = avgPriceChange;
             category.Coins = currencyDb;
 
-            Categories.Add(category);
+                Categories.Add(category);
+            }
         }
+        else
+        {
+            Console.WriteLine("NO TOKENS TO DISPLAY");
+        }    
     }
 
     public async Task<IActionResult> OnPost(Search search)

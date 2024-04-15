@@ -48,7 +48,7 @@
                 </th>
             </tr>
         </thead>
-        @if (Model.filteredCategories == null)
+        @if (Model.Categories.Count > 1)
         {
             @foreach (Entities.Category category in Model.Categories)
             {
