@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240415012945_Initial")]
+    [Migration("20240415121240_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,8 +26,13 @@ namespace ASPdemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("AvgPriceChange")
-                        .HasColumnType("REAL");
+                    b.Property<string>("AvgPriceChange")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CMCCategoryId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -47,20 +52,24 @@ namespace ASPdemo.Migrations
                     b.Property<double>("LastUpdated")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("MarketCap")
-                        .HasColumnType("REAL");
+                    b.Property<string>("MarketCap")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<double>("MarketCapChange")
-                        .HasColumnType("REAL");
+                    b.Property<string>("MarketCapChange")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("NumTokens")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Volume")
-                        .HasColumnType("REAL");
+                    b.Property<string>("Volume")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<double>("VolumeChange")
-                        .HasColumnType("REAL");
+                    b.Property<string>("VolumeChange")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("CategoryId");
 
@@ -115,12 +124,30 @@ namespace ASPdemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("CurrencyName")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("MarketCap")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("PercentChange1hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("PercentChange24Hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("PercentChange7d")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("Slug")
                         .HasMaxLength(50)
@@ -129,6 +156,12 @@ namespace ASPdemo.Migrations
                     b.Property<string>("Symbol")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("TotalSupply")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Volume24")
+                        .HasColumnType("REAL");
 
                     b.HasKey("CurrencyId");
 

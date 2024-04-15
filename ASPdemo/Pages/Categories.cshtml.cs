@@ -38,64 +38,71 @@ public class CategoriesModel : PageModel
         ViewData["SkipId"] = SkipId;
 
         var url = new UriBuilder("http://127.0.0.1:5220/categories/"+SkipId);
-        string tokens = await client.GetStringAsync(url.ToString()); 
-        if (tokens != null)
+        try
         {
-            dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-            foreach (dynamic result in results)
+            string tokens = await client.GetStringAsync(url.ToString()); 
+            if (tokens != null)
             {
-                var category = new Category();
-
-                var categoryId = result.categoryId; 
-                var categoryName = result.categoryName;
-                var categoryTitle = result.categoryTitle;
-                var description = result.description;
-                var numTokens = result.numTokens;
-                var volume = result.volume;
-                var avgPriceChange = result.avgPriceChange;
-                var marketCap = result.marketCap; 
-                var marketCapChange = result.marketCapChange;
-                var coins = result.coins;
-
-                var currencyDb = new List<Currency>(); 
-
-                foreach (var coin in coins)
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+                foreach (dynamic result in results)
                 {
-                    var currency = new Currency();
+                    var category = new Category();
 
-                    currency.CurrencyId = coin.currencyId; 
-                    currency.CurrencyName = coin.currencyName;
-                    currency.CategoryId = coin.categoryId;
-                    currency.Symbol = coin.symbol;
-                    currency.Price = coin.price;
-                    currency.PercentChange1hr = coin.percentChange1;
-                    currency.PercentChange7d = coin.percentChange7d;
-                    currency.PercentChange24Hr = coin.percentChange24Hr;
-                    currency.MarketCap = coin.marketCap; 
-                    currency.TotalSupply = coin.totalSupply;
-                    currency.Slug = coin.slug;
+                    var categoryId = result.categoryId; 
+                    var categoryName = result.categoryName;
+                    var categoryTitle = result.categoryTitle;
+                    var description = result.description;
+                    var numTokens = result.numTokens;
+                    var volume = result.volume;
+                    var avgPriceChange = result.avgPriceChange;
+                    var marketCap = result.marketCap; 
+                    var marketCapChange = result.marketCapChange;
+                    var coins = result.coins;
 
-                    currencyDb.Add(currency);
-                } 
+                    var currencyDb = new List<Currency>(); 
 
-                category.CategoryId = categoryId;
-                category.MarketCap = marketCap; 
-                category.MarketCapChange = marketCapChange;
-                category.CategoryName = categoryName;
-                category.CategoryTitle = categoryTitle;
-                category.Description = description;
-                category.NumTokens = numTokens;
-                category.Volume = volume;
-                category.AvgPriceChange = avgPriceChange;
-                category.Coins = currencyDb;
+                    foreach (var coin in coins)
+                    {
+                        var currency = new Currency();
 
-                Categories.Add(category);
+                        currency.CurrencyId = coin.currencyId; 
+                        currency.CurrencyName = coin.currencyName;
+                        currency.CategoryId = coin.categoryId;
+                        currency.Symbol = coin.symbol;
+                        currency.Price = coin.price;
+                        currency.PercentChange1hr = coin.percentChange1;
+                        currency.PercentChange7d = coin.percentChange7d;
+                        currency.PercentChange24Hr = coin.percentChange24Hr;
+                        currency.MarketCap = coin.marketCap; 
+                        currency.TotalSupply = coin.totalSupply;
+                        currency.Slug = coin.slug;
+
+                        currencyDb.Add(currency);
+                    } 
+
+                    category.CategoryId = categoryId;
+                    category.MarketCap = marketCap; 
+                    category.MarketCapChange = marketCapChange;
+                    category.CategoryName = categoryName;
+                    category.CategoryTitle = categoryTitle;
+                    category.Description = description;
+                    category.NumTokens = numTokens;
+                    category.Volume = volume;
+                    category.AvgPriceChange = avgPriceChange;
+                    category.Coins = currencyDb;
+
+                    Categories.Add(category);
+                }
+            }
+            else
+            {
+                Console.WriteLine("NO TOKENS TO DISPLAY");
             }
         }
-        else
+        catch (HttpRequestException)
         {
-            Console.WriteLine("NO TOKENS TO DISPLAY");
-        }    
+            Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES GET");
+        }
     }
 
     public async Task<IActionResult> OnPost(Search search)
@@ -110,63 +117,69 @@ public class CategoriesModel : PageModel
 			HttpClient client = new HttpClient();
 
 			var url = new UriBuilder("http://127.0.0.1:5220/categories/listall");
-			string tokens = await client.GetStringAsync(url.ToString());
+            try
+            {
+                string tokens = await client.GetStringAsync(url.ToString());
 
-			dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
 
-			foreach (dynamic result in results)
-			{
-				var category = new Category();
-                string categoryName = result.categoryName;
-
-                if (categoryName.ToLower().Contains(search.SearchTerm.ToLower()))
+                foreach (dynamic result in results)
                 {
-					var categoryId = result.categoryId;
-					var categoryTitle = result.categoryTitle;
-					var description = result.description;
-					var numTokens = result.numTokens;
-					var volume = result.volume;
-					var avgPriceChange = result.avgPriceChange;
-					var marketCap = result.marketCap;
-					var marketCapChange = result.marketCapChange;
-					var coins = result.coins;
+                    var category = new Category();
+                    string categoryName = result.categoryName;
 
-					var currencyDb = new List<Currency>();
+                    if (categoryName.ToLower().Contains(search.SearchTerm.ToLower()))
+                    {
+                        var categoryId = result.categoryId;
+                        var categoryTitle = result.categoryTitle;
+                        var description = result.description;
+                        var numTokens = result.numTokens;
+                        var volume = result.volume;
+                        var avgPriceChange = result.avgPriceChange;
+                        var marketCap = result.marketCap;
+                        var marketCapChange = result.marketCapChange;
+                        var coins = result.coins;
 
-					foreach (var coin in coins)
-					{
-						var currency = new Currency();
+                        var currencyDb = new List<Currency>();
 
-						currency.CurrencyId = coin.currencyId;
-						currency.CurrencyName = coin.currencyName;
-						currency.CategoryId = coin.categoryId;
-						currency.Symbol = coin.symbol;
-						currency.Price = coin.price;
-						currency.PercentChange1hr = coin.percentChange1;
-						currency.PercentChange7d = coin.percentChange7d;
-						currency.PercentChange24Hr = coin.percentChange24Hr;
-						currency.MarketCap = coin.marketCap;
-						currency.TotalSupply = coin.totalSupply;
-						currency.Slug = coin.slug;
+                        foreach (var coin in coins)
+                        {
+                            var currency = new Currency();
 
-						currencyDb.Add(currency);
-					}
+                            currency.CurrencyId = coin.currencyId;
+                            currency.CurrencyName = coin.currencyName;
+                            currency.CategoryId = coin.categoryId;
+                            currency.Symbol = coin.symbol;
+                            currency.Price = coin.price;
+                            currency.PercentChange1hr = coin.percentChange1;
+                            currency.PercentChange7d = coin.percentChange7d;
+                            currency.PercentChange24Hr = coin.percentChange24Hr;
+                            currency.MarketCap = coin.marketCap;
+                            currency.TotalSupply = coin.totalSupply;
+                            currency.Slug = coin.slug;
 
-					category.CategoryId = categoryId;
-					category.MarketCap = marketCap;
-					category.MarketCapChange = marketCapChange;
-					category.CategoryName = categoryName;
-					category.CategoryTitle = categoryTitle;
-					category.Description = description;
-					category.NumTokens = numTokens;
-					category.Volume = volume;
-					category.AvgPriceChange = avgPriceChange;
-					category.Coins = currencyDb;
+                            currencyDb.Add(currency);
+                        }
 
-					filteredCategories.Add(category);
-				}
-			}
+                        category.CategoryId = categoryId;
+                        category.MarketCap = marketCap;
+                        category.MarketCapChange = marketCapChange;
+                        category.CategoryName = categoryName;
+                        category.CategoryTitle = categoryTitle;
+                        category.Description = description;
+                        category.NumTokens = numTokens;
+                        category.Volume = volume;
+                        category.AvgPriceChange = avgPriceChange;
+                        category.Coins = currencyDb;
 
+                        filteredCategories.Add(category);
+                    }
+                }
+            }
+            catch (HttpRequestException)
+            {
+                Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES POST");
+            }
 			return Page(); 
         }
 
