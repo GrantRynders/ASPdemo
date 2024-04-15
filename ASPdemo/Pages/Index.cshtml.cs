@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 using ASPdemo.Entities;
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
+using ASPdemo.Database;
 
 namespace ASPdemo.Pages;
 
@@ -69,12 +70,14 @@ public class IndexModel : PageModel
             var currencyName = result.currencyName; 
             var currencyId = result.currencyId;
             var slug = result.slug;
+            var symbol = result.symbol;
 
             Currency currency = new Currency();
 
             currency.CurrencyId = currencyId;
             currency.Slug = slug;
             currency.CurrencyName = currencyName;
+            currency.Symbol = symbol;
 
             Currency.Add(currency);
         }

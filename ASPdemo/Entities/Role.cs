@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Identity;
 namespace ASPdemo.Entities;
 
 [Table("Roles")]
-public class Admin : IdentityRole
+public class Role : IdentityRole
 {
-
     public override string Id { get; set; }
-    public override string Name { get; set; }
+    [MaxLength(50)]
+    public override string Name { get; set; }  
+    [MaxLength(50)]
     public override string NormalizedName { get; set; }
     public List<User> Users { get; set; }
-    public Admin()
+    public Role()
     {
-        this.Name = "Admin";
-        this.NormalizedName = "ADMIN";
+        
     }
 }

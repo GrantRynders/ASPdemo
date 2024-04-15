@@ -1,10 +1,127 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Conversions";
-}
 
+
+@model ConversionsModel
+@{
+    ViewData["Title"] = "Categories";
+
+    var maxId = ViewData["MaxId"];
+    var pageId = ViewData["PageId"]; 
+    var searchTerm1 = ViewData["SearchTerm1"]; 
+    var searchTerm2 = ViewData["SearchTerm2"]; 
+
+    var url1 = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
+
+    if (searchTerm1 != null && searchTerm1 != "")
+    {
+        url1 = url1 + "&SearchTerm="+searchTerm1; 
+    }
+
+    var url2 = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
+
+    if (searchTerm2 != null && searchTerm2 != "")
+    {
+        url2 = url2 + "&SearchTerm="+searchTerm2; 
+    }
+}
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Here you can browse conversions between data.</p>
+    @* <h1 class="display-4">Convert Between Currencies</h1>
+    <text>@ViewData["Test"]</text>
+    <div class="ConversionDiv">
+    <form method="post">
+        <input asp-for="Search!.SearchTerm"/>
+       <input type="submit" />
+    </form>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <h1>Name</h1>
+                </th>
+                <th>
+                    <h1>CurrencyId</h1>
+                </th>
+                <th>
+                    <h1>Slug</h1>
+                </th>
+                <th>
+                    <h1>Symbol</h1>
+                </th>
+            </tr>
+        </thead>
+        @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
+        {
+            @foreach (Entities.Category category in Model.Categories)
+            {
+                <tbody>
+                    <tr>
+                        <td>@category.CategoryName</td>
+                    </tr>
+                </tbody>
+            }
+        }
+        else //displays filtered categories
+        {
+            @foreach (Entities.Category category in Model.filteredCategories)
+            {
+                <tbody>
+                        <tr>
+                            <td>@category.CategoryName</td>
+                        </tr>
+                </tbody>
+            }
+        }
+        <a href="@url1" class="btn btn-primary">Next</a>
+    </table>
+    </div>
+    <div class="ConversionDiv">
+        <form method="post">
+            <input asp-for="Search!.SearchTerm"/>
+        <input type="submit" />
+        </form>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <h1>Name</h1>
+                    </th>
+                    <th>
+                        <h1>CurrencyId</h1>
+                    </th>
+                    <th>
+                        <h1>Slug</h1>
+                    </th>
+                    <th>
+                        <h1>Symbol</h1>
+                    </th>
+                </tr>
+            </thead>
+            @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
+            {
+                @foreach (Entities.Category category in Model.Categories)
+                {
+                    <tbody>
+                        <tr>
+                            <td>@category.CategoryName</td>
+                        </tr>
+                    </tbody>
+                }
+            }
+            else //displays filtered categories
+            {
+                @foreach (Entities.Category category in Model.filteredCategories)
+                {
+                    <tbody>
+                            <tr>
+                                <td>@category.CategoryName</td>
+                            </tr>
+                    </tbody>
+                }
+            }
+        </table>
+        <a href="@url2" class="btn btn-primary">Next</a>
+    </div> *@
 </div>

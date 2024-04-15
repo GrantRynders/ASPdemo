@@ -42,27 +42,34 @@
                 </th>
             </tr>
         </thead>
-        @if (Model.filteredCategories == null)
+        @if (Model.Categories.Count > 1)
         {
-            @foreach (Entities.Category category in Model.Categories)
+            @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
             {
-                <tbody>
-                    <tr>
-                        <td>@category.CategoryName</td>
-                    </tr>
-                </tbody>
+                @foreach (Entities.Category category in Model.Categories)
+                {
+                    <tbody>
+                        <tr>
+                            <td>@category.CategoryName</td>
+                        </tr>
+                    </tbody>
+                }
+            }
+            else //displays filtered categories
+            {
+                @foreach (Entities.Category category in Model.filteredCategories)
+                {
+                    <tbody>
+                            <tr>
+                                <td>@category.CategoryName</td>
+                            </tr>
+                    </tbody>
+                }
             }
         }
         else
         {
-            @foreach (Entities.Category category in Model.filteredCategories) 
-            {
-                <tbody>
-                        <tr>
-                            <td>@category.CategoryName</td>
-                        </tr>
-                </tbody>
-            }
+            <h1>UH OH! WHERE DID THE CATEGORIES GO!</h1>
         }
     </table>
     <a href="@url" class="btn btn-primary">Next</a>

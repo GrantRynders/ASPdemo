@@ -64,35 +64,49 @@ public class CategoriesModel : PageModel
 
         var url = new UriBuilder("http://127.0.0.1:5220/categories/" + MaxId + "/" + PageId);
         ViewData["Test"] = url; 
-        string tokens = await client.GetStringAsync(url.ToString()); 
-
-        dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-
-        foreach (dynamic result in results)
+        string tokens = null;
+        try
         {
-            var category = new Category();
-
-            var categoryId = result.categoryId; 
-            var categoryName = result.categoryName;
-            var categoryTitle = result.categoryTitle;
-            var description = result.description;
-            var numTokens = result.numTokens;
-            var volume = result.volume;
-            var avgPriceChange = result.avgPriceChange;
-            // temp: we need to get the list of coins from the JSON
-            //var coins = result.coins
-
-            category.CategoryId = categoryId; 
-            category.CategoryName = categoryName;
-            category.CategoryTitle = categoryTitle;
-            category.Description = description;
-            category.NumTokens = numTokens;
-            category.Volume = volume;
-            category.AvgPriceChange = avgPriceChange;
-            //category.Coins = coins
-
-            Categories.Add(category);
+            tokens = await client.GetStringAsync(url.ToString()); 
         }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine("404 ERROR");
+        }
+        
+        if (tokens != null)
+        {
+            dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+            foreach (dynamic result in results)
+            {
+                var category = new Category();
+
+                var categoryId = result.categoryId; 
+                var categoryName = result.categoryName;
+                var categoryTitle = result.categoryTitle;
+                var description = result.description;
+                var numTokens = result.numTokens;
+                var volume = result.volume;
+                var avgPriceChange = result.avgPriceChange;
+                // temp: we (probably) need to get the list of coins from the JSON
+                //var coins = result.coins
+
+                category.CategoryId = categoryId; 
+                category.CategoryName = categoryName;
+                category.CategoryTitle = categoryTitle;
+                category.Description = description;
+                category.NumTokens = numTokens;
+                category.Volume = volume;
+                category.AvgPriceChange = avgPriceChange;
+                //category.Coins = coins
+
+                Categories.Add(category);
+            }
+        }
+        else
+        {
+            Console.WriteLine("NO TOKENS TO DISPLAY");
+        }    
     }
 
     public async Task<IActionResult> OnPost()
