@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASPdemo.Pages;
 
-public class AdministrationModel : PageModel
+public class PortfolioModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
@@ -23,17 +23,13 @@ public class AdministrationModel : PageModel
     public int MaxId { get; set; }
 
     [BindProperty]
-    public List<Role> roles { get; set; }
-
-    public List<User> users { get; set; }
+    public Portfolio userPortfolio { get; set; }
 
     [BindProperty]
     public Search? Search {  get; set; }
-
-    public List<Role>? filteredRoles { get; set; }
     public class InputModel
     {
-        public string? newUserName { get; set; }
+        
     }
     public string? userName { get; set; }
     public string? userEmail { get; set; }
@@ -42,7 +38,7 @@ public class AdministrationModel : PageModel
     private readonly UserManager<User> _userManager;
     private ApplicationDbContext dbContext;
 
-    public AdministrationModel(UserManager<User> userManager, ILogger<IndexModel> logger)
+    public PortfolioModel(UserManager<User> userManager, ILogger<IndexModel> logger)
     {
        _userManager = userManager;
        dbContext = new ApplicationDbContext();
@@ -51,43 +47,10 @@ public class AdministrationModel : PageModel
 
     public async Task OnGet()
     {
-        roles = new List<Role>(); 
-
+        userPortfolio = new Portfolio();
         HttpClient client = new HttpClient();
-        //await dbContext.Database.MigrateAsync();
-        users = await dbContext.Users.ToListAsync();
-        Console.WriteLine(users.Count);
-        foreach (User user in users)
-        {
-             Console.WriteLine("User in users: ");
-        }
-        //users = (List<User>)await _userManager.GetUsersInRoleAsync("Admin");
-        if (MaxId == 0)
-        {
-            MaxId = 10;
-        }
-        else
-        {
-            MaxId = MaxId + 10;
-        }
 
-        if (PageId == 0)
-        {
-            PageId = 1;
-        }
-        else
-        {
-            if (PageId == 1)
-            {
-                PageId = 0;
-            }
-            PageId = PageId + 10;
-        }
-
-        ViewData["MaxId"] = MaxId;
-        ViewData["PageId"] = PageId;
-
-        var url = new UriBuilder("http://127.0.0.1:5220/roles/" + MaxId + "/" + PageId);
+        var url = new UriBuilder("http://127.0.0.1:5220/Portfolios");
         ViewData["Test"] = url;
         string tokens = null;
         try
@@ -106,17 +69,22 @@ public class AdministrationModel : PageModel
                 dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
                 foreach (dynamic result in results)
                 {
-                    var role = new Role();
+                    var portfolio = new Portfolio();
 
-                    var id = result.id;
-                    var name = result.name;
-                    var users = result.users;
+                    var portfolioId = result.PortfolioId;
+                    var walletAddress = result.Address;
+                    var portfolioValue = result.PortfolioValue;
+                    var user = result.user;
+                    var userId = result.UserId;
 
-                    role.Id = id;
-                    role.Name = name;
-                    role.Users = users;
+                    portfolio.PortfolioId = portfolioId;
+                    portfolio.WalletAddress = walletAddress;
+                    portfolio.PortfolioValue = portfolioValue;
+                    portfolio.user = user;
+                    portfolio.UserId = userId;
+                    
 
-                    roles.Add(role);
+                    userPortfolio = portfolio;
                 }
             }
             else
