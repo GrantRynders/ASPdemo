@@ -3,7 +3,7 @@
 title: Final Project Class Diagram
 ---
 classDiagram
-    Currency <|--|> Category : Many-to-Many (Using Join Table)
+    Currency <|-- Category : One to Many
     Currency <|-- User : Accesses
     
     

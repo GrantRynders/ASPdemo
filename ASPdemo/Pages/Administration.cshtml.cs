@@ -4,6 +4,9 @@ using ASPdemo.Entities;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.Configuration;
+using ASPdemo.Database;
+using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASPdemo.Pages;
 
@@ -22,14 +25,28 @@ public class AdministrationModel : PageModel
     [BindProperty]
     public List<Role> roles { get; set; }
 
+    public List<User> users { get; set; }
+
     [BindProperty]
     public Search? Search {  get; set; }
 
     public List<Role>? filteredRoles { get; set; }
-
-    public AdministrationModel(ILogger<IndexModel> logger)
+    public class InputModel
     {
-        _logger = logger;
+        public string? newUserName { get; set; }
+    }
+    public string? userName { get; set; }
+    public string? userEmail { get; set; }
+    
+
+    private readonly UserManager<User> _userManager;
+    private ApplicationDbContext dbContext;
+
+    public AdministrationModel(UserManager<User> userManager, ILogger<IndexModel> logger)
+    {
+       _userManager = userManager;
+       dbContext = new ApplicationDbContext();
+       _logger = logger;
     }
 
     public async Task OnGet()
@@ -37,7 +54,13 @@ public class AdministrationModel : PageModel
         roles = new List<Role>(); 
 
         HttpClient client = new HttpClient();
-
+        //await dbContext.Database.MigrateAsync();
+        users = await dbContext.Users.ToListAsync();
+        foreach (User user in users)
+        {
+             Console.WriteLine("User in users: ");
+        }
+                //users = (List<User>)await _userManager.GetUsersInRoleAsync("Admin");
         if (MaxId == 0)
         {
             MaxId = 10;
@@ -104,50 +127,63 @@ public class AdministrationModel : PageModel
         {
             Console.WriteLine("TABLE DOES NOT EXIST");
         }
+        catch (HttpRequestException)
+        {
+            Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES POST");
+        }
+        catch (WebException)
+        {
+            Console.WriteLine("WEB EXCEPTION ON CATEGORIES POST");
+        }
 
         
     }
     public async Task<IActionResult> OnPost()
     {
-        //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
-        
-        if (!ModelState.IsValid)
-        {
-            return Page(); 
-        }
-
-        if (Search != null)
-        {
-            ViewData["SearchTerm"] = Search.SearchTerm; 
-
-            await OnGet(); 
-
-            filteredRoles = new List<Role>();
-
-            foreach (Role role in roles)
+        try
+        {  
+            //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
+            
+            if (!ModelState.IsValid)
             {
-                if (role.Name.ToLower().Contains(Search.SearchTerm.ToLower())) //This should probably be done a lot better but this works for now
-                {
-                    filteredRoles.Add(role); //Add to the filtered list
-                }
+                return Page(); 
             }
 
-            return Page(); 
-        }
+            if (Search != null)
+            {
+                ViewData["SearchTerm"] = Search.SearchTerm; 
 
+                await OnGet(); 
+
+                filteredRoles = new List<Role>();
+                
+                foreach (Role role in roles)
+                {
+                    if (role.Name.ToLower().Contains(Search.SearchTerm.ToLower())) //This should probably be done a lot better but this works for now
+                    {
+                        filteredRoles.Add(role); //Add to the filtered list
+                    }
+                }
+                return Page(); 
+            }
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
+        {
+            Console.WriteLine("SQLITE EXCEPTION");
+        }
         return RedirectToPage("./Administration"); 
     }
-    public User CreateUser()
+    public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext dbContext)
     {
         try
-        {
-            return Activator.CreateInstance<User>();
+        {  
+            User? currentUser = await _userManager.GetUserAsync(User);
+            return currentUser;
         }
-        catch
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            Console.WriteLine("NO USERS TABLE YET! CRAAAAAAAAAAAAAP!");
+            return null;
         }
     }
 }
