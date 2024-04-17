@@ -20,6 +20,14 @@ classDiagram
         +String CurrencyName
         +String Slug
         +String Symbol
+        +Double PercentChange24Hr
+        +String Description
+        +Double Price 
+        +Double Volume24 
+        +Double PercentChange1hr
+        +Double PercentChange7d
+        +Double MarketCap
+        +Double TotalSupply
     }
     class Category{
         +int CategoryId PK
@@ -36,7 +44,7 @@ classDiagram
     }
     class Portfolio{
         +String walletAddress;
-        +List<Currency> portfolioCurrencies;
+        +List<Currency> currencies;
         +Double portfolioValue;
         +int PortfolioId PK
     }
