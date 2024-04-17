@@ -7,8 +7,9 @@ namespace ASPdemo.Entities
     {
         public int PortfolioId { get; set; }
         public string WalletAddress { get; set; }
-        public double PortfolioValue { get; set; }
+        public double? PortfolioValue { get; set; }
         public string UserId {  get; set; } //FK for User
         public User user { get; set; }
+        public List<Currency> currencies { get; set; }
     }
 }

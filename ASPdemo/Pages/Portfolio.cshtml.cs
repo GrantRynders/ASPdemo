@@ -23,18 +23,11 @@ public class PortfolioModel : PageModel
     public int MaxId { get; set; }
 
     [BindProperty]
-    public Portfolio userPortfolio { get; set; }
-
-    [BindProperty]
-    public Search? Search {  get; set; }
-    public class InputModel
-    {
-        
-    }
+    public Search? Search { get; set; }
+    public User? currentUser { set; get; }
+    public Portfolio? userPortfolio { get; set; }
     public string? userName { get; set; }
     public string? userEmail { get; set; }
-    
-
     private readonly UserManager<User> _userManager;
     private ApplicationDbContext dbContext;
 
@@ -49,48 +42,37 @@ public class PortfolioModel : PageModel
     {
         userPortfolio = new Portfolio();
         HttpClient client = new HttpClient();
-
-        var url = new UriBuilder("http://127.0.0.1:5220/Portfolios");
-        ViewData["Test"] = url;
-        string tokens = null;
         try
         {
-            try
+            currentUser = await GetCurrentUser(dbContext);
+           
+            if (currentUser != null)
             {
-                tokens = await client.GetStringAsync(url.ToString()); 
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine("404 ERROR");
-            }
-            
-            if (tokens != null)
-            {
-                dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-                foreach (dynamic result in results)
+                userPortfolio = currentUser.portfolio; 
+                userName = currentUser.UserName;
+                if (userPortfolio != null)
                 {
-                    var portfolio = new Portfolio();
-
-                    var portfolioId = result.PortfolioId;
-                    var walletAddress = result.Address;
-                    var portfolioValue = result.PortfolioValue;
-                    var user = result.user;
-                    var userId = result.UserId;
-
-                    portfolio.PortfolioId = portfolioId;
-                    portfolio.WalletAddress = walletAddress;
-                    portfolio.PortfolioValue = portfolioValue;
-                    portfolio.user = user;
-                    portfolio.UserId = userId;
-                    
-
-                    userPortfolio = portfolio;
+                    if (userPortfolio.currencies != null)
+                    {
+                        foreach (Currency? currency in userPortfolio.currencies)
+                        {
+                            if (currency.Price != null)
+                            {
+                                userPortfolio.PortfolioValue += currency.Price;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("UserPortfolio is null");
+                    }
                 }
             }
             else
             {
-                Console.WriteLine("NO TOKENS TO DISPLAY");
+                Console.WriteLine("Current User is null");
             }
+            
         }
         catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
         {
@@ -98,11 +80,11 @@ public class PortfolioModel : PageModel
         }
         catch (HttpRequestException)
         {
-            Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES POST");
+            Console.WriteLine("HTTP REQUEST EXCEPTION ON PORTFOLIO GET");
         }
         catch (WebException)
         {
-            Console.WriteLine("WEB EXCEPTION ON CATEGORIES POST");
+            Console.WriteLine("WEB EXCEPTION ON PORTFOLIO GET");
         }
 
         
@@ -124,15 +106,6 @@ public class PortfolioModel : PageModel
 
                 await OnGet(); 
 
-                filteredRoles = new List<Role>();
-                
-                foreach (Role role in roles)
-                {
-                    if (role.Name.ToLower().Contains(Search.SearchTerm.ToLower())) //This should probably be done a lot better but this works for now
-                    {
-                        filteredRoles.Add(role); //Add to the filtered list
-                    }
-                }
                 return Page(); 
             }
         }
@@ -140,9 +113,9 @@ public class PortfolioModel : PageModel
         {
             Console.WriteLine("SQLITE EXCEPTION");
         }
-        return RedirectToPage("./Administration"); 
+        return RedirectToPage("./Portfolio"); 
     }
-    public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext dbContext)
+    public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext db)
     {
         try
         {  
