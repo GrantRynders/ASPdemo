@@ -45,7 +45,7 @@
                             <h1>Name</h1>
                         </th>
                         <th>
-                            <h1>RoleId</h1>
+                            <h1>Email</h1>
                         </th>
                     </tr>
                 </thead>
@@ -53,13 +53,17 @@
                 {
                     @foreach (Entities.Role role in Model.roles)
                     {
+                        <h1>Role: @role.Name</h1>
                         <tbody>
-                            <tr>
-                                <td>@role.Name</td>
-                            </tr>
-                            <tr>
-                                    <td>@role.Id</td>
-                            </tr>
+                            @foreach (Entities.User user in role.Users)
+                            {
+                                <td>
+                                    @user.UserName
+                                </td>
+                                <td>
+                                    @user.Email
+                                </td>
+                            }
                         </tbody>
                     }
                 }
@@ -67,21 +71,19 @@
                 {
                     @foreach (Entities.Role role in Model.filteredRoles)
                     {
+                        <h1>Role: @role.Name</h1>
                         <tbody>
-                                <tr>
-                                    <td>@role.Name</td>
-                                </tr>
-                                <tr>
-                                    <td>@role.Id</td>
-                                </tr>
-                                <tr>
-                                    @foreach (Entities.User user in role.Users)
-                                    {
-                                        <td>
-                                            @(user.UserName + ", ")
-                                        </td>
-                                    }
-                                </tr>
+                            <tr>
+                                @foreach (Entities.User user in role.Users)
+                                {
+                                    <td>
+                                        @user.UserName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                }
+                            </tr>
                         </tbody>
                     }
                 }

@@ -8,7 +8,7 @@ using System.Net;
 using System.Web;
 namespace ASPdemo;
 
-public class ApiCaller //I don't know if this is really a necessary class, I just needed a place to put the code
+public class ApiCaller
 {
     private static string API_KEY = "beabbf43-6590-4d45-8e2f-09d1f219d80f"; //NOT THE PRODUCTION KEY, ONLY DEV TESTING ENVIRONMENT
 

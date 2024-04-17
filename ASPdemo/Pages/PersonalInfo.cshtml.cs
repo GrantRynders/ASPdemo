@@ -44,7 +44,7 @@ public class PersonalInfoModel : PageModel
             var currentUserEmail = await _userManager.GetEmailAsync(currentUser);
             //var currentUserEmail =  User.FindFirstValue(ClaimTypes.Email);
             userEmail = currentUserEmail;
-            ViewData["userEmail"] = userEmail;
+            ViewData["email"] = userEmail;
         }
         
 
