@@ -92,57 +92,57 @@ app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
 
     var categories = dbContext.Categories.Where(p => p.Coins.Count == 0).ToList(); 
 
-      var list = new List<string>(); 
+    var list = new List<string>(); 
 
-      foreach (var category in categories)
-      {
-          var cmcId = category.CMCCategoryId;
+    foreach (var category in categories)
+    {
+        var cmcId = category.CMCCategoryId;
 
-          string response = await ApiCaller.getCategoryWithCoins(cmcId);
-          Root root = JsonConvert.DeserializeObject<Root>(response);
+        string response = await ApiCaller.getCategoryWithCoins(cmcId);
+        Root root = new Root();
+        if (response != null)
+        {
+            root = JsonConvert.DeserializeObject<Root>(response);
+            var coins = new List<Currency>();
 
-          var coins = new List<Currency>();
+            foreach (var coin in root.data.coins)
+            {
+                var random = new Random();
+                int id = random.Next();
 
-          foreach (var coin in root.data.coins)
-          {
-              var random = new Random();
-              int id = random.Next();
+                var currency = new Currency();
 
-              var currency = new Currency();
+                currency.CurrencyId = id; 
+                currency.CategoryId = category.CategoryId;
+                currency.CurrencyName = coin.name;
+                currency.TotalSupply = coin.total_supply;
 
-              currency.CurrencyId = id; 
-              currency.CategoryId = category.CategoryId;
-              currency.CurrencyName = coin.name;
-              currency.TotalSupply = coin.total_supply;
+                if (coin.quote.USD != null)
+                {
+                    currency.Price = coin.quote.USD.price;
+                    currency.PercentChange1hr = coin.quote.USD.percent_change_1h;
+                    currency.PercentChange7d = coin.quote.USD.percent_change_7d;
+                    currency.MarketCap = coin.quote.USD.market_cap;
+                    currency.PercentChange24Hr = coin.quote.USD.percent_change_24h; 
+                }
 
-              if (coin.quote.USD != null)
-              {
-                  currency.Price = coin.quote.USD.price;
-                  currency.PercentChange1hr = coin.quote.USD.percent_change_1h;
-                  currency.PercentChange7d = coin.quote.USD.percent_change_7d;
-                  currency.MarketCap = coin.quote.USD.market_cap;
-                  currency.PercentChange24Hr = coin.quote.USD.percent_change_24h; 
-              }
+                currency.Slug = coin.slug;
+                currency.Symbol = coin.symbol;
+                currency.Description = "fawefef";
 
-              currency.Slug = coin.slug;
-              currency.Symbol = coin.symbol;
-              currency.Description = "fawefef";
+                dbContext.Currencies.Add(currency);
+                dbContext.SaveChanges();
 
-              dbContext.Currencies.Add(currency);
-              dbContext.SaveChanges();
+                coins.Add(currency);
 
-              coins.Add(currency);
+                Thread.Sleep(5000);
+            }
 
-			Thread.Sleep(5000);
-		}
-
-		category.Coins = coins; 
-
-         dbContext.Update(category); 
-         dbContext.SaveChanges();
-      }  
-   // var categories = dbContext.Categories.Include(p => p.Coins).ToList();
-   // return categories; 
+            category.Coins = coins; 
+            dbContext.Update(category); 
+            dbContext.SaveChanges();
+        }  
+    }
 }); 
 
 app.MapGet("/listings/{skipId}", async (int skipId, ApplicationDbContext db) =>
