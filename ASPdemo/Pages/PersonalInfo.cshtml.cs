@@ -44,7 +44,7 @@ public class PersonalInfoModel : PageModel
             var currentUserEmail = await _userManager.GetEmailAsync(currentUser);
             //var currentUserEmail =  User.FindFirstValue(ClaimTypes.Email);
             userEmail = currentUserEmail;
-            ViewData["userEmail"] = userEmail;
+            ViewData["email"] = userEmail;
         }
         
 
@@ -76,7 +76,7 @@ public class PersonalInfoModel : PageModel
             {
                 await _userManager.SetUserNameAsync(currentUser, Input.newUserName);
                 //Console.WriteLine("Current UserName: " + currentUser.UserName);
-                await dbContext.Database.MigrateAsync(); //ensures that the table exist PLEASE WORK
+                //await dbContext.Database.MigrateAsync(); //ensures that the table exist PLEASE WORK
                 dbContext.Entry(currentUser).State = EntityState.Modified;
                 //Console.WriteLine("UserManager: new name of currentUser: " + await _userManager.GetUserNameAsync(currentUser));
                 //await dbContext.SaveChangesAsync(); this fricking sucks, why does it never work?

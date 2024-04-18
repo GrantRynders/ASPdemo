@@ -1,0 +1,83 @@
+@page
+@using Microsoft.AspNetCore.Identity
+@using ASPdemo.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model PortfolioModel
+@{
+    ViewData["Title"] = "My Portfolio";
+
+    var maxId = ViewData["MaxId"];
+    var pageId = ViewData["PageId"]; 
+    var searchTerm = ViewData["SearchTerm"]; 
+
+    var url = "/Roles/?MaxId=" + maxId + "&PageId=" + pageId;
+
+    if (searchTerm != null && searchTerm != "")
+    {
+        url = url + "&SearchTerm="+searchTerm; 
+    }
+}
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="text-center">
+    <h1 class="display-4">@Model.userName's Portfolio</h1>
+    <h1 class="display-4">Value: $@if(@Model.userPortfolio != null){@Model.userPortfolio.PortfolioValue}</h1>
+    <text>@ViewData["Test"]</text>
+    @if (SignInManager.IsSignedIn(User))
+    {   
+        <table class="table">
+            <thead>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Price
+                </th> 
+                <th>
+                    24h %
+                </th>
+                <th>
+                    7d %
+                </th>
+                <th>
+                    Market Cap
+                </th>
+            </thead>
+            @if (Model.userPortfolio != null)
+            {
+                @if (Model.userPortfolio.currencies != null)
+                {
+                    @if (Model.userPortfolio.currencies.Count != 0)
+                    {
+                        @foreach (Entities.Currency currency in Model.userPortfolio.currencies)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td>@currency.CurrencyName</td>
+                                    <td>@currency.Price</td>
+                                    <td>@currency.PercentChange24Hr</td>
+                                    <td>@currency.PercentChange7d</td>
+                                    <td>@currency.MarketCap</td>
+                                </tr>
+                            </tbody>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>Uh oh currencies is null</p>
+                }
+            }
+            else
+            {
+                <p> Uh oh the portfolio is null</p>
+            }
+        </table>
+        <a href="@url" class="btn btn-primary">Next</a>
+    }
+    else
+    {
+        <a class="nav-link text-dark" id="login" asp-area="" asp-page="/Account/Login">Login</a>
+    }
+</div>

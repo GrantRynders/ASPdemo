@@ -58,11 +58,10 @@ namespace ASPdemo.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
+            [Display(Name = "UserName")]
+            public string UserName { get; set; }
             [Required]
-            [StringLength(100, ErrorMessage = "Incorrect email or password.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Incorrect username or password.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -83,7 +82,7 @@ namespace ASPdemo.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                    Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, isPersistent: true, lockoutOnFailure : false);
+                    Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, isPersistent: true, lockoutOnFailure : false);
                     if (signInResult.Succeeded == true)
                     {
                         Console.WriteLine("Sign in succeeded");

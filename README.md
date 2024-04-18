@@ -3,7 +3,7 @@
 title: Final Project Class Diagram
 ---
 classDiagram
-    Currency <|--|> Category : Many-to-Many (Using Join Table)
+    Currency <|-- Category : One to Many
     Currency <|-- User : Accesses
     
     
@@ -20,6 +20,14 @@ classDiagram
         +String CurrencyName
         +String Slug
         +String Symbol
+        +Double PercentChange24Hr
+        +String Description
+        +Double Price 
+        +Double Volume24 
+        +Double PercentChange1hr
+        +Double PercentChange7d
+        +Double MarketCap
+        +Double TotalSupply
     }
     class Category{
         +int CategoryId PK
@@ -36,7 +44,7 @@ classDiagram
     }
     class Portfolio{
         +String walletAddress;
-        +List<Currency> portfolioCurrencies;
+        +List<Currency> currencies;
         +Double portfolioValue;
         +int PortfolioId PK
     }
@@ -86,3 +94,11 @@ classDiagram
         +List<User> Users
     }
 ```
+
+
+- Category model is based off the one used in by CoinMarketCap.
+- Currency model is based off the one used in CoinMarketCap and uses Quartz.net to update the data
+- User and Role are children of IdentityUser and IdentityRole which come from Microsoft.AspNetCore.Identity.
+- User is connected with a many-to-many relationship to Role via the UsersRoles table
+- Currency is connected with a many-to-many relationship to Portfolio via the CurrenciesPortfolios table
+

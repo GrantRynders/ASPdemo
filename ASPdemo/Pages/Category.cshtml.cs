@@ -58,9 +58,10 @@ namespace ASPdemo.Pages
 					Currencies.Add(currency);
 				}
 			}
-			catch
-			{
-			} 
+			catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
+        	{
+            	Console.WriteLine("SQLITE EXCEPTION");
+        	}
 
 			return Page(); 
         }
