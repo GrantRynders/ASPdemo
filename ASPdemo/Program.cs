@@ -4,6 +4,7 @@ using System.Web;
 using ASPdemo;
 using ASPdemo.Database;
 using ASPdemo.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite("Data Source=Crypto.db");
 });
 
-
+//builder.Services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>();
 
 
 // Add services to the container.
