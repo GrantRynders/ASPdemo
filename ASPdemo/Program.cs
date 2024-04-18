@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Quartz;
+using Microsoft.Extensions.DependencyInjection; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=Crypto.db");
 });
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("CryptoJob");
+    q.AddJob<CryptoJob>(ops => ops.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts.ForJob(jobKey).WithIdentity("CryptoJob-trigger")
+    .WithCronSchedule("0 0/5 * * * ?"));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 //builder.Services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>();
 
