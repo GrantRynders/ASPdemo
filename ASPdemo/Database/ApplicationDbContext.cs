@@ -46,7 +46,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Portfolio>() //keep: this works
         .HasOne(e => e.user)
-        .WithOne(e => e.portfolio)
+        .WithOne(e => e.Portfolio)
         .HasForeignKey<Portfolio>(e => e.UserId)
         .IsRequired();
     }

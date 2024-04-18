@@ -83,7 +83,7 @@ namespace ASPdemo.Pages
                             currentUser.Portfolio = new Portfolio();
                         }
 
-                        currentUser.Portfolio.Currencies.Add(newCurrency);
+                        currentUser.Portfolio.currencies.Add(newCurrency);
 
                         await _userManager.UpdateAsync(currentUser);
 
@@ -105,11 +105,11 @@ namespace ASPdemo.Pages
                 return NotFound();
             }
 
-            var currencyToRemove = currentUser.Portfolio.Currencies.FirstOrDefault(c => c.CurrencyName == currencyName);
+            var currencyToRemove = currentUser.Portfolio.currencies.FirstOrDefault(c => c.CurrencyName == currencyName);
 
             if (currencyToRemove != null)
             {
-                currentUser.Portfolio.Currencies.Remove(currencyToRemove);
+                currentUser.Portfolio.currencies.Remove(currencyToRemove);
                 await _userManager.UpdateAsync(currentUser);
             }
 

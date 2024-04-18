@@ -19,7 +19,7 @@ namespace ASPdemo.Entities
         public int PortfolioId { get; set; }
         public Portfolio Portfolio { get; set; }
 
-        public List<UserRole> UserRoles { get; set; }
+        public List<Role> Roles { get; set; }
 
         public int PermissionsLevel { get; set; }
 
@@ -29,7 +29,7 @@ namespace ASPdemo.Entities
         {
             PermissionsLevel = 0;
             FollowedCurrencies = new List<Currency>();
-            UserRoles = new List<UserRole>(); // Initialize UserRoles collection
+            Roles = new List<Role>(); // Initialize UserRoles collection
         }
     }
 }
