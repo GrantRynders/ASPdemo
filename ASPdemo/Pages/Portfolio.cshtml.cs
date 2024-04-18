@@ -3,129 +3,118 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ASPdemo.Entities;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using System.Configuration;
-using ASPdemo.Database;
-using System.Net;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ASPdemo.Pages;
-
-public class PortfolioModel : PageModel
+namespace ASPdemo.Pages
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public string SearchTerm {  get; set; }
-
-    [FromQuery]
-    public int PageId { get; set; }
-
-    [FromQuery]
-    public int MaxId { get; set; }
-
-    [BindProperty]
-    public Search? Search { get; set; }
-    public User? currentUser { set; get; }
-    public Portfolio? userPortfolio { get; set; }
-    public string? userName { get; set; }
-    public string? userEmail { get; set; }
-    private readonly UserManager<User> _userManager;
-    private ApplicationDbContext dbContext;
-
-    public PortfolioModel(UserManager<User> userManager, ILogger<IndexModel> logger)
+    public class PortfolioModel : PageModel
     {
-       _userManager = userManager;
-       dbContext = new ApplicationDbContext();
-       _logger = logger;
-    }
+        private readonly UserManager<User> _userManager;
 
-    public async Task OnGet()
-    {
-        userPortfolio = new Portfolio();
-        HttpClient client = new HttpClient();
-        try
+        [BindProperty]
+        public string CurrencyName { get; set; }
+
+        public PortfolioModel(UserManager<User> userManager)
         {
-            currentUser = await GetCurrentUser(dbContext);
-           
-            if (currentUser != null)
+            _userManager = userManager;
+        }
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
             {
-                userPortfolio = currentUser.portfolio; 
-                userName = currentUser.UserName;
-                if (userPortfolio != null)
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAddCurrencyAsync()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            if (string.IsNullOrEmpty(CurrencyName))
+            {
+                ModelState.AddModelError(string.Empty, "Currency name is required.");
+                return Page();
+            }
+
+            // Call CoinMarketCap API to get currency details
+            var apiKey = "YOUR_COINMARKETCAP_API_KEY";
+            var apiUrl = $"https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol={CurrencyName}";
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", apiKey);
+
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    if (userPortfolio.currencies != null)
+                    var json = await response.Content.ReadAsStringAsync();
+                    var apiResponse = JsonConvert.DeserializeObject<CoinMarketCapApiResponse>(json);
+
+                    // Assuming 'CurrencyDetails' is a model representing currency details
+                    var currencyDetails = apiResponse.Data.Values.FirstOrDefault();
+
+                    if (currencyDetails != null)
                     {
-                        foreach (Currency? currency in userPortfolio.currencies)
+                        // Create a new Currency object and add it to the user's portfolio
+                        var newCurrency = new Currency
                         {
-                            if (currency.Price != null)
-                            {
-                                userPortfolio.PortfolioValue += currency.Price;
-                            }
+                            CurrencyName = currencyDetails.Name,
+                            Symbol = currencyDetails.Symbol,
+                            Price = currencyDetails.Quote.USD.Price,
+                            PercentChange24Hr = currencyDetails.Quote.USD.PercentChange24H
+                            // Add other properties here if needed
+                        };
+
+                        if (currentUser.Portfolio == null)
+                        {
+                            currentUser.Portfolio = new Portfolio();
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("UserPortfolio is null");
+
+                        currentUser.Portfolio.Currencies.Add(newCurrency);
+
+                        await _userManager.UpdateAsync(currentUser);
+
+                        return RedirectToPage("./Portfolio");
                     }
                 }
             }
-            else
-            {
-                Console.WriteLine("Current User is null");
-            }
-            
-        }
-        catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
-        {
-            Console.WriteLine("TABLE DOES NOT EXIST");
-        }
-        catch (HttpRequestException)
-        {
-            Console.WriteLine("HTTP REQUEST EXCEPTION ON PORTFOLIO GET");
-        }
-        catch (WebException)
-        {
-            Console.WriteLine("WEB EXCEPTION ON PORTFOLIO GET");
+
+            ModelState.AddModelError(string.Empty, "Failed to add currency. Please try again.");
+            return Page();
         }
 
-        
-    }
-    public async Task<IActionResult> OnPost()
-    {
-        try
-        {  
-            //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
-            
-            if (!ModelState.IsValid)
+        public async Task<IActionResult> OnPostRemoveCurrencyAsync(string currencyName)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null || currentUser.Portfolio == null)
             {
-                return Page(); 
+                return NotFound();
             }
 
-            if (Search != null)
+            var currencyToRemove = currentUser.Portfolio.Currencies.FirstOrDefault(c => c.CurrencyName == currencyName);
+
+            if (currencyToRemove != null)
             {
-                ViewData["SearchTerm"] = Search.SearchTerm; 
-
-                await OnGet(); 
-
-                return Page(); 
+                currentUser.Portfolio.Currencies.Remove(currencyToRemove);
+                await _userManager.UpdateAsync(currentUser);
             }
-        }
-        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
-        {
-            Console.WriteLine("SQLITE EXCEPTION");
-        }
-        return RedirectToPage("./Portfolio"); 
-    }
-    public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext db)
-    {
-        try
-        {  
-            User? currentUser = await _userManager.GetUserAsync(User);
-            return currentUser;
-        }
-        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
-        {
-            Console.WriteLine("NO USERS TABLE YET! CRAAAAAAAAAAAAAP!");
-            return null;
+
+            return RedirectToPage("./Portfolio");
         }
     }
 }
+
