@@ -30,21 +30,18 @@ namespace ASPdemo.Pages.Account
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterModel> logger)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = (IUserEmailStore<User>)GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -99,27 +96,8 @@ namespace ASPdemo.Pages.Account
                     dbContext.Users.Add(user);
                     Console.WriteLine("New addition to Db: " + user.ToString());
                     var userId = await _userManager.GetUserIdAsync(user);
-                    // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    // var callbackUrl = Url.Page(
-                    //     "/Account/ConfirmEmail",
-                    //     pageHandler: null,
-                    //     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                    //     protocol: Request.Scheme);
-
-                    // await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    // if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    // {
-                    //     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    // }
-                    //else
-                    //{
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     LocalRedirect("/Index");
-                    //return LocalRedirect(returnUrl);
-                    //}
                 }
                 foreach (var error in result.Errors)
                 {

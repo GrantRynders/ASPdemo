@@ -10,17 +10,40 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using Quartz;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+// builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
+// .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+// builder.Services.AddHttpContextAccessor();
+// builder.Services.TryAddScoped<IUserValidator<User>, UserValidator<User>>();
+// builder.Services.TryAddScoped<IPasswordValidator<User>, PasswordValidator<User>>();
+// builder.Services.TryAddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+// builder.Services.TryAddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+// builder.Services.TryAddScoped<IRoleValidator<Role>, RoleValidator<Role>>();
+// // No interface for the error describer so we can add errors without rev'ing the interface
+// builder.Services.TryAddScoped<IdentityErrorDescriber>();
+// builder.Services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<User>>();
+// builder.Services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<User>>();
+// builder.Services.TryAddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory<User, Role>>();
+//builder.Services.TryAddScoped<UserManager<User>>();
+// builder.Services.TryAddScoped<SignInManager<User>>();
+// builder.Services.TryAddScoped<RoleManager<Role>>();
+//builder.Services.TryAddScoped<IUserEmailStore<User>>();
+
 
 //CREATE SQLITE DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=Crypto.db");
 });
+
+builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
 
 builder.Services.AddQuartz(q =>
 {
@@ -32,9 +55,6 @@ builder.Services.AddQuartz(q =>
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
-//builder.Services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>();
-
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -243,10 +263,3 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
-
-// ApplicationDbContext dbContext = new ApplicationDbContext();
-// List<User> adminPromotees = new List<User>();
-//                     User? user = dbContext.Users.Find("ccda0ef3-b1ca-4084-9294-bb4a35ea1c75");
-//                     Console.WriteLine(user.UserName);
-//                     adminPromotees.Add(user);
-//                     dbContext.Roles.Add(new Admin { Users = new List<User>(adminPromotees)});

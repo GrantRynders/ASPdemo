@@ -7,6 +7,7 @@ using System.Configuration;
 using ASPdemo.Database;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ASPdemo.Pages;
 
@@ -40,11 +41,15 @@ public class AdministrationModel : PageModel
     
 
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly SignInManager<User> _signInManager;
     private ApplicationDbContext dbContext;
 
-    public AdministrationModel(UserManager<User> userManager, ILogger<IndexModel> logger)
+    public AdministrationModel(UserManager<User> userManager, ILogger<IndexModel> logger, SignInManager<User> signInManager, RoleManager<Role> roleManager)
     {
        _userManager = userManager;
+       _roleManager = roleManager;
+       _signInManager = signInManager;
        dbContext = new ApplicationDbContext();
        _logger = logger;
     }
@@ -177,7 +182,7 @@ public class AdministrationModel : PageModel
     public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext dbContext)
     {
         try
-        {  
+        { 
             User? currentUser = await _userManager.GetUserAsync(User);
             return currentUser;
         }
