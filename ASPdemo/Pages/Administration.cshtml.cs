@@ -17,12 +17,6 @@ public class AdministrationModel : PageModel
 
     public string SearchTerm {  get; set; }
 
-    [FromQuery]
-    public int PageId { get; set; }
-
-    [FromQuery]
-    public int MaxId { get; set; }
-
     [BindProperty]
     public List<Role> roles { get; set; }
 
@@ -181,7 +175,7 @@ public class AdministrationModel : PageModel
     }
     public async Task CreateRoleWithName(string roleName)
     {
-        if (_roleManager.FindByNameAsync(roleName) == null)
+        if (await _roleManager.RoleExistsAsync(roleName) == false)
         {
             await _roleManager.CreateAsync(new Role(){Name = roleName});
         }
