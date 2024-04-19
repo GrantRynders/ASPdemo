@@ -187,6 +187,10 @@ public class CategoriesModel : PageModel
                         filteredCategories.Add(category);
                     }
                 }
+
+                ViewData["FilteredCategories"] = filteredCategories; 
+
+                return Page(); 
             }
             catch (HttpRequestException)
             {

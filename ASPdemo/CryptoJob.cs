@@ -39,8 +39,11 @@ namespace ASPdemo
                         dynamic results = JsonConvert.DeserializeObject<dynamic>(prices).data;
                         foreach (dynamic result in results)
                         {
-                            double price = result.quote.USD.price;
-                            this.logger.LogInformation("awefawef"); 
+                            if (result.quote != null)
+                            {
+                                double price = result.quote.USD.price;
+                                this.logger.LogInformation("awefawef"); 
+                            }
                         }
                     }
                     
