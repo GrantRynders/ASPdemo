@@ -33,19 +33,26 @@ namespace ASPdemo
                     var currencies = dbContext.Currencies;
 
                     var prices = await ApiCaller.getListings();
-
-                    dynamic results = JsonConvert.DeserializeObject<dynamic>(prices).data;
-
-                    foreach (dynamic result in results)
+                    if (prices != null)
                     {
-                        double price = result.quote.USD.price;
-                        this.logger.LogInformation("awefawef"); 
+                        dynamic results = JsonConvert.DeserializeObject<dynamic>(prices).data;
+                        foreach (dynamic result in results)
+                        {
+                            double price = result.quote.USD.price;
+                            this.logger.LogInformation("awefawef"); 
+                        }
                     }
+                    
+                }
+                catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
+                {
+                    Console.WriteLine("TABLE DOES NOT EXIST");
                 }
                 catch
                 {
                     this.logger.LogInformation("Failed to update prices"); return;
                 }
+                
             }
 
             this.logger.LogInformation("Updated Prices");

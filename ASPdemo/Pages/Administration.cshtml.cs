@@ -56,17 +56,13 @@ public class AdministrationModel : PageModel
 
     public async Task OnGet()
     {
+        await CreateRoleWithName("Admin");
+        await CreateRoleWithName("Cool Guys");
+        
+
         roles = new List<Role>(); 
 
         HttpClient client = new HttpClient();
-        //await dbContext.Database.MigrateAsync();
-        users = await dbContext.Users.ToListAsync();
-        Console.WriteLine(users.Count);
-        foreach (User user in users)
-        {
-             Console.WriteLine("User in users: ");
-        }
-        //users = (List<User>)await _userManager.GetUsersInRoleAsync("Admin");
         if (MaxId == 0)
         {
             MaxId = 10;
@@ -106,27 +102,31 @@ public class AdministrationModel : PageModel
                 Console.WriteLine("404 ERROR");
             }
             
-            if (tokens != null)
+            if (tokens != null && tokens.Length > 0)
             {
                 dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-                foreach (dynamic result in results)
+                if (results != null)
                 {
-                    var role = new Role();
+                    foreach (dynamic result in results)
+                    {
+                        var role = new Role();
 
-                    var id = result.id;
-                    var name = result.name;
-                    var users = result.users;
+                        var id = result.id;
+                        var name = result.name;
+                        var users = result.users;
 
-                    role.Id = id;
-                    role.Name = name;
-                    role.Users = users;
+                        role.Id = id;
+                        role.Name = name;
+                        role.Users = users;
 
-                    roles.Add(role);
+                        roles.Add(role);
+                    }
                 }
+                
             }
             else
             {
-                Console.WriteLine("NO TOKENS TO DISPLAY");
+                Console.WriteLine("NO TOKENS FOR ROLES TO DISPLAY");
             }
         }
         catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
@@ -135,11 +135,11 @@ public class AdministrationModel : PageModel
         }
         catch (HttpRequestException)
         {
-            Console.WriteLine("HTTP REQUEST EXCEPTION ON CATEGORIES POST");
+            Console.WriteLine("HTTP REQUEST EXCEPTION ON ROLES GET");
         }
         catch (WebException)
         {
-            Console.WriteLine("WEB EXCEPTION ON CATEGORIES POST");
+            Console.WriteLine("WEB EXCEPTION ON ROLES GET");
         }
 
         
@@ -190,6 +190,17 @@ public class AdministrationModel : PageModel
         {
             Console.WriteLine("NO USERS TABLE YET! CRAAAAAAAAAAAAAP!");
             return null;
+        }
+    }
+    public async Task CreateRoleWithName(string roleName)
+    {
+        if (_roleManager.FindByNameAsync(roleName) == null)
+        {
+            await _roleManager.CreateAsync(new Role(){Name = roleName});
+        }
+        else
+        {
+            Console.WriteLine("Role with name '" + roleName + "' already exists");
         }
     }
 }
