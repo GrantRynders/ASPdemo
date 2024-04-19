@@ -72,6 +72,31 @@ public class ApiCaller
         return page; 
     }
 
+    public static async Task<string> GetLatestQuotesFromPairsId(string id)
+    {
+        var URL = new UriBuilder("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest");
+
+        var queryString = HttpUtility.ParseQueryString(URL.Query);
+
+        queryString["id"] = id;
+
+        URL.Query = queryString.ToString();
+        //note:
+        //VS code was saying that WebClient was obsolete, so I changed it to Http client, method was made async Task rather than string
+
+
+        //var client = new WebClient();
+        //client.Headers.Add("X-CMC_PRO_API_KEY", API_KEY);
+        //client.Headers.Add("Accepts", "application/json");
+        //return client.DownloadString(URL.ToString());
+        HttpClient client = new();
+        client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", API_KEY); //I think these are going to be universal so having them as default is fine ???
+        client.DefaultRequestHeaders.Add("Accepts", "application/json");
+        string page = await client.GetStringAsync(URL.ToString());
+
+        return page;
+    }
+
 
     public static async Task<string> GetLatestQuotesFromPairs(string slug)
     {

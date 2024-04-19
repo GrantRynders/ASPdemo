@@ -31,26 +31,35 @@ namespace ASPdemo
                 try
                 {
                     var dbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                    var currencies = dbContext.Currencies;
+                    var currencies = dbContext.Currencies.ToList(); 
 
-                    var prices = await ApiCaller.getListings();
-                    if (prices != null)
+                    foreach (var currency in currencies)
                     {
-                        dynamic results = JsonConvert.DeserializeObject<dynamic>(prices).data;
-                        foreach (dynamic result in results)
+                        string cmcId = currency.CMCId;
+
+                        string tokens = await ApiCaller.GetLatestQuotesFromPairsId(cmcId);
+
+                        dynamic response = JsonConvert.DeserializeObject<dynamic>(tokens);
+
+                        dynamic data = response.data;
+
+                        var cmc = data[cmcId]; 
+
+                        if (cmc.quote != null)
                         {
-                            if (result.quote != null)
-                            {
-                                double price = result.quote.USD.price;
-                                this.logger.LogInformation("awefawef"); 
-                            }
+                            double? price = cmc.quote.USD.price;
+                            currency.Price = price;
+
+                            dbContext.Update(currency);
+                            dbContext.SaveChanges();
+
+                            this.logger.LogInformation("Updated price");
                         }
                     }
-                    
                 }
                 catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
                 {
-                    Console.WriteLine("TABLE DOES NOT EXIST");
+                    this.logger.LogInformation("TABLE DOES NOT EXIST");
                 }
                 catch
                 {
