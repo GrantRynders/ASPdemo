@@ -27,6 +27,8 @@ public class AdministrationModel : PageModel
     public List<Role> roles { get; set; }
 
     public List<User> users { get; set; }
+     [FromQuery]
+    public int SkipId { get; set; }
 
     [BindProperty]
     public Search? Search {  get; set; }
@@ -63,32 +65,8 @@ public class AdministrationModel : PageModel
         roles = new List<Role>(); 
 
         HttpClient client = new HttpClient();
-        if (MaxId == 0)
-        {
-            MaxId = 10;
-        }
-        else
-        {
-            MaxId = MaxId + 10;
-        }
-
-        if (PageId == 0)
-        {
-            PageId = 1;
-        }
-        else
-        {
-            if (PageId == 1)
-            {
-                PageId = 0;
-            }
-            PageId = PageId + 10;
-        }
-
-        ViewData["MaxId"] = MaxId;
-        ViewData["PageId"] = PageId;
-
-        var url = new UriBuilder("http://127.0.0.1:5220/roles/" + MaxId + "/" + PageId);
+        ViewData["SkipId"] = SkipId;
+        var url = new UriBuilder("http://127.0.0.1:5220/roles/" + SkipId);
         ViewData["Test"] = url;
         string tokens = null;
         try
@@ -119,6 +97,15 @@ public class AdministrationModel : PageModel
                         role.Name = name;
                         role.Users = users;
 
+                        foreach (var roleUser in users)
+                        {
+                            var user = new User();
+                            user.Id = roleUser.Id;
+                            user.UserName = roleUser.UserName;
+                            user.Email = roleUser.Email;
+
+                            users.Add(user);
+                        }
                         roles.Add(role);
                     }
                 }

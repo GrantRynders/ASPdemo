@@ -8,15 +8,20 @@
 @{
     ViewData["Title"] = "Administration";
 
-    var maxId = ViewData["MaxId"];
-    var pageId = ViewData["PageId"]; 
     var searchTerm = ViewData["SearchTerm"]; 
 
-    var url = "/Roles/?MaxId=" + maxId + "&PageId=" + pageId;
+    var skipId = ViewData["SkipId"];
+    var url = "";
 
-    if (searchTerm != null && searchTerm != "")
+    if (skipId != null)
     {
-        url = url + "&SearchTerm="+searchTerm; 
+        int skipInt = Convert.ToInt16(skipId);
+        skipInt = skipInt + 10; 
+        url = "/Roles/?SkipId=" + skipInt;
+    }
+    else
+    {
+        url = "/Roles/?SkipId=" + 10;
     }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
@@ -35,7 +40,7 @@
         {
             <p>You're not an admin you silly goose</p>
             <form method="post">
-                <input asp-for="Search!.SearchTerm"/>
+                <input asp-for="Search!.SearchTerm" placeholder="Search Roles by Name"/>
             <input type="submit" />
             </form>
             

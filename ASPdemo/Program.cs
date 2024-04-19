@@ -185,9 +185,10 @@ app.MapGet("/listings/{skipId}", async (int skipId, ApplicationDbContext db) =>
 
 	return listings;
 });
-app.MapGet("/roles", async (ApplicationDbContext db) =>
+app.MapGet("/roles/{skipId}", async (int skipId, ApplicationDbContext db) =>
 {
-	return await db.Roles.ToListAsync(); 
+    var roles = db.Roles.Include(p => p.Users).Skip(skipId).Take(10).ToList(); 
+    return roles;
 });
 
 app.MapGet("/category/{categoryId}", async (int categoryId, ApplicationDbContext db) =>

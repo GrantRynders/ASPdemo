@@ -1,6 +1,7 @@
 ﻿using Quartz;
 using ASPdemo.Database;
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace ASPdemo
 {
