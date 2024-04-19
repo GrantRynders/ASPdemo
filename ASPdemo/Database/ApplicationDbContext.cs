@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace ASPdemo.Database;
 public class ApplicationDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UsersRoles, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
 {
+    public DbSet<Conversion> Conversions {  get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
     public override DbSet<User> Users {get; set;}
     public override DbSet<Role> Roles { get; set; } //Roles table containing Admin

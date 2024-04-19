@@ -45,7 +45,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
 
-builder.Services.AddQuartz(q =>
+/**builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("CryptoJob");
     q.AddJob<CryptoJob>(ops => ops.WithIdentity(jobKey));
@@ -54,7 +54,7 @@ builder.Services.AddQuartz(q =>
     .WithCronSchedule("0 0/5 * * * ?"));
 });
 
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true); **/ 
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -71,7 +71,7 @@ app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) =>
 
 app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
 {
-    /** var result = ApiCaller.getCategories().Result;
+     var result = ApiCaller.getCategories().Result;
      dynamic categories = JsonConvert.DeserializeObject<dynamic>(result).data;
 
      var list = new List<dynamic>();
@@ -116,7 +116,7 @@ app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
          {
 
          }
-     }**/
+     }
     /**  string response = await ApiCaller.getCategoryWithCoins("605e2ce9d41eae1066535f7c");
       Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(response);
       **/
@@ -124,7 +124,7 @@ app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
     //var categories = dbContext.Categories.Include(p => p.Coins).ToList();
     // return categories;
 
-    var categories = dbContext.Categories.Where(p => p.Coins.Count == 0).ToList(); 
+    /**var categories = dbContext.Categories.Where(p => p.Coins.Count == 0).ToList(); 
 
     var list = new List<string>(); 
 
@@ -176,8 +176,66 @@ app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
             dbContext.Update(category); 
             dbContext.SaveChanges();
         }  
+    }**/
+});
+
+app.MapGet("/add_currencies", async (ApplicationDbContext dbContext) =>
+{
+    string response = await ApiCaller.getListings();
+    dynamic listings = JsonConvert.DeserializeObject<dynamic>(response);
+    dynamic data = listings.data;
+
+    foreach (var coin in data)
+    {
+        string coinId = coin.id;
+        string name = coin.name;
+        string slug = coin.slug;
+        string symbol = coin.symbol;
+        double price = 0;
+
+        var coinDb = new Currency();
+
+        coinDb.CMCId = coinId;
+        coinDb.CurrencyName = name;
+        coinDb.Slug = slug;
+        coinDb.Symbol = symbol;
+        coinDb.CategoryId = 1;
+
+        if (coin.quotes != null)
+        {
+            price = coin.quotes.USD.price; 
+        }
+
+        dbContext.Currencies.Add(coinDb);
+        dbContext.SaveChanges();
+
     }
-}); 
+});
+
+
+app.MapGet("/conversions/{pair1}/{pair2}", async (string pair1, string pair2, ApplicationDbContext dbContext) =>
+{
+    var dbPair1 = dbContext.Currencies.Where(p => p.Slug == pair1).FirstOrDefault();
+    var dbPair2 = dbContext.Currencies.Where(p => p.Slug == pair2).FirstOrDefault();
+
+    var idPair1 = dbPair1.CMCId;
+    var idPair2 = dbPair2.CMCId;
+
+    return idPair1 + "," + idPair2;
+});
+
+app.MapGet("/conversions/all", async (ApplicationDbContext dbContext) => {
+    var conversions = dbContext.Conversions.ToList();
+
+    return conversions;
+});
+
+app.MapGet("/listings/all", async (ApplicationDbContext db) =>
+{
+    var all = db.Currencies.ToList();
+    return all;
+});
+
 
 app.MapGet("/listings/{skipId}", async (int skipId, ApplicationDbContext db) =>
 {

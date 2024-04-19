@@ -3,125 +3,86 @@
 
 @model ConversionsModel
 @{
+    var Pairs = new List<string>();
+    var Conversions = new List<Entities.Conversion>(); 
+
     ViewData["Title"] = "Categories";
 
-    var maxId = ViewData["MaxId"];
-    var pageId = ViewData["PageId"]; 
-    var searchTerm1 = ViewData["SearchTerm1"]; 
-    var searchTerm2 = ViewData["SearchTerm2"]; 
-
-    var url1 = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
-
-    if (searchTerm1 != null && searchTerm1 != "")
+    try
     {
-        url1 = url1 + "&SearchTerm="+searchTerm1; 
+        Pairs = ViewData["Pairs"] as List<string>;
+        Conversions = ViewData["Conversions"] as List<Entities.Conversion>; 
     }
-
-    var url2 = "/Categories/?MaxId=" + maxId + "&PageId=" + pageId;
-
-    if (searchTerm2 != null && searchTerm2 != "")
+    catch
     {
-        url2 = url2 + "&SearchTerm="+searchTerm2; 
     }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+<h1>Lookup two prices at once.</h1> 
+
 <div class="text-center">
-    @* <h1 class="display-4">Convert Between Currencies</h1>
-    <text>@ViewData["Test"]</text>
-    <div class="ConversionDiv">
-    <form method="post">
-        <input asp-for="Search!.SearchTerm"/>
-       <input type="submit" />
-    </form>
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <h1>Name</h1>
-                </th>
-                <th>
-                    <h1>CurrencyId</h1>
-                </th>
-                <th>
-                    <h1>Slug</h1>
-                </th>
-                <th>
-                    <h1>Symbol</h1>
-                </th>
-            </tr>
-        </thead>
-        @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
-        {
-            @foreach (Entities.Category category in Model.Categories)
+    <form method="post" style="margin-top:30px">
+        <label style="font-weight:bold">First Coin:</label> 
+        <select asp-for="@Model.search!.SearchTerm">
+            @foreach (var item in Pairs)
             {
-                <tbody>
-                    <tr>
-                        <td>@category.CategoryName</td>
-                    </tr>
-                </tbody>
+                <option value="@item">@item</option>
             }
-        }
-        else //displays filtered categories
-        {
-            @foreach (Entities.Category category in Model.filteredCategories)
+        </select>
+        <label style="font-weight:bold">Second Coin:</label>
+        <select asp-for="@Model.search!.SecondTerm">
+            @foreach (var item in Pairs)
             {
-                <tbody>
-                        <tr>
-                            <td>@category.CategoryName</td>
-                        </tr>
-                </tbody>
+                <option value="@item">@item</option>
             }
-        }
-        <a href="@url1" class="btn btn-primary">Next</a>
-    </table>
-    </div>
-    <div class="ConversionDiv">
-        <form method="post">
-            <input asp-for="Search!.SearchTerm"/>
+        </select>
         <input type="submit" />
-        </form>
-        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        <h1>Name</h1>
-                    </th>
-                    <th>
-                        <h1>CurrencyId</h1>
-                    </th>
-                    <th>
-                        <h1>Slug</h1>
-                    </th>
-                    <th>
-                        <h1>Symbol</h1>
-                    </th>
-                </tr>
-            </thead>
-            @if (Model.filteredCategories == null) //Displays all categories if no filter is selected
-            {
-                @foreach (Entities.Category category in Model.Categories)
-                {
-                    <tbody>
-                        <tr>
-                            <td>@category.CategoryName</td>
-                        </tr>
-                    </tbody>
-                }
-            }
-            else //displays filtered categories
-            {
-                @foreach (Entities.Category category in Model.filteredCategories)
-                {
-                    <tbody>
-                            <tr>
-                                <td>@category.CategoryName</td>
-                            </tr>
-                    </tbody>
-                }
-            }
-        </table>
-        <a href="@url2" class="btn btn-primary">Next</a>
-    </div> *@
+    </form>
 </div>
+<h1 style="color:green">Past Conversions</h1>
+<table class="table">
+    <thead>
+    <th>
+        Pair
+    </th>
+    <th>
+        Price
+    </th>
+    <th>
+        24hr %
+    </th>
+    <th>
+        1hr %
+    </th>
+    <th>
+        7d %
+    </th> 
+    </thead>
+    <tbody>
+        @if (Conversions != null)
+        {
+            @foreach (Entities.Conversion conversion in Conversions)
+            {
+                <tr>
+                    <td><b>First Pair: </b>@conversion.Pair1</td>
+                    <td>@conversion.Price</td>
+                    <td>@conversion.PercentChange24Hr</td>
+                    <td>@conversion.PercentChange1hr</td>
+                    <td>@conversion.PercentChange7d</td>  
+                </tr>
+                <tr>
+                    <td><b>Second Pair:</b>@conversion.Pair2</td>
+                    <td>@conversion.SecondPrice</td>
+                    <td>@conversion.SecondPercentChange24Hr</td>
+                    <td>@conversion.SecondPercentChange1hr</td>
+                    <td>@conversion.SecondPercentChange7d</td> 
+                </tr>  
+            }
+        }
+    </tbody>
+</table>
+@if (Conversions == null || Conversions.Count == 0)
+{
+    <h1 style="color: red">No conversions yet!</h1>
+
+}

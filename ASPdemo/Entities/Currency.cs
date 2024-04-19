@@ -8,6 +8,8 @@ public class Currency
     public int CurrencyId { get; set; }
 
     public int CategoryId { get; set; }
+    public string? CMCId { get; set; }
+
 
     [MaxLength(50)]
     public string? CurrencyName { get; set; }

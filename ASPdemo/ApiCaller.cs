@@ -72,13 +72,39 @@ public class ApiCaller
         return page; 
     }
 
+
+    public static async Task<string> GetLatestQuotesFromPairs(string slug)
+    {
+        var URL = new UriBuilder("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest");
+
+        var queryString = HttpUtility.ParseQueryString(URL.Query);
+
+        queryString["slug"] = slug;
+
+        URL.Query = queryString.ToString();
+        //note:
+        //VS code was saying that WebClient was obsolete, so I changed it to Http client, method was made async Task rather than string
+
+
+        //var client = new WebClient();
+        //client.Headers.Add("X-CMC_PRO_API_KEY", API_KEY);
+        //client.Headers.Add("Accepts", "application/json");
+        //return client.DownloadString(URL.ToString());
+        HttpClient client = new();
+        client.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", API_KEY); //I think these are going to be universal so having them as default is fine ???
+        client.DefaultRequestHeaders.Add("Accepts", "application/json");
+        string page = await client.GetStringAsync(URL.ToString());
+
+        return page;
+    }
+
     //RIP airdrop functionality
     //public static async Task<string> getAirdrops()
     //{
     //    return "";
     //}
 
-  public static async Task<string> getListings()
+    public static async Task<string> getListings()
   {
     var URL = new UriBuilder("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest");
 
@@ -86,7 +112,7 @@ public class ApiCaller
         queryString["start"] = "1";
 
 
-        queryString["limit"] = "5000";
+        queryString["limit"] = "200";
     queryString["convert"] = "USD";
 
     URL.Query = queryString.ToString();
