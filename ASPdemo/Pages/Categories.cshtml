@@ -64,7 +64,7 @@
             {
                 <tbody>
                     <tr>
-                        <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
+                        <td><a href="/Category?CategoryId=@category.CategoryId"></td>
                         <td>@category.Volume</td>
                         <td>@category.MarketCap</td>
                         <td>@category.MarketCapChange</td>
@@ -94,20 +94,6 @@
                 }
             }
         }
-        @* @if (Model.Categories != null)
-	    {
-            @if (Model.Categories.Count > 1)
-            {
-
-            }
-        }
-        else
-        {
-            @if ( != null)
-	        {
-
-            }
-        }**@
     </table>
     @if (FilteredCategories == null)
     {
