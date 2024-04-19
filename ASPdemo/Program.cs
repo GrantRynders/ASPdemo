@@ -45,7 +45,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
 
-/**builder.Services.AddQuartz(q =>
+builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("CryptoJob");
     q.AddJob<CryptoJob>(ops => ops.WithIdentity(jobKey));
@@ -54,7 +54,7 @@ builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfir
     .WithCronSchedule("0 0/5 * * * ?"));
 });
 
-builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true); **/ 
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true); 
 
 // Add services to the container.
 builder.Services.AddRazorPages();
