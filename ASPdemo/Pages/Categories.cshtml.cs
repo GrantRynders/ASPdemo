@@ -16,6 +16,8 @@ public class CategoriesModel : PageModel
 
     [FromQuery]
     public int SkipId { get; set; }
+    [FromQuery]
+    public int SkipPrevious { get; set; }
 
     [BindProperty]
     public List<Category> Categories { get; set; }

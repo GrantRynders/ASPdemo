@@ -23,6 +23,8 @@ public class AdministrationModel : PageModel
     public List<User> users { get; set; }
      [FromQuery]
     public int SkipId { get; set; }
+    [FromQuery]
+    public int SkipPrevious { get; set; }
 
     [BindProperty]
     public Search? Search {  get; set; }

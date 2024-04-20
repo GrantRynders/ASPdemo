@@ -11,13 +11,21 @@
     var searchTerm = ViewData["SearchTerm"]; 
 
     var skipId = ViewData["SkipId"];
+    var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
+    var previousUrl = "";
 
     if (skipId != null)
     {
         int skipInt = Convert.ToInt16(skipId);
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        }
         skipInt = skipInt + 10; 
         url = "/Roles/?SkipId=" + skipInt;
+        previousUrl = "/Roles/?SkipId=" + skipPreviousInt;
     }
     else
     {
@@ -94,7 +102,14 @@
                     }
                 }
             </table>
-            <a href="@url" class="btn btn-primary">Next</a>
+            @if (Model.roles != null)
+            {
+                @if (Model.roles.Count > 0)
+                {
+                    <a href="@url" class="btn btn-primary">Next</a>
+                }
+                <a href="@previousUrl" class="btn btn-primary">Previous</a>
+            }
         }
     }
     else
