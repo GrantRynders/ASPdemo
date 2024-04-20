@@ -54,9 +54,12 @@
 
 <div class="text-center">
     <h1 class="display-4">Search by Category</h1> 
-    <h1 style="color:red">
-        No data? Go to the "add data" tab to add categories and currencies
-    </h1>
+    @if (Model.Categories.Count == 0)
+    {
+        <h1 style="color:red">
+            No data? Go to the "add data" tab to add categories and currencies
+        </h1>
+    }
     <form method="post">
         <input type="text" asp-for="@Model.Search!.SearchTerm" placeholder="Search by name"/>
        <input type="submit" />
