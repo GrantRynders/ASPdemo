@@ -7,6 +7,7 @@
     var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
     var previousUrl = "";
+    var previousUrl = "";
 
     if (skipId != null)
     {
@@ -18,6 +19,7 @@
         }
         skipInt = skipInt + 10; 
         url = "/?SkipId=" + skipInt;
+        previousUrl = "/?SkipId=" + skipPreviousInt;
         previousUrl = "/?SkipId=" + skipPreviousInt;
     }
     else

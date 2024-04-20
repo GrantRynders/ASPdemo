@@ -16,7 +16,10 @@ public class IndexModel : PageModel
     {
         _logger = logger;
     }
-      
+     
+	[FromQuery]
+	public int SkipPrevious { get; set; }
+
 
 	[FromQuery]
 	public int SkipId { get; set; }
