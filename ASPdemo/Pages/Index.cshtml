@@ -5,12 +5,39 @@
 
     var skipId = ViewData["SkipId"];
     var url = "";
+    var previousUrl = "";
 
-    if (skipId != null)
+
+    /**if (skipId != null)
     {
         int skipInt = Convert.ToInt16(skipId);
         skipInt = skipInt + 10;
         url = "/?SkipId=" + skipInt;
+
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        } 
+
+        previousUrl = "/?SkipId=" + skipPreviousInt;
+    }
+    else
+    {
+        url = "/?SkipId=" + 10;
+    }**/ 
+
+    if (skipId != null)
+    {
+        int skipInt = Convert.ToInt16(skipId);
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        }
+        skipInt = skipInt + 10;
+        url = "/?SkipId=" + skipInt;
+        previousUrl = "/?SkipId=" + skipPreviousInt;
     }
     else
     {
@@ -76,7 +103,7 @@
     }
 </table>
 
-
+<a href="@previousUrl" class="btn btn-primary">Previous</a>
 <a href="@url" class="btn btn-primary">Next</a>
 
 
