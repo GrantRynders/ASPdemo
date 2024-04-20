@@ -54,7 +54,7 @@ public class AdministrationModel : PageModel
 
     public async Task OnGet()
     {
-        await CreateRoleWithName("Admin");
+        //await CreateRoleWithName("Admin");
         await CreateRoleWithName("Cool Guys");
         
 
@@ -179,7 +179,23 @@ public class AdministrationModel : PageModel
     {
         if (await _roleManager.RoleExistsAsync(roleName) == false)
         {
-            await _roleManager.CreateAsync(new Role(){Name = roleName});
+            Role newRole = new Role(roleName);
+            Console.WriteLine(roleName + "'s ID: " + newRole.Id);
+            Boolean done = false;
+            while (done == false)
+            {
+                if (await _roleManager.FindByIdAsync(newRole.Id) != null) //this makes sure we don't make duplicate IDs
+                {
+                    Console.WriteLine("Gabagool");
+                    newRole.Id = Guid.NewGuid().ToString();
+                    done = false;
+                }
+                else
+                {
+                    done = true;
+                }
+            }
+            await _roleManager.CreateAsync(newRole);
         }
         else
         {
