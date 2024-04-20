@@ -15,12 +15,10 @@ public class PortfolioModel : PageModel
     private readonly ILogger<IndexModel> _logger;
 
     public string SearchTerm {  get; set; }
+    public int SkipId { get; set; }
 
     [FromQuery]
-    public int PageId { get; set; }
-
-    [FromQuery]
-    public int MaxId { get; set; }
+    public int SkipPrevious { get; set; }
 
     [BindProperty]
     public Search? Search { get; set; }

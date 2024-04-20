@@ -4,13 +4,21 @@
     ViewData["Title"] = "Home page";
 
     var skipId = ViewData["SkipId"];
+    var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
+    var previousUrl = "";
 
     if (skipId != null)
     {
         int skipInt = Convert.ToInt16(skipId);
-        skipInt = skipInt + 10;
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        }
+        skipInt = skipInt + 10; 
         url = "/?SkipId=" + skipInt;
+        previousUrl = "/?SkipId=" + skipPreviousInt;
     }
     else
     {
@@ -28,8 +36,8 @@
     }
 
     tbody tr:nth-child(odd) {
-        background: purple;
-        color:white; 
+        background: #0d6efd;
+		color: white;
     }
 </style>
 <table class="table">
@@ -76,8 +84,14 @@
     }
 </table>
 
-
-<a href="@url" class="btn btn-primary">Next</a>
+@if (Model.Currency != null)
+{
+    @if (Model.Currency.Count > 0)
+    {
+        <a href="@url" class="btn btn-primary">Next</a>
+    }
+    <a href="@previousUrl" class="btn btn-primary">Previous</a>
+}
 
 
 <h1>About Us: </h1>
@@ -88,6 +102,6 @@
 <h3>Grant Rynders</h3>
 <p>Developed bespoke user system using the framework of Microsoft.AspNetCore.Identity. Assisted in developing models for the database and application design.</p>
 <h3>Cameron Gordon</h3>
-<p>Developed the interface we used for interacting with, displaying, and querying all the data, which was crucial for developing every other system.</p>
+<p>Developed the interface we used for interacting with, displaying, and querying all the data, which was crucial for developing every other system. Implemented a system that routinely fetches CoinMarketCap's data using Quartz.net. </p>
 <h3>Parker Malott</h3>
 <p>implemented user friendly UI for our currency addition/removal that works and pulls information from our Dataset and user information</p>

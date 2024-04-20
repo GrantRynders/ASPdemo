@@ -47,7 +47,14 @@
     }
 
     tbody tr:nth-child(odd) {
-        background: purple;
+        background: #0d6efd;
+		color: white;
+    }
+    .categorya{
+		color: white;
+        font-weight: bold;
+    }
+    .categorya:hover{
         color: white;
     }
 </style>
@@ -88,7 +95,7 @@
             {
                 <tbody>
                     <tr>
-                        <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
+                        <td><a class="categorya" href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
                         <td>@category.Volume</td>
                         <td>@category.MarketCap</td>
                         <td>@category.MarketCapChange</td>
@@ -107,7 +114,7 @@
                     {
                         <tbody>
                             <tr>
-                                <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
+                                <td><a class="categorya" href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
                                 <td>@category.Volume</td>
                                 <td>@category.MarketCap</td>
                                 <td>@category.MarketCapChange</td>
