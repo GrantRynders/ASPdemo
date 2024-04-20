@@ -19,7 +19,18 @@
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 <h1>Lookup two prices at once.</h1> 
+<style>
+    tbody tr:nth-child(even) {
+        background: gray;
+        border: 0px;
+        color: white;
+    }
 
+    tbody tr:nth-child(odd) {
+        background: purple;
+        color:white; 
+    }
+</style>
 <div class="text-center">
     <form method="post" style="margin-top:30px">
         <label style="font-weight:bold">First Coin:</label> 
@@ -65,17 +76,17 @@
             {
                 <tr>
                     <td><b>First Pair: </b>@conversion.Pair1</td>
-                    <td>@conversion.Price</td>
-                    <td>@conversion.PercentChange24Hr</td>
-                    <td>@conversion.PercentChange1hr</td>
-                    <td>@conversion.PercentChange7d</td>  
+                    <td>$@conversion.Price</td>
+                    <td>@conversion.PercentChange24Hr%</td>
+                    <td>@conversion.PercentChange1hr%</td>
+                    <td>@conversion.PercentChange7d%</td>  
                 </tr>
                 <tr>
-                    <td><b>Second Pair:</b>@conversion.Pair2</td>
-                    <td>@conversion.SecondPrice</td>
-                    <td>@conversion.SecondPercentChange24Hr</td>
-                    <td>@conversion.SecondPercentChange1hr</td>
-                    <td>@conversion.SecondPercentChange7d</td> 
+                    <td><b>Second Pair: </b>@conversion.Pair2</td>
+                    <td>$@conversion.SecondPrice</td>
+                    <td>@conversion.SecondPercentChange24Hr%</td>
+                    <td>@conversion.SecondPercentChange1hr%</td>
+                    <td>@conversion.SecondPercentChange7d%</td> 
                 </tr>  
             }
         }
