@@ -121,12 +121,13 @@
     </table>
     @if (Model.Categories != null)
     {
+        <a href="@previousUrl" class="btn btn-primary">Previous</a>
+
         @if (Model.Categories.Count > 0)
         {
             <a href="@url" class="btn btn-primary">Next</a>
             
         }
-        <a href="@previousUrl" class="btn btn-primary">Previous</a>
     }
     
 </div>
