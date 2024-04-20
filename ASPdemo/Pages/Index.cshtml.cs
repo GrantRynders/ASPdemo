@@ -23,6 +23,8 @@ public class IndexModel : PageModel
 
 	[FromQuery]
 	public int SkipId { get; set; }
+    [FromQuery]
+    public int SkipPrevious { get; set; }
 
 	[BindProperty]
     public List<Currency> Currency { get; set; } 
