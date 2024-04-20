@@ -3,7 +3,18 @@
 @{
 }
 <h1>Top @Model.CategoryName Tokens</h1>
+<style>
+	tbody tr:nth-child(even) {
+		background: #FFF;
+		border: 0px;
+		color: #000;
+	}
 
+	tbody tr:nth-child(odd) {
+		background: purple;
+		color: white;
+	}
+</style>
 <table class="table">
 	<thead>
 		<th>
@@ -30,10 +41,10 @@
 			{
 				<tbody>
 					<tr>
-						<td>@currency.CurrencyName</td>
-						<td>@currency.Price</td>
-						<td>@currency.PercentChange24Hr</td>
-						<td>@currency.PercentChange7d</td>
+						<td><b>@currency.CurrencyName</b></td>
+						<td>$@currency.Price</td>
+						<td>@currency.PercentChange24Hr%</td>
+						<td>@currency.PercentChange7d%</td>
 						<td>@currency.MarketCap</td>
 					</tr>
 				</tbody>
