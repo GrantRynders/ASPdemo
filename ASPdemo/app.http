@@ -2,16 +2,23 @@
 
 
 ###
-
+//add a role
 POST {{WebApiHost}}/roles/EnterpriseUsers
 
 ###
-
-// REQUEST 4: Get all users
-GET {{WebApiHost}}/users/
+//get a chunk of ten categories and their currencies
+GET {{WebApiHost}}/categories/10
 
 ###
+//gets all categories and their currencies
+GET {{WebApiHost}}/categories/listall
 
-GET {{WebApiHost}}/https://pro-api.coinmarketcap.com/v1/cryptocurrency/category
+###
+//gets category with id = 1 
+GET {{WebApiHost}}/category/1
+
+###
+//gets a chunk of ten roles and their users
+GET {{WebApiHost}}/roles/10
 
 ###
