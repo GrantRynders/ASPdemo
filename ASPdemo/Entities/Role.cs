@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
 namespace ASPdemo.Entities;
 
 [Table("Roles")]
-public class Role : IdentityRole
+public class Role : IdentityRole<string>
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public override string Id { get; set; }
@@ -14,6 +14,7 @@ public class Role : IdentityRole
     [MaxLength(50)]
     public override string NormalizedName { get; set; }
     public virtual List<User> Users { get; set; }
+    public override string? ConcurrencyStamp { get; set; }
     public Role(){}
     public Role(string roleName)
     {

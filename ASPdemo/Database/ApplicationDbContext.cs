@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace ASPdemo.Database;
-public class ApplicationDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UsersRoles, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+public class ApplicationDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, IdentityUserRole<string>, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
 {
     public DbSet<Conversion> Conversions {  get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
     public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }  //this was necessary to get the identity system set up, but we really aren't going to use it beyond that
     //claims are basically really overcomplicated ways of saying "this role/user has permissions to do XYZ" which we could just do with simple booleans or property reads so they really aren't useful
     public DbSet<IdentityRoleClaim<string>> IdentityRoleClaim { get; set; }  
-    public DbSet<UsersRoles> UsersRoles { get; set; }
+    //public DbSet<UsersRoles> UsersRoles { get; set; }
     public String DbPath {get; set;}
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) // IN MEMORY DB CONSTRUCTOR Note: currently not in use
     {
@@ -47,9 +47,24 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
         modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.UserId });
         modelBuilder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId });
-        //modelBuilder.Entity<IdentityUserRole<string>>();
-        //modelBuilder.Entity<User>().HasKey(p => new { p.Id });
-        modelBuilder.Entity<Role>().ToTable("Roles");
+        modelBuilder.Entity<IdentityUserRole<string>>().HasKey(p => new { p.UserId, p.RoleId });
+        // modelBuilder.Entity<User>(b =>
+        // {
+        //     // Each User can have many entries in the UserRole join table
+        //     b.HasMany(e => e.usersRoles)
+        //         .WithOne(e => e.user)
+        //         .HasForeignKey(ur => ur.UserId)
+        //         .IsRequired();
+        // });
+
+        // modelBuilder.Entity<Role>(b =>
+        // {
+        //     // Each Role can have many entries in the UserRole join table
+        //     b.HasMany(e => e.usersRoles)
+        //         .WithOne(e => e.role)
+        //         .HasForeignKey(ur => ur.RoleId)
+        //         .IsRequired();
+        // });
 
         modelBuilder.Entity<Portfolio>() //keep: this works
         .HasOne(e => e.user)
