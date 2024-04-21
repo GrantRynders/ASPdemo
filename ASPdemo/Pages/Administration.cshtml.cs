@@ -46,15 +46,16 @@ public class AdministrationModel : PageModel
     public AdministrationModel(UserManager<User> userManager, ILogger<IndexModel> logger, SignInManager<User> signInManager, RoleManager<Role> roleManager)
     {
        _userManager = userManager;
-       _roleManager = roleManager;
+       
        _signInManager = signInManager;
        dbContext = new ApplicationDbContext();
+       _roleManager = roleManager;
        _logger = logger;
     }
 
     public async Task OnGet()
     {
-        //await CreateRoleWithName("Admin");
+        await CreateRoleWithName("Admin");
         await CreateRoleWithName("Cool Guys");
         
 
@@ -104,6 +105,7 @@ public class AdministrationModel : PageModel
                         }
                         roles.Add(role);
                     }
+                    Console.WriteLine("ROLES COUNT : " + roles.Count());
                 }
                 
             }
@@ -195,11 +197,29 @@ public class AdministrationModel : PageModel
                     done = true;
                 }
             }
-            await _roleManager.CreateAsync(newRole);
+            Console.WriteLine(newRole.Name);
+            dbContext.Update(newRole);
+            dbContext.Entry(newRole).State = EntityState.Modified;
+            //await dbContext.SaveChangesAsync();
+
+            //await _roleManager.CreateAsync(newRole);
         }
         else
         {
             Console.WriteLine("Role with name '" + roleName + "' already exists");
+        }
+    }
+    public async Task JoinRole(Role role)
+    {
+        if (User.IsInRole(role.Name) == false)
+        {
+            User? user = await GetCurrentUser(dbContext);
+            if (user != null)
+            {
+                role.Users.Add(user);
+                dbContext.Update(role);
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

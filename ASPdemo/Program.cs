@@ -213,7 +213,13 @@ app.MapGet("/roles/{skipId}", async (int skipId, ApplicationDbContext db) =>
     var roles = db.Roles.Include(p => p.Users).Skip(skipId).Take(10).ToList(); 
     return roles;
 });
-
+app.MapPost("/roles/{Name}", async (string Name, ApplicationDbContext db) =>
+{
+    Role role = new Role(Name);
+    db.Roles.Add(role);
+    await db.SaveChangesAsync(); 
+    return Results.Created($"/roles/{Name}", role);
+});
 app.MapGet("/category/{categoryId}", async (int categoryId, ApplicationDbContext db) =>
 {
     var categories = db.Categories.Include(p => p.Coins).Where(p => p.CategoryId == categoryId).FirstOrDefault();
@@ -282,6 +288,21 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+using (var scope = app.Services.CreateScope())  
+{  
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();  
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();  
+    ApplicationDbContext dbContext = new ApplicationDbContext();
+    string roleName = "Admin";  
+    if (!await roleManager.RoleExistsAsync(roleName))  
+    {
+        Role role = new Role(roleName);
+        //await roleManager.CreateAsync(role);
+        dbContext.Roles.Add(role);  
+        await dbContext.SaveChangesAsync();
+    }  
+}  
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

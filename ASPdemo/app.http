@@ -19,6 +19,12 @@ GET {{WebApiHost}}/roles/
 
 ###
 
+###
+
+POST {{WebApiHost}}/roles/Fanatics
+
+###
+
 // REQUEST 4: Get all users
 GET {{WebApiHost}}/users/
 

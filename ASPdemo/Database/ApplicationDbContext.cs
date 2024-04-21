@@ -49,7 +49,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
         modelBuilder.Entity<IdentityUserToken<string>>().HasKey(p => new { p.UserId });
         //modelBuilder.Entity<IdentityUserRole<string>>();
         //modelBuilder.Entity<User>().HasKey(p => new { p.Id });
-        //modelBuilder.Entity<Role>().HasKey(p => new { p.Id });
+        modelBuilder.Entity<Role>().ToTable("Roles");
 
         modelBuilder.Entity<Portfolio>() //keep: this works
         .HasOne(e => e.user)
