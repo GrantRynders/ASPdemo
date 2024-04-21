@@ -92,7 +92,6 @@ public class AdministrationModel : PageModel
 
                         role.Id = id;
                         role.Name = name;
-                        role.Users = users;
 
                         foreach (var roleUser in users)
                         {
@@ -106,6 +105,7 @@ public class AdministrationModel : PageModel
                         roles.Add(role);
                     }
                     Console.WriteLine("ROLES COUNT : " + roles.Count());
+                    ViewData["users"] = users; 
                 }
                 
             }
@@ -211,6 +211,7 @@ public class AdministrationModel : PageModel
     }
     public async Task JoinRole(Role role)
     {
+        Console.WriteLine("Join role");
         if (User.IsInRole(role.Name) == false)
         {
             User? user = await GetCurrentUser(dbContext);

@@ -9,7 +9,15 @@
     ViewData["Title"] = "Administration";
 
     var searchTerm = ViewData["SearchTerm"]; 
+    var users = new List<Entities.User>(); 
 
+    try
+    {
+        users = ViewData["users"] as List<Entities.User>;
+    }
+    catch
+    {
+    }
     var skipId = ViewData["SkipId"];
     var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
@@ -31,6 +39,10 @@
     {
         url = "/Roles/?SkipId=" + 10;
     }
+    async Task OnPostJoin()
+    {   
+        Console.WriteLine("Yippee");
+    }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -40,7 +52,7 @@
     <p>Here admins can take away your human rights ;)</p>
     @if (SignInManager.IsSignedIn(User))
     {
-        @if (User.IsInRole("Admin"))
+        @if (User.IsInRole("admin"))
         {
             <p>Welcome home boss</p>
         }
@@ -68,16 +80,24 @@
                     @foreach (Entities.Role role in Model.roles)
                     {
                         <h1>Role: @role.Name</h1>
+                        <form method="post" action="/page?handler=button">
+                        @* <form asp-page-handler="Join" method="post"> *@
+                        <button class="btn btn-default">Join Role</button>
+                        </form>
                         <tbody>
-                            @foreach (Entities.User user in role.Users)
+                            @if (users != null)
                             {
-                                <td>
-                                    @user.UserName
-                                </td>
-                                <td>
-                                    @user.Email
-                                </td>
+                                @foreach (Entities.User user in users)
+                                {
+                                    <td>
+                                        @user.UserName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                }
                             }
+                            
                         </tbody>
                     }
                 }
@@ -88,14 +108,17 @@
                         <h1>Role: @role.Name</h1>
                         <tbody>
                             <tr>
-                                @foreach (Entities.User user in role.Users)
+                                @if (users != null)
                                 {
-                                    <td>
-                                        @user.UserName
-                                    </td>
-                                    <td>
-                                        @user.Email
-                                    </td>
+                                    @foreach (Entities.User user in users)
+                                    {
+                                        <td>
+                                            @user.UserName
+                                        </td>
+                                        <td>
+                                            @user.Email
+                                        </td>
+                                    }
                                 }
                             </tr>
                         </tbody>
