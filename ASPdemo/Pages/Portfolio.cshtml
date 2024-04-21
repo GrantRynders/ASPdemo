@@ -53,10 +53,13 @@
     } 
     <h1 class="display-4" style="font-size:20px">Try it out with this address: 0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be</h1>
     <h1 class="display-4" style="font-size:20px; color: red">Warning: takes around 10 seconds to pull listings, be patient </h1>
-    <form method="post">
-        <input type="text" asp-for="@Model.TempPortfolio!.WalletAddress" placeholder="Wallet Address"/>
-        <input type="submit" />
-    </form>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form method="post">
+            <input type="text" asp-for="@Model.TempPortfolio!.WalletAddress" placeholder="Wallet Address" />
+            <input type="submit" />
+        </form>
+    }
     @if (SignInManager.IsSignedIn(User))
     {   
         <table class="table">
