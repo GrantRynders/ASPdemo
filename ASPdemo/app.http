@@ -22,3 +22,7 @@ GET {{WebApiHost}}/category/1
 GET {{WebApiHost}}/roles/0
 
 ###
+//get all users
+GET {{WebApiHost}}/users
+
+###

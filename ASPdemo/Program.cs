@@ -119,7 +119,11 @@ app.MapGet("/listings/all", async (ApplicationDbContext db) =>
     var all = db.Currencies.ToList();
     return all;
 });
-
+app.MapGet("/users", async (ApplicationDbContext db) =>
+{
+    var all = db.Users.Include(p => p.Roles).ToList();
+    return all;
+});
 
 app.MapGet("/listings/{skipId}", async (int skipId, ApplicationDbContext db) =>
 {
@@ -138,6 +142,32 @@ app.MapPost("/roles/{Name}", async (string Name, ApplicationDbContext db) =>
     db.Roles.Add(role);
     await db.SaveChangesAsync(); 
     return Results.Created($"/roles/{Name}", role);
+});
+app.MapPut("/roles/{RoleId}/{UserId}", async (string RoleId, string UserId, ApplicationDbContext db) =>
+{
+    Role role = db.Roles.Find(RoleId);
+    if (role != null)
+    {
+        User user = db.Users.Find(UserId);
+        if (user != null)
+        {
+            role.Users.Add(user);
+            db.Entry(role).State = EntityState.Modified;
+            user.Roles.Add(role);
+            db.Entry(user).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+        }
+        else
+        {
+            return Results.BadRequest("UserId mismatch");
+        }
+    }
+    else
+    {
+        return Results.BadRequest("UserId mismatch");
+    }
+    
+    return Results.NoContent();
 });
 app.MapGet("/category/{categoryId}", async (int categoryId, ApplicationDbContext db) =>
 {
@@ -168,12 +198,12 @@ is User user
 : Results.NotFound());
 
 // REQUEST 5: create a user
-app.MapPost("/users", async (User user, ApplicationDbContext dbContext) => 
-{
-    dbContext.Users.Add(user);
-    await dbContext.SaveChangesAsync(); 
-    return Results.Created($"/users/{user.Id}", user);
-});
+// app.MapPost("/users", async (User user, ApplicationDbContext dbContext) => 
+// {
+//     dbContext.Users.Add(user);
+//     await dbContext.SaveChangesAsync(); 
+//     return Results.Created($"/users/{user.Id}", user);
+// });
 
 app.MapPost("start_fetch", async (StartFetcher fetcher, ApplicationDbContext dbContext) =>
 {

@@ -89,7 +89,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             {
                 Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
                 Name = "admin",
-                NormalizedName = "ADMIN".ToUpper()
+                NormalizedName = "ADMIN",
+                ConcurrencyStamp = Guid.NewGuid().ToString()
             });
         modelBuilder.Entity<User>().HasData(
             new User()
@@ -100,8 +101,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
                 EmailConfirmed = true,
                 Email = "grantrynders@outlook.com",
                 NormalizedEmail = "GRANTRYNDERS@OUTLOOK.COM",
-                PasswordHash = hasher.HashPassword(null, "youshallbeasgods")
-                
+                PasswordHash = hasher.HashPassword(null, "youshallbeasgods"),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
             }
         );
         //Seeding the relation between our user and role to AspNetUserRoles table
