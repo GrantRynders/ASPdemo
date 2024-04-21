@@ -18,6 +18,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Configuration;
 using static System.Formats.Asn1.AsnWriter;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfirmedAccount = true)
-.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
+.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI()
+.AddUserStore<UserStore<User, Role, ApplicationDbContext, string>>()
+.AddRoleStore<RoleStore<Role, ApplicationDbContext, string>>();
 
 builder.Services.AddQuartz(q =>
 {
@@ -334,9 +337,9 @@ if (!app.Environment.IsDevelopment())
 //     if (!await roleManager.RoleExistsAsync(roleName))  
 //     {
 //         Role role = new Role(roleName);
-//         //await roleManager.CreateAsync(role);
-//         dbContext.Roles.Add(role);  
-//         await dbContext.SaveChangesAsync();
+//         await roleManager.CreateAsync(role);
+//         //dbContext.Roles.Add(role);  
+//         //await dbContext.SaveChangesAsync();
 //     }  
 // }  
 
