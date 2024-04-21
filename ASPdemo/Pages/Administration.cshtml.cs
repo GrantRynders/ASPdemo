@@ -59,7 +59,10 @@ public class AdministrationModel : PageModel
     {
         //await CreateRoleWithName("Admin");
         //await CreateRoleWithName("Cool Guys");
-        
+        // Role exampleRole = await _roleManager.FindByNameAsync("Fanatics");
+        //Role exampleRole = await dbContext.Roles.FindAsync("1404e1fd-56f0-4161-9f88-d5f80d6c4b3f");
+        //Console.WriteLine(exampleRole.Name);
+        //await JoinRole(exampleRole);
 
         roles = new List<Role>(); 
 
@@ -172,6 +175,7 @@ public class AdministrationModel : PageModel
         try
         { 
             User? currentUser = await _userManager.GetUserAsync(User);
+            //Console.WriteLine(currentUser.UserName);
             return currentUser;
         }
         catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
@@ -214,9 +218,9 @@ public class AdministrationModel : PageModel
     public async Task JoinRole(Role role)
     {
         Console.WriteLine("Join role");
-        if (User.IsInRole(role.Name) == false)
+        User? user = await GetCurrentUser(dbContext);
+        if (await _userManager.IsInRoleAsync(user, role.Name) == false);
         {
-            User? user = await GetCurrentUser(dbContext);
             if (user != null)
             {
                 role.Users.Add(user);

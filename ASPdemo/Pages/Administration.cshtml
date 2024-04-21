@@ -80,6 +80,7 @@
                     @foreach (Entities.Role role in Model.roles)
                     {
                         <h1>Role: @role.Name</h1>
+                        <h3>Id: @role.Id</h3>
                         @* <form method="post">
                             <button asp-page-handler="Join(@role)" class="btn btn-default">Join Role</button>
                         </form> *@
@@ -108,6 +109,7 @@
                     @foreach (Entities.Role role in Model.filteredRoles)
                     {
                         <h1>Role: @role.Name</h1>
+                        <h3>Id: @role.Id</h3>
                         <tbody>
                             <tr>
                                 @if (users != null)
