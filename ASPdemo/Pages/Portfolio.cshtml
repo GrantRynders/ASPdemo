@@ -12,6 +12,7 @@
     var url = "";
     var previousUrl = "";
     var value = ViewData["value"];
+    var address = ViewData["address"];
 
     if (skipId != null)
     {
@@ -35,7 +36,12 @@
 <div class="text-center">
     <h1 class="display-4">@Model.userName's Portfolio</h1>
     <h1 class="display-4">Value: $@value</h1>
+    <h1 class="display-4">Address: @address</h1>
     <text>@ViewData["Test"]</text>
+    <form method="post">
+        <input type="text" asp-for="@Model.walletAddress" placeholder="Wallet Address"/>
+       <input type="submit" />
+    </form>
     @if (SignInManager.IsSignedIn(User))
     {   
         <table class="table">
@@ -56,34 +62,41 @@
                     Market Cap
                 </th>
             </thead>
-            @if (Model.userPortfolio != null)
+            @if (Model.currentUser != null)
             {
-                @if (Model.userPortfolio.currencies != null)
+                @if (Model.currentUser.portfolio != null)
                 {
-                    @if (Model.userPortfolio.currencies.Count != 0)
+                    @if (Model.currentUser.portfolio.currencies != null)
                     {
-                        @foreach (Entities.Currency currency in Model.userPortfolio.currencies)
+                        @if (Model.currentUser.portfolio.currencies.Count != 0)
                         {
-                            <tbody>
-                                <tr>
-                                    <td>@currency.CurrencyName</td>
-                                    <td>@currency.Price</td>
-                                    <td>@currency.PercentChange24Hr</td>
-                                    <td>@currency.PercentChange7d</td>
-                                    <td>@currency.MarketCap</td>
-                                </tr>
-                            </tbody>
+                            @foreach (Entities.Currency currency in Model.currentUser.portfolio.currencies)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>@currency.CurrencyName</td>
+                                        <td>@currency.Price</td>
+                                        <td>@currency.PercentChange24Hr</td>
+                                        <td>@currency.PercentChange7d</td>
+                                        <td>@currency.MarketCap</td>
+                                    </tr>
+                                </tbody>
+                            }
                         }
+                    }
+                    else
+                    {
+                        <p>Uh oh currencies is null</p>
                     }
                 }
                 else
                 {
-                    <p>Uh oh currencies is null</p>
+                    <p> Uh oh the portfolio is null</p>
                 }
             }
             else
             {
-                <p> Uh oh the portfolio is null</p>
+                <p> uh oh current user is null</p>
             }
         </table>
         @if (Model.userPortfolio != null)
