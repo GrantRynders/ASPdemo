@@ -69,6 +69,29 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+app.UseCors(builder =>
+{
+    builder
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin();
+}); 
+
+app.MapGet("/fetch_progress/", async (ApplicationDbContext dbContext) =>
+{
+    var currencies = dbContext.Currencies.ToList();
+    var categories = dbContext.Categories.ToList();
+
+    var progressBar = new ProgressBar();
+
+    progressBar.CurrenciesCount = currencies.Count; 
+    progressBar.CategoriesCount = categories.Count;
+
+    var progressBarJson = JsonConvert.SerializeObject(progressBar);
+
+    return progressBarJson; 
+});
+
 //############## CRUD OPS #######################
 
 //get all users with page
@@ -76,106 +99,6 @@ app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) =>
 {
     return await dbContext.Users.ToListAsync(); 
 });
-
-app.MapGet("/add_categories", async (ApplicationDbContext dbContext) =>
-{
-    var result = ApiCaller.getCategories().Result;
-    dynamic categories = JsonConvert.DeserializeObject<dynamic>(result).data;
-
-    var list = new List<dynamic>();
-
-    foreach (dynamic category in categories)
-    {
-        try
-        {
-            string categoryId = category.id;
-            string categoryName = category.name;
-            string title = category.title;
-            string description = category.description;
-            int num_tokens = category.num_tokens;
-            string market_cap = category.market_cap;
-            string market_cap_change = category.market_cap_change;
-            string volume = category.volume; 
-
-            var categoryDb = new Category(); 
-            categoryDb.Description = description;
-            categoryDb.CMCCategoryId = categoryId;
-            categoryDb.CategoryTitle = title; 
-            categoryDb.CategoryName = categoryName;
-            categoryDb.NumTokens = num_tokens; 
-            categoryDb.MarketCap = market_cap;
-            if (market_cap_change != null)
-            {
-                categoryDb.MarketCapChange = market_cap_change;
-            }
-            else
-            {
-                categoryDb.MarketCapChange = "0";
-            }
-            categoryDb.Volume = volume;
-            categoryDb.AvgPriceChange = "0"; 
-            categoryDb.VolumeChange = "0";
-            categoryDb.LastUpdated = 0; 
-
-            dbContext.Categories.Add(categoryDb);
-            dbContext.SaveChanges(); 
-        }
-        catch
-        {
-
-        }
-    }
-
-    var listCategories = dbContext.Categories.ToList();
-
-    foreach (var category in listCategories)
-    {
-        string cmcId = category.CMCCategoryId;
-        string response = await ApiCaller.getCategoryWithCoins(cmcId);
-        Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(response);
-
-        var coins = new List<Currency>();
-
-        foreach (var coin in myDeserializedClass.data.coins)
-        {
-            var random = new Random();
-            int id = random.Next();
-
-            var currency = new Currency();
-
-            currency.CurrencyId = id;
-            currency.CategoryId = category.CategoryId;
-            currency.CurrencyName = coin.name;
-            currency.TotalSupply = coin.total_supply;
-            currency.CMCId = Convert.ToString(coin.id);
-
-
-            if (coin.quote != null)
-            {
-                currency.Price = coin.quote.USD.price;
-                currency.PercentChange1hr = coin.quote.USD.percent_change_1h;
-                currency.PercentChange7d = coin.quote.USD.percent_change_7d;
-                currency.MarketCap = coin.quote.USD.market_cap;
-                currency.PercentChange24Hr = coin.quote.USD.percent_change_24h;
-            }
-
-            currency.Slug = coin.slug;
-            currency.Symbol = coin.symbol;
-            currency.Description = "fawefef";
-
-            dbContext.Currencies.Add(currency);
-            dbContext.SaveChanges();
-
-            coins.Add(currency);
-
-            Thread.Sleep(1000);
-        }
-
-        category.Coins = coins;
-        dbContext.Update(category);
-        dbContext.SaveChanges();
-    }
-}); 
  
 
 app.MapGet("/conversions/{pair1}/{pair2}", async (string pair1, string pair2, ApplicationDbContext dbContext) =>
@@ -254,6 +177,119 @@ app.MapPost("/users", async (User user, ApplicationDbContext dbContext) =>
     dbContext.Users.Add(user);
     await dbContext.SaveChangesAsync(); 
     return Results.Created($"/users/{user.Id}", user);
+});
+
+app.MapPost("start_fetch", async (StartFetcher fetcher, ApplicationDbContext dbContext) =>
+{
+    dbContext.Currencies.ExecuteDelete();
+    dbContext.Categories.ExecuteDelete();
+    dbContext.SaveChanges(); 
+
+    int numCoins = fetcher.NumCoins;
+    int numCategories = fetcher.NumCategories; 
+
+    try
+    {
+        var result = ApiCaller.getCategories().Result;
+        dynamic categories = JsonConvert.DeserializeObject<dynamic>(result).data;
+
+        var list = new List<dynamic>();
+
+        foreach (dynamic category in categories)
+        {
+            try
+            {
+                string categoryId = category.id;
+                string categoryName = category.name;
+                string title = category.title;
+                string description = category.description;
+                int num_tokens = category.num_tokens;
+                string market_cap = category.market_cap;
+                string market_cap_change = category.market_cap_change;
+                string volume = category.volume;
+
+                var categoryDb = new Category();
+                categoryDb.Description = description;
+                categoryDb.CMCCategoryId = categoryId;
+                categoryDb.CategoryTitle = title;
+                categoryDb.CategoryName = categoryName;
+                categoryDb.NumTokens = num_tokens;
+                categoryDb.MarketCap = market_cap;
+                if (market_cap_change != null)
+                {
+                    categoryDb.MarketCapChange = market_cap_change;
+                }
+                else
+                {
+                    categoryDb.MarketCapChange = "0";
+                }
+                categoryDb.Volume = volume;
+                categoryDb.AvgPriceChange = "0";
+                categoryDb.VolumeChange = "0";
+                categoryDb.LastUpdated = 0;
+
+                dbContext.Categories.Add(categoryDb);
+                dbContext.SaveChanges();
+            }
+            catch
+            {
+
+            }
+        }
+
+        var listCategories = dbContext.Categories.ToList();
+
+        foreach (var category in listCategories)
+        {
+            string cmcId = category.CMCCategoryId;
+            string response = await ApiCaller.getCategoryWithCoins(cmcId);
+            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(response);
+
+            var coins = new List<Currency>();
+
+            foreach (var coin in myDeserializedClass.data.coins)
+            {
+                var random = new Random();
+                int id = random.Next();
+
+                var currency = new Currency();
+
+                currency.CurrencyId = id;
+                currency.CategoryId = category.CategoryId;
+                currency.CurrencyName = coin.name;
+                currency.TotalSupply = coin.total_supply;
+                currency.CMCId = Convert.ToString(coin.id);
+
+
+                if (coin.quote != null)
+                {
+                    currency.Price = coin.quote.USD.price;
+                    currency.PercentChange1hr = coin.quote.USD.percent_change_1h;
+                    currency.PercentChange7d = coin.quote.USD.percent_change_7d;
+                    currency.MarketCap = coin.quote.USD.market_cap;
+                    currency.PercentChange24Hr = coin.quote.USD.percent_change_24h;
+                }
+
+                currency.Slug = coin.slug;
+                currency.Symbol = coin.symbol;
+                currency.Description = "fawefef";
+
+                dbContext.Currencies.Add(currency);
+                dbContext.SaveChanges();
+
+                coins.Add(currency);
+
+                Thread.Sleep(1000);
+            }
+
+            category.Coins = coins;
+            dbContext.Update(category);
+            dbContext.SaveChanges();
+        }
+    }
+    catch (Exception)
+    {
+    }
 });
 
 // REQUEST 6: update a user

@@ -3,6 +3,7 @@
 //TEMPLATE CODE CREDIT https://coinmarketcap.com/api/documentation/v1/#section/Quick-Start-Guide
 
 //##############################################################################################
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Net;
 using System.Web;
