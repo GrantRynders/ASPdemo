@@ -97,13 +97,6 @@ app.MapGet("/fetch_progress/", async (ApplicationDbContext dbContext) =>
 
 //############## CRUD OPS #######################
 
-//get all users with page
-app.MapGet("/users/{maxId}/{pageId}", async (ApplicationDbContext dbContext) => 
-{
-    return await dbContext.Users.ToListAsync(); 
-});
- 
-
 app.MapGet("/conversions/{pair1}/{pair2}", async (string pair1, string pair2, ApplicationDbContext dbContext) =>
 {
     var dbPair1 = dbContext.Currencies.Where(p => p.Slug == pair1).FirstOrDefault();
