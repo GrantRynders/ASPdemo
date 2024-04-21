@@ -121,6 +121,7 @@ public class PortfolioModel : PageModel
         currentUser = await GetCurrentUser(dbContext);
         try
         {  
+           
             //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
             
             if (!ModelState.IsValid)
@@ -128,7 +129,8 @@ public class PortfolioModel : PageModel
                 return Page(); 
             }
             if (currentUser != null)
-            {
+            { 
+                Console.WriteLine("currentuser != null");
                 if (currentUser.portfolio == null)
                 {
                     Console.WriteLine("Current user portfolio was null");
@@ -205,6 +207,7 @@ public class PortfolioModel : PageModel
         {
             Console.WriteLine("PORTFOLIO SQLITE EXCEPTION");
         }
+        Console.WriteLine("POST finish");
         return RedirectToPage("./Portfolio"); 
     }
     public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext db)
