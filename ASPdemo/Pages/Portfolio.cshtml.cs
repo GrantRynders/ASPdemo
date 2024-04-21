@@ -43,6 +43,8 @@ public class PortfolioModel : PageModel
 
     public PortfolioModel(UserManager<User> userManager, ILogger<IndexModel> logger)
     {
+        PortfolioTokens = new List<PortfolioToken>(); 
+
        _userManager = userManager;
        dbContext = new ApplicationDbContext();
        _logger = logger;
