@@ -192,18 +192,22 @@ public class PortfolioModel : PageModel
                                             }
 
 
-                                            string currentUserId = currentUser.Id;
+                                            if (tokenName != null && tokenName != string.Empty)
+                                            {
+                                                string currentUserId = currentUser.Id;
 
-                                            var portfolioToken = new PortfolioToken();
+                                                var portfolioToken = new PortfolioToken();
 
-                                            portfolioToken.TokenName = tokenName; 
-                                            portfolioToken.UserId = currentUserId;
-                                            portfolioToken.TokenAmount = parsedBalance; 
+                                                portfolioToken.TokenName = tokenName;
+                                                portfolioToken.UserId = currentUserId;
+                                                portfolioToken.TokenAmount = parsedBalance;
 
-                                            dbContext.PortfolioTokens.Add(portfolioToken);
-                                            dbContext.SaveChanges();
+                                                dbContext.PortfolioTokens.Add(portfolioToken);
+                                                dbContext.SaveChanges();
 
-                                            tokenCounter++;
+                                                tokenCounter++; 
+                                            }
+
                                         }
                                     }
 
