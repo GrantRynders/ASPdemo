@@ -540,22 +540,7 @@ namespace ASPdemo.Migrations
                     b.Navigation("role");
 
                     b.Navigation("user");
-                });
-
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.HasOne("ASPdemo.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASPdemo.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                }); 
 
             modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
