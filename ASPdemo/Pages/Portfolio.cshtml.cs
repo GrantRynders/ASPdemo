@@ -86,7 +86,7 @@ public class PortfolioModel : PageModel
                 }   
             else
             {
-                Console.WriteLine("NO TOKENS FOR ROLES TO DISPLAY");
+                Console.WriteLine("NO TOKENS FOR PORTFOLIO TO DISPLAY");
             }
                 
             }
@@ -114,19 +114,71 @@ public class PortfolioModel : PageModel
             {
                 return Page(); 
             }
-
-            if (Search != null)
+            ViewData["address"] = walletAddress;
+            userPortfolio = new Portfolio();
+            HttpClient client = new HttpClient();
+            currentUser = await GetCurrentUser(dbContext);
+            if (currentUser != null)
             {
-                ViewData["SearchTerm"] = Search.SearchTerm; 
-
-                await OnGet(); 
-
-                return Page(); 
+                userPortfolio = currentUser.portfolio; 
+                userName = currentUser.UserName;
+                if (walletAddress != null)
+                {
+                    userPortfolio.WalletAddress = walletAddress;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Current User is null");
+            }
+            if (userPortfolio.WalletAddress != null)
+            {
+                var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
+                ViewData["Test"] = url;
+                string tokens = null;
+                try
+                {
+                    try
+                    {
+                        tokens = await client.GetStringAsync(url.ToString()); 
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        Console.WriteLine("404 ERROR");
+                    }
+                    if (tokens != null && tokens.Length > 0)
+                    {
+                        dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
+                        if (results != null)
+                        {
+                            foreach (dynamic result in results)
+                            {
+                                var value = result.result;
+                                walletValue = double.Parse(value);
+                                Console.WriteLine("Wallet value: " + walletValue);
+                            }
+                            ViewData["value"] = walletValue; 
+                        }
+                        
+                    }   
+                    else
+                    {
+                        Console.WriteLine("NO TOKENS FOR PORTFOLIO TO DISPLAY");
+                    }
+                }
+                catch (HttpRequestException)
+                {
+                    Console.WriteLine("HTTP REQUEST EXCEPTION ON PORTFOLIO POST");
+                }
+                catch (WebException)
+                {
+                    Console.WriteLine("WEB EXCEPTION ON PORTFOLIO POST");
+                }
             }
         }
-        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the portfolio table does not exist yet
         {
-            Console.WriteLine("SQLITE EXCEPTION");
+            Console.WriteLine("PORTFOLIO SQLITE EXCEPTION");
         }
         return RedirectToPage("./Portfolio"); 
     }
