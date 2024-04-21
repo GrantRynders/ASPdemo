@@ -55,8 +55,8 @@ public class AdministrationModel : PageModel
 
     public async Task OnGet()
     {
-        await CreateRoleWithName("Admin");
-        await CreateRoleWithName("Cool Guys");
+        //await CreateRoleWithName("Admin");
+        //await CreateRoleWithName("Cool Guys");
         
 
         roles = new List<Role>(); 

@@ -328,20 +328,55 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// using (var scope = app.Services.CreateScope())  
-// {  
+using (var scope = app.Services.CreateScope())  
+{  
 //     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();  
-//     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();  
-//     ApplicationDbContext dbContext = new ApplicationDbContext();
-//     string roleName = "Admin";  
-//     if (!await roleManager.RoleExistsAsync(roleName))  
+//     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+//     //var emailStore = scope.ServiceProvider.GetRequiredService<IUserEmailStore<User>>();
+        ApplicationDbContext dbContext = new ApplicationDbContext();
+    
+
+
+//     string roleName = "Admin";
+//     var roleStore = new RoleStore<Role>(dbContext);
+
+//     if (!dbContext.Roles.Any(r => r.Name == roleName))
 //     {
-//         Role role = new Role(roleName);
-//         await roleManager.CreateAsync(role);
-//         //dbContext.Roles.Add(role);  
-//         //await dbContext.SaveChangesAsync();
-//     }  
-// }  
+//         await roleStore.CreateAsync(new Role(roleName));
+//     }
+//     User admin = new User();
+//     if (!dbContext.Users.Any(u => u.UserName == admin.UserName))
+//     {
+        
+//         var password = new PasswordHasher<User>();
+//         var hashed = password.HashPassword(admin,"youshallbeasgods");
+//         admin.PasswordHash = hashed;
+
+//         var userStore = new UserStore<User>(dbContext);
+//         var result = userStore.CreateAsync(admin);
+//     }
+//     await dbContext.SaveChangesAsync();
+//     await userManager.AddToRoleAsync(admin, "Admin");
+
+//     // if (!await roleManager.RoleExistsAsync(roleName))  
+//     // {
+//     //     Role role = new Role(roleName);
+//     //     await roleManager.CreateAsync(role);
+//     //     //dbContext.Roles.Add(role);  
+//     //     //await dbContext.SaveChangesAsync();
+//     // }  
+//     // if (await userManager.FindByNameAsync("admin") == null)  
+//     // {
+//     //     User admin = new User();
+//     //     await userManager.SetUserNameAsync(admin, "admin");
+//     //     await userManager.SetEmailAsync(admin, "grantrynders@outlook.com");
+//     //     admin.EmailConfirmed = true;
+//     //     //await emailStore.SetEmailConfirmedAsync(admin, true, CancellationToken.None);
+//     //     await userManager.CreateAsync(admin, "password");
+//     //     await userManager.AddToRoleAsync(admin, "Admin");
+//     // }  
+    
+}  
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

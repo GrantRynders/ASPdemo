@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
 
     public ApplicationDbContext() // MIGRATION DATABASE CONSTRUCTOR
     {
+        //Database.EnsureCreated();
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
         DbPath =System.IO.Path.Join(path, "crypto.db");
@@ -43,6 +44,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
     protected override async void OnModelCreating(ModelBuilder modelBuilder) //data seeding
     {
         //base.OnModelCreating(modelBuilder);
+        Console.WriteLine("------------------------------------------OnModelCreating Initial");
         modelBuilder.Entity<IdentityUserClaim<string>>().HasKey(p => new { p.Id }); 
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasKey(p => new { p.Id });
         modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.UserId });
@@ -71,6 +73,45 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
         .WithOne(e => e.portfolio)
         .HasForeignKey<Portfolio>(e => e.UserId)
         .IsRequired();
+
+
+
+
+
+
+
+
+
+        // var hasher = new PasswordHasher<User>();
+
+        // modelBuilder.Entity<Role>().HasData(
+        //     new Role 
+        //     {
+        //         Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
+        //         Name = "admin",
+        //         NormalizedName = "ADMIN".ToUpper()
+        //     });
+        // modelBuilder.Entity<User>().HasData(
+        //     new User
+        //     {
+        //         Id = "8e445865-a24d-4543-a6c6-9443d048cdb9", // primary key
+        //         UserName = "admin",
+        //         NormalizedUserName = "ADMIN",
+        //         EmailConfirmed = true,
+        //         Email = "grantrynders@outlook.com",
+        //         NormalizedEmail = "GRANTRYNDERS@OUTLOOK.COM",
+        //         PasswordHash = hasher.HashPassword(null, "youshallbeasgods")
+        //     }
+        // );
+
+        // //Seeding the relation between our user and role to AspNetUserRoles table
+        // modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+        //     new IdentityUserRole<string>
+        //     {
+        //         RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210", 
+        //         UserId = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+        //     }
+        // );
     }
 
 
