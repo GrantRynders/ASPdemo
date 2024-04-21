@@ -1,0 +1,40 @@
+﻿@page
+@model ASPdemo.Pages.AddDataModel
+@{
+}
+
+<script>
+    var url = "http://127.0.0.1:5220/fetch_progress";
+
+        setInterval(() => {
+            fetch(url)
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json); 
+                })
+        }, 1000)
+
+    function AddCoinsAndCategories(event){
+        event.preventDefault(); 
+        // https://stackoverflow.com/questions/11563638/how-do-i-get-the-value-of-text-input-field-using-javascript
+        var numCoins = 10; 
+        var numCategories = 10;
+
+        var url = "http://127.0.0.1:5220/start_fetch"; 
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'NumCoins': numCoins, 'NumCategories': numCategories })
+        }).then(res => res.json())
+            .then(res => console.log(res));
+    }
+</script>
+<h1>No data? Click submit. Watch the progress and don't close the tab!</h1>
+<text style="color:red">Warning: </text> running this first deletes all of the categories and currencies first. 
+<form method="post" onsubmit="AddCoinsAndCategories(event)"> 
+    <input type="submit"/>
+</form>
