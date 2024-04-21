@@ -115,6 +115,7 @@ public class PortfolioModel : PageModel
     public async Task<IActionResult> OnPost()
     {
         ViewData["address"] = walletAddress;
+        Console.WriteLine("Wallet address: " + walletAddress);
         HttpClient client = new HttpClient();
         currentUser = await GetCurrentUser(dbContext);
         try

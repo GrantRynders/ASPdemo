@@ -40,7 +40,7 @@
     <text>@ViewData["Test"]</text>
     <form method="post">
         <input type="text" asp-for="@Model.walletAddress" placeholder="Wallet Address"/>
-       <input type="submit" />
+        <input type="submit" />
     </form>
     @if (SignInManager.IsSignedIn(User))
     {   
