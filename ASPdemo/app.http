@@ -3,7 +3,7 @@
 
 ###
 //add a role
-POST {{WebApiHost}}/roles/EnterpriseUsers
+POST {{WebApiHost}}/roles/Rookies
 
 ###
 //get a chunk of ten categories and their currencies
@@ -24,5 +24,9 @@ GET {{WebApiHost}}/roles/0
 ###
 //get all users
 GET {{WebApiHost}}/users
+
+###
+
+PUT {{WebApiHost}}/roles/1404e1fd-56f0-4161-9f88-d5f80d6c4b3f/0f61e38c-9084-482c-8a42-84c937c96cd4
 
 ###

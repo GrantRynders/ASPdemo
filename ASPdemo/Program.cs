@@ -55,7 +55,9 @@ builder.Services.AddIdentity<User, Role>(options => options.SignIn.RequireConfir
 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI()
 .AddUserStore<UserStore<User, Role, ApplicationDbContext, string>>()
 .AddRoleStore<RoleStore<Role, ApplicationDbContext, string>>();
-
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddQuartz(q =>
 {
     var jobKey = new JobKey("CryptoJob");
@@ -151,8 +153,16 @@ app.MapPut("/roles/{RoleId}/{UserId}", async (string RoleId, string UserId, Appl
         User user = db.Users.Find(UserId);
         if (user != null)
         {
+            if (role.Users == null)
+            {
+                role.Users = new List<User>();
+            }
             role.Users.Add(user);
             db.Entry(role).State = EntityState.Modified;
+            if (user.Roles == null)
+            {
+                user.Roles = new List<Role>();
+            }
             user.Roles.Add(role);
             db.Entry(user).State = EntityState.Modified;
             await db.SaveChangesAsync();
