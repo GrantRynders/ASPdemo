@@ -4,13 +4,25 @@
 }
 
 <script>
+    var shouldDisplay = false; 
     var url = "http://127.0.0.1:5220/fetch_progress";
 
         setInterval(() => {
             fetch(url)
                 .then(response => response.json())
-                .then(json => {
-                    console.log(json); 
+                .then(json => { 
+                    if (shouldDisplay){
+                        if (json != null && json != "") {
+                            var currenciesCount = json['CurrenciesCount'];
+                            var categoriesCount = json['CategoriesCount']; 
+
+                            const progressCategories = document.getElementById("progressCategories");
+                            progressCategories.innerText = categoriesCount+"/200"; 
+
+                            const progressCurrencies = document.getElementById("progressCurrencies");
+                            progressCurrencies.innerText = currenciesCount+"/200"; 
+                        }
+                    }
                 })
         }, 1000)
 
@@ -22,19 +34,35 @@
 
         var url = "http://127.0.0.1:5220/start_fetch"; 
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 'NumCoins': numCoins, 'NumCategories': numCategories })
-        }).then(res => res.json())
+        shouldDisplay = true; 
+
+        fetch(url,
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'NumCoins': numCoins, 'NumCategories': numCategories })
+            }).then(res => res.json())
             .then(res => console.log(res));
     }
 </script>
+<style>
+
+</style>
 <h1>No data? Click submit. Watch the progress and don't close the tab!</h1>
-<text style="color:red">Warning: </text> running this first deletes all of the categories and currencies first. 
+<text style="color:red; font-weight:bold">Warning: </text> running this first deletes all of the categories and currencies first. 
 <form method="post" onsubmit="AddCoinsAndCategories(event)"> 
     <input type="submit"/>
 </form>
+<h1>Step 1: Update categories</h1>
+<div id="categoriesProgress">
+    <text>Progress:</text>
+    <text id="progressCategories">0/200</text>
+</div>
+<h1>Step 2: Update currencies</h1>
+<div id="currenciesProgress">
+    <text>Progress: </text>
+    <text id="progressCurrencies">0/200</text>
+</div>
