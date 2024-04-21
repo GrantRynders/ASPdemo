@@ -23,7 +23,7 @@ public class AdministrationModel : PageModel
     public Role joinableRole { get; set; }
 
     public List<User> users { get; set; }
-     [FromQuery]
+    [FromQuery]
     public int SkipId { get; set; }
     [FromQuery]
     public int SkipPrevious { get; set; }
@@ -186,7 +186,7 @@ public class AdministrationModel : PageModel
         {
             Role newRole = new Role(roleName);
             Console.WriteLine(roleName + "'s ID: " + newRole.Id);
-            Boolean done = false;
+            bool done = false;
             while (done == false)
             {
                 if (await _roleManager.FindByIdAsync(newRole.Id) != null) //this makes sure we don't make duplicate IDs
@@ -200,11 +200,11 @@ public class AdministrationModel : PageModel
                 }
             }
             Console.WriteLine(newRole.Name);
-            dbContext.Update(newRole);
-            dbContext.Entry(newRole).State = EntityState.Modified;
+            //dbContext.Update(newRole);
+            //dbContext.Entry(newRole).State = EntityState.Modified;
             //await dbContext.SaveChangesAsync();
 
-            //await _roleManager.CreateAsync(newRole);
+            await _roleManager.CreateAsync(newRole);
         }
         else
         {
