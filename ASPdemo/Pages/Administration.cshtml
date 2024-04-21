@@ -39,6 +39,10 @@
     {
         url = "/Roles/?SkipId=" + 10;
     }
+    async Task Join(Role role)
+    {
+        Console.WriteLine("Wowie Zowie");
+    }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -76,10 +80,12 @@
                     @foreach (Entities.Role role in Model.roles)
                     {
                         <h1>Role: @role.Name</h1>
-                        @* <form method="post" action="/page?handler=button"> *@
-                        <form method="post">
+                        @* <form method="post">
                             <button asp-page-handler="Join(@role)" class="btn btn-default">Join Role</button>
-                        </form>
+                        </form> *@
+                        @* <button onclick="Join(role)">
+                            Join Role
+                        </button> *@
                         <tbody>
                             @if (users != null)
                             {
