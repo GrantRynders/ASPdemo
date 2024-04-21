@@ -64,6 +64,7 @@ public class PortfolioModel : PageModel
         }
         if (userPortfolio.WalletAddress != null)
         {
+            //this uses my personal APIkey. The etherscan account name is scarfkid, password is Majora2000# if you need the stats
             var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
             ViewData["Test"] = url;
             string tokens = null;

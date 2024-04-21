@@ -80,7 +80,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
 
 
 
-
+        //seeding user and role table
 
         var hasher = new PasswordHasher<User>();
 
