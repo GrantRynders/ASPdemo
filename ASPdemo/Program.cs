@@ -325,20 +325,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-using (var scope = app.Services.CreateScope())  
-{  
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();  
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();  
-    ApplicationDbContext dbContext = new ApplicationDbContext();
-    string roleName = "Admin";  
-    if (!await roleManager.RoleExistsAsync(roleName))  
-    {
-        Role role = new Role(roleName);
-        //await roleManager.CreateAsync(role);
-        dbContext.Roles.Add(role);  
-        await dbContext.SaveChangesAsync();
-    }  
-}  
+// using (var scope = app.Services.CreateScope())  
+// {  
+//     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();  
+//     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();  
+//     ApplicationDbContext dbContext = new ApplicationDbContext();
+//     string roleName = "Admin";  
+//     if (!await roleManager.RoleExistsAsync(roleName))  
+//     {
+//         Role role = new Role(roleName);
+//         //await roleManager.CreateAsync(role);
+//         dbContext.Roles.Add(role);  
+//         await dbContext.SaveChangesAsync();
+//     }  
+// }  
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
