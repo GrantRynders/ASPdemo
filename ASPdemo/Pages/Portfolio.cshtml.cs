@@ -130,11 +130,16 @@ public class PortfolioModel : PageModel
             {
                 if (currentUser.portfolio == null)
                 {
+                    Console.WriteLine("Current user portfolio was null");
                     currentUser.portfolio = new Portfolio() {
                         WalletAddress = "",
                         PortfolioValue = 0,
                         UserId = currentUser.Id
                     };
+                }
+                else
+                {
+                    Console.WriteLine("User portfolio is in fact not null"); 
                 }
                 userName = currentUser.UserName;
                 if (walletAddress != null)

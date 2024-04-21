@@ -20,6 +20,8 @@ public class AdministrationModel : PageModel
     [BindProperty]
     public List<Role> roles { get; set; }
 
+    public Role joinableRole { get; set; }
+
     public List<User> users { get; set; }
      [FromQuery]
     public int SkipId { get; set; }
@@ -131,6 +133,7 @@ public class AdministrationModel : PageModel
     }
     public async Task<IActionResult> OnPost()
     {
+        Console.WriteLine("POST");
         try
         {  
             //https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-8.0&tabs=visual-studio
@@ -188,7 +191,6 @@ public class AdministrationModel : PageModel
             {
                 if (await _roleManager.FindByIdAsync(newRole.Id) != null) //this makes sure we don't make duplicate IDs
                 {
-                    Console.WriteLine("Gabagool");
                     newRole.Id = Guid.NewGuid().ToString();
                     done = false;
                 }
@@ -222,5 +224,10 @@ public class AdministrationModel : PageModel
                 await dbContext.SaveChangesAsync();
             }
         }
+    }
+    public async Task OnPostJoin(Role role)
+    {   
+        Console.WriteLine("Yippeee");
+        await JoinRole(role);
     }
 }
