@@ -11,6 +11,7 @@
     var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
     var previousUrl = "";
+    var value = ViewData["value"];
 
     if (skipId != null)
     {
@@ -33,7 +34,7 @@
 
 <div class="text-center">
     <h1 class="display-4">@Model.userName's Portfolio</h1>
-    <h1 class="display-4">Value: $@if(@Model.userPortfolio != null){@Model.userPortfolio.PortfolioValue}</h1>
+    <h1 class="display-4">Value: $@value</h1>
     <text>@ViewData["Test"]</text>
     @if (SignInManager.IsSignedIn(User))
     {   
