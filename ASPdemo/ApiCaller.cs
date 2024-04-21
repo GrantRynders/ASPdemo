@@ -4,6 +4,7 @@
 
 //##############################################################################################
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RestSharp;
 using System;
 using System.Net;
 using System.Web;
@@ -16,6 +17,43 @@ public class ApiCaller
   public static void Main(string[] args)
   {
   }
+
+    public static async Task<string> getTokensAndBalances(string walletAddress)
+    {
+        var url = "https://eth-mainnet.g.alchemy.com/v2/zHyOaZ4njRcWrjIiO-8yy-C-4swslzEG";
+
+        var options = new RestClientOptions(url)
+        {
+            RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+        };
+
+        var client = new RestClient(options);
+        var request = new RestRequest("");
+        request.AddHeader("accept", "application/json");
+        request.AddJsonBody("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"alchemy_getTokenBalances\",\"params\":[" +
+        '"' + walletAddress + '"' + "]}", false);
+        var response = await client.PostAsync(request);
+
+        return response.Content;
+    }
+
+    public static async Task<string> getTokenNameFromContract(string contractAddress)
+    {
+        // 0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2
+        var url = "https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=" + contractAddress + "" +
+            "&apikey=HCM6XPJS2XHRWI4UATNGYA4ZK2EBKPWGAG+&page=1&offset=5";
+        var options = new RestClientOptions(url)
+        {
+            RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
+        };
+
+        var request = new RestRequest("");
+
+        var client = new RestClient(options);
+        var response = await client.GetAsync(request);
+
+        return response.Content;
+    }
 
     public static async Task<string> getCategoryWithCoins(string id)
     {

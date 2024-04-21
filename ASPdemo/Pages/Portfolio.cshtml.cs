@@ -8,6 +8,8 @@ using ASPdemo.Database;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ASPdemo.Pages;
 
@@ -18,14 +20,20 @@ public class PortfolioModel : PageModel
     public string SearchTerm {  get; set; }
     public int SkipId { get; set; }
 
+    [BindProperty]
+    public List<PortfolioToken> PortfolioTokens { get; set; }
+
+    [BindProperty]
+    public TempPortfolio? TempPortfolio { get; set; }
+
     [FromQuery]
     public int SkipPrevious { get; set; }
     [MaxLength(42)]
-    public string? walletAddress { get; set; }
-    public double walletValue { get; set; }
-
     [BindProperty]
-    public Search? Search { get; set; }
+    public string? walletAddress { get; set; }
+    [BindProperty]
+    public decimal walletValue { get; set; }
+
     public User? currentUser { set; get; }
     public Portfolio? userPortfolio { get; set; }
     public string? userName { get; set; }
@@ -62,60 +70,22 @@ public class PortfolioModel : PageModel
         {
             Console.WriteLine("Current User is null");
         }
-        if (userPortfolio.WalletAddress != null)
+
+        try
         {
-            //this uses my personal APIkey. The etherscan account name is scarfkid188, password is Majora2000# if you need the stats
-            var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
-            ViewData["Test"] = url;
-            string tokens = null;
-            try
-            {
-                try
-                {
-                    tokens = await client.GetStringAsync(url.ToString()); 
-                }
-                catch (HttpRequestException ex)
-                {
-                    Console.WriteLine("404 ERROR");
-                }
-                if (tokens != null && tokens.Length > 0)
-                {
-                    dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
-                    if (results != null)
-                    {
-                        foreach (dynamic result in results)
-                        {
-                            var value = result.result;
-                            walletValue = double.Parse(value);
-                            Console.WriteLine("Wallet value: " + walletValue);
-                        }
-                        ViewData["value"] = walletValue; 
-                    }
-                    
-                }   
-            else
-            {
-                Console.WriteLine("NO TOKENS FOR PORTFOLIO TO DISPLAY");
-            }
-                
-            }
-            catch (Microsoft.Data.Sqlite.SqliteException) //catches if table is crapped
-            {
-                Console.WriteLine("TABLE DOES NOT EXIST");
-            }
-            catch (HttpRequestException)
-            {
-                Console.WriteLine("HTTP REQUEST EXCEPTION ON PORTFOLIO GET");
-            }
-            catch (WebException)
-            {
-                Console.WriteLine("WEB EXCEPTION ON PORTFOLIO GET");
-            }
+            PortfolioTokens = dbContext.PortfolioTokens.Where(p => p.UserId == currentUser.Id).ToList();
+        }
+        catch
+        {
+
         }
     }
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(TempPortfolio tempPortfolio)
     {
-        ViewData["address"] = walletAddress;
+        dbContext.PortfolioTokens.ExecuteDelete();
+        dbContext.SaveChanges(); 
+
+        walletAddress = tempPortfolio.WalletAddress;
         Console.WriteLine("Wallet address: " + walletAddress);
         HttpClient client = new HttpClient();
         currentUser = await GetCurrentUser(dbContext);
@@ -135,29 +105,33 @@ public class PortfolioModel : PageModel
                 {
                     Console.WriteLine("Current user portfolio was null");
                     currentUser.portfolio = new Portfolio() {
-                        WalletAddress = "",
+                        WalletAddress = "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be",
                         PortfolioValue = 0,
                         UserId = currentUser.Id
                     };
+
+
                 }
                 else
-                {
+                { 
                     Console.WriteLine("User portfolio is in fact not null"); 
                 }
                 userName = currentUser.UserName;
-                if (walletAddress != null)
+                if (tempPortfolio.WalletAddress != null && tempPortfolio.WalletAddress != string.Empty)
                 {
-                    currentUser.portfolio.WalletAddress = walletAddress;
+                    currentUser.portfolio.WalletAddress = tempPortfolio.WalletAddress;
                 }
                 else
                 {
                     Console.WriteLine("View data wallet address is null");
                 }
-                if (currentUser.portfolio.WalletAddress != null)
+                if (currentUser.portfolio.WalletAddress != null && currentUser.portfolio.WalletAddress != string.Empty)
                 {
                     var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
                     ViewData["Test"] = url;
                     string tokens = null;
+
+                    Console.WriteLine(url.ToString());
                     try
                     {
                         try
@@ -173,14 +147,72 @@ public class PortfolioModel : PageModel
                             dynamic results = JsonConvert.DeserializeObject<dynamic>(tokens);
                             if (results != null)
                             {
-                                foreach (dynamic result in results)
+                                dynamic result = results.result;
+                                double test = Convert.ToDouble(result);
+                                walletValue = Decimal.Parse(
+                                        test.ToString(),
+                                        NumberStyles.Any,
+                                         CultureInfo.InvariantCulture);
+
+                                var tokensAndBalances = await ApiCaller.getTokensAndBalances(tempPortfolio.WalletAddress); 
+                                
+                                if (tokensAndBalances != null && tokensAndBalances.Length > 0)
                                 {
-                                    var value = result.result;
-                                    walletValue = double.Parse(value);
-                                    Console.WriteLine("Wallet value: " + walletValue);
+                                    dynamic tokenResults = JsonConvert.DeserializeObject(tokensAndBalances);
+
+                                    dynamic rlTokenResults = tokenResults.result;
+                                    dynamic tokenBalances = rlTokenResults.tokenBalances;
+
+                                    var tokenCounter = 0;
+
+                                    foreach (var token in tokenBalances)
+                                    {
+                                        if (tokenCounter <= 15)
+                                        {
+                                            string contractAddress = token.contractAddress;
+                                            string tokenBalance = token.tokenBalance;
+
+                                            string parsedBalance = ConvertBalance(tokenBalance);
+
+                                            string tokenNameResult = await ApiCaller.getTokenNameFromContract(contractAddress);
+                                            dynamic tokenNameConvert = JsonConvert.DeserializeObject<dynamic>(tokenNameResult);
+                                            dynamic resultResponse = tokenNameConvert.result;
+
+                                            string tokenName = ""; 
+
+                                            try
+                                            {
+                                                tokenName = resultResponse[0].tokenName;
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+
+
+                                            string currentUserId = currentUser.Id;
+
+                                            var portfolioToken = new PortfolioToken();
+
+                                            portfolioToken.TokenName = tokenName; 
+                                            portfolioToken.UserId = currentUserId;
+                                            portfolioToken.TokenAmount = parsedBalance; 
+
+                                            dbContext.PortfolioTokens.Add(portfolioToken);
+                                            dbContext.SaveChanges();
+
+                                            tokenCounter++;
+                                        }
+                                    }
+
+                                    PortfolioTokens = dbContext.PortfolioTokens.Where(p => p.UserId == currentUser.Id).ToList(); 
+
+                                    return Page(); 
+
                                 }
-                                ViewData["value"] = walletValue; 
                             }
+
+                            return Page(); 
                             
                         }   
                         else
@@ -210,6 +242,12 @@ public class PortfolioModel : PageModel
         Console.WriteLine("POST finish");
         return RedirectToPage("./Portfolio"); 
     }
+
+    public static string ConvertBalance(string balance)
+    {
+        string obj = new System.ComponentModel.Int128Converter().ConvertFromString(balance).ToString();
+        return obj; 
+    }
     public async Task<Entities.User?> GetCurrentUser(ApplicationDbContext db)
     {
         try
@@ -223,4 +261,9 @@ public class PortfolioModel : PageModel
             return null;
         }
     }
+}
+
+public class TempPortfolio()
+{
+    public string WalletAddress { get; set; }
 }

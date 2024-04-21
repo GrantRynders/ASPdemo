@@ -10,9 +10,7 @@
     var skipId = ViewData["SkipId"];
     var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
-    var previousUrl = "";
-    var value = ViewData["value"];
-    var address = ViewData["address"];
+    var previousUrl = ""; 
 
     if (skipId != null)
     {
@@ -32,14 +30,33 @@
     }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+<style>
+    tbody tr:nth-child(even) {
+        background: gray;
+        border: 0px;
+        color: #000;
+    }
 
+    tbody tr:nth-child(odd) {
+        background: #0d6efd;
+        color: white;
+    }
+</style>
 <div class="text-center">
-    <h1 class="display-4">@Model.userName's Portfolio</h1>
-    <h1 class="display-4">Value: $@value</h1>
-    <h1 class="display-4">Address: @address</h1>
-    <text>Url: @ViewData["Test"]</text>
+    @if (Model.userName == "" || Model.userName == string.Empty)
+    {
+        <h1 class="display-4" style="font-size:20px; font-weight:bold">Please login</h1>
+    }
+    else
+    {
+        <h1 class="display-4" style="font-size:20px; font-weight:bold">@Model.userName's Portfolio</h1>
+    }
+    <h1 class="display-4" style="font-size:20px; font-weight:bold">Value:</h1> <text style="font-size:20px">@Model.walletValue</text>
+    <h1 class="display-4" style="font-size:20px; font-weight:bold">Address: @Model.walletAddress</h1> 
+    <h1 class="display-4" style="font-size:20px">Try it out with this address: 0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be</h1>
+    <h1 class="display-4" style="font-size:20px; color: red">Warning: takes around 10 seconds to pull listings, be patient </h1>
     <form method="post">
-        <input type="text" asp-for="@Model.walletAddress" placeholder="Wallet Address"/>
+        <input type="text" asp-for="@Model.TempPortfolio!.WalletAddress" placeholder="Wallet Address"/>
         <input type="submit" />
     </form>
     @if (SignInManager.IsSignedIn(User))
@@ -50,66 +67,19 @@
                     Name
                 </th>
                 <th>
-                    Price
-                </th> 
-                <th>
-                    24h %
-                </th>
-                <th>
-                    7d %
-                </th>
-                <th>
-                    Market Cap
-                </th>
+                    Amount
+                </th>  
             </thead>
-            @if (Model.currentUser != null)
-            {
-                @if (Model.currentUser.portfolio != null)
+            <tbody>
+                @foreach (Entities.PortfolioToken token in Model.PortfolioTokens)
                 {
-                    @if (Model.currentUser.portfolio.currencies != null)
-                    {
-                        @if (Model.currentUser.portfolio.currencies.Count != 0)
-                        {
-                            @foreach (Entities.Currency currency in Model.currentUser.portfolio.currencies)
-                            {
-                                <tbody>
-                                    <tr>
-                                        <td>@currency.CurrencyName</td>
-                                        <td>@currency.Price</td>
-                                        <td>@currency.PercentChange24Hr</td>
-                                        <td>@currency.PercentChange7d</td>
-                                        <td>@currency.MarketCap</td>
-                                    </tr>
-                                </tbody>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <p>Uh oh currencies is null</p>
-                    }
+                    <tr>
+                        <td>@token.TokenName</td>
+                        <td>@token.TokenAmount</td>
+                    </tr>
                 }
-                else
-                {
-                    <p> Uh oh the portfolio is null</p>
-                }
-            }
-            else
-            {
-                <p> uh oh current user is null</p>
-            }
+            </tbody>
         </table>
-        @if (Model.userPortfolio != null)
-        {
-            @if (Model.userPortfolio.currencies != null)
-            {
-                @if (Model.userPortfolio.currencies.Count > 0)
-                {
-                    <a href="@url" class="btn btn-primary">Next</a>
-                }
-                <a href="@previousUrl" class="btn btn-primary">Previous</a>
-            }
-        }
     }
     else
     {

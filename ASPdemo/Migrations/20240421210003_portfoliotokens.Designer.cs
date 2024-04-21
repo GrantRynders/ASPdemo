@@ -3,6 +3,7 @@ using System;
 using ASPdemo.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240421210003_portfoliotokens")]
+    partial class portfoliotokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -256,9 +259,8 @@ namespace ASPdemo.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("PortfolioTokenId");
 
@@ -292,7 +294,7 @@ namespace ASPdemo.Migrations
                         new
                         {
                             Id = "2c5e174e-3b0e-446f-86af-483d56fd7210",
-                            ConcurrencyStamp = "a94c3698-13e4-4c98-ba3a-be341f99f3c9",
+                            ConcurrencyStamp = "028394ee-9773-49bf-8e08-12e2d437ff38",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -367,17 +369,17 @@ namespace ASPdemo.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7b2167f2-1fc8-4245-89f2-837ef86c3408",
+                            ConcurrencyStamp = "687aebbf-7942-4c6a-9af7-95961fdb0444",
                             Email = "grantrynders@outlook.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "GRANTRYNDERS@OUTLOOK.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA+4RxxlhWrUAsrpZ09k+etnk+XcOo2I9jEHM711r/UPXSlMeu9NZiAtcuvk2OUfxw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGsr+mgDTBwmkKfM0SZkp6CRhllNp4+t7egOiHDPxNYEtPCWmUBZ/vhp4TIUo5aibg==",
                             PermissionsLevel = 0,
                             PhoneNumberConfirmed = false,
                             PortfolioId = 0,
-                            SecurityStamp = "b7cb266c-a44a-4c0f-9fa7-e3e2adf3a1d5",
+                            SecurityStamp = "d7dfa50e-bf5d-466b-a7d1-a60efc66f8e0",
                             TwoFactorEnabled = false,
                             UserId = 0,
                             UserName = "admin"

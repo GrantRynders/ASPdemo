@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace ASPdemo.Database;
 public class ApplicationDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, IdentityUserRole<string>, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
 {
+    public DbSet<PortfolioToken> PortfolioTokens { get; set; }
     public DbSet<Conversion> Conversions {  get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
     public override DbSet<User> Users {get; set;}
@@ -30,6 +31,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
         DbPath =System.IO.Path.Join(path, "crypto.db");
+
+        Database.EnsureCreated(); 
     }
     
 
