@@ -113,19 +113,20 @@ public class PortfolioModel : PageModel
             { 
 
                 Console.WriteLine("currentuser != null");
-                if (dbContext.Portfolios.Where(p => p.UserId == currentUser.Id) == null)
+                if (dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault() == null)
                 {
                     Console.WriteLine("Current user portfolio was null");
                     Portfolio portfolio = new Portfolio();
                     portfolio.WalletAddress = "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be";
                     portfolio.PortfolioValue = 0;
+                    portfolio.user = currentUser;
                     portfolio.UserId = currentUser.Id;
                     dbContext.Portfolios.Add(portfolio);
                     dbContext.SaveChanges();
                 }
                 else
                 { 
-                    Console.WriteLine("User portfolio is in fact not null"); 
+                    Console.WriteLine("User portfolio is in fact not null");
                 }
                 userName = currentUser.UserName;
                 dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress = walletAddress;
