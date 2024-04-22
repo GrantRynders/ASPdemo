@@ -129,16 +129,16 @@ public class PortfolioModel : PageModel
                     Console.WriteLine("User portfolio is in fact not null");
                 }
                 userName = currentUser.UserName;
-                dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress = walletAddress;
+                //dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress = walletAddress;
                 Console.WriteLine("Wallet address: " + dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress);
-                // if (tempPortfolio.WalletAddress != null && tempPortfolio.WalletAddress != string.Empty)
-                // {
-                //     currentUser.portfolio.WalletAddress = tempPortfolio.WalletAddress;
-                // }
-                // else
-                // {
-                //     Console.WriteLine("View data wallet address is null");
-                // }
+                 if (tempPortfolio.WalletAddress != null && tempPortfolio.WalletAddress != string.Empty)
+                 {
+                    currentUser.portfolio = dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault();
+                }
+                else
+                 {
+                     Console.WriteLine("View data wallet address is null");
+                }
                 if (dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress != string.Empty)
                 {
                     var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
