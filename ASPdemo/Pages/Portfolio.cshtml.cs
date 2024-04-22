@@ -84,6 +84,7 @@ public class PortfolioModel : PageModel
     }
     public async Task<IActionResult> OnPost(TempPortfolio tempPortfolio)
     {
+        
         try
         {
             dbContext.PortfolioTokens.ExecuteDelete();

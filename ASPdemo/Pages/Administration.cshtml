@@ -48,46 +48,62 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <text>@ViewData["Test"]</text>
-    <p>Here admins can take away your human rights ;)</p>
     @if (SignInManager.IsSignedIn(User))
     {
-        @if (User.IsInRole("admin"))
-        {
-            <p>Welcome home boss</p>
-        }
-        else
-        {
-            <p>You're not an admin you silly goose</p>
-            <form method="post">
-                <input asp-for="Search!.SearchTerm" placeholder="Search Roles by Name"/>
-            <input type="submit" />
-            </form>
-            
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <h1>Name</h1>
-                        </th>
-                        <th>
-                            <h1>Email</h1>
-                        </th>
-                    </tr>
-                </thead>
-                @if (Model.filteredRoles == null) //Displays all categories if no filter is selected
+        <p>You're not an admin you silly goose</p>
+        <form method="post">
+            <input asp-for="Search!.SearchTerm" placeholder="Search Roles by Name"/>
+        <input type="submit" />
+        </form>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <h1>Name</h1>
+                    </th>
+                    <th>
+                        <h1>Email</h1>
+                    </th>
+                </tr>
+            </thead>
+            @if (Model.filteredRoles == null) //Displays all categories if no filter is selected
+            {
+                @foreach (Entities.Role role in Model.roles)
                 {
-                    @foreach (Entities.Role role in Model.roles)
-                    {
-                        <h1>Role: @role.Name</h1>
-                        <h3>Id: @role.Id</h3>
-                        @* <form method="post">
-                            <button asp-page-handler="Join(@role)" class="btn btn-default">Join Role</button>
-                        </form> *@
-                        @* <button onclick="Join(role)">
-                            Join Role
-                        </button> *@
-                        <tbody>
+                    <h1>Role: @role.Name</h1>
+                    <h3>Id: @role.Id</h3>
+                    @* <form method="post">
+                        <button asp-page-handler="Join(@role)" class="btn btn-default">Join Role</button>
+                    </form> *@
+                    @* <button onclick="Join(role)">
+                        Join Role
+                    </button> *@
+                    <tbody>
+                        @if (users != null)
+                        {
+                            @foreach (Entities.User user in users)
+                            {
+                                <td>
+                                    @user.UserName
+                                </td>
+                                <td>
+                                    @user.Email
+                                </td>
+                            }
+                        }
+                        
+                    </tbody>
+                }
+            }
+            else //displays filtered categories
+            {
+                @foreach (Entities.Role role in Model.filteredRoles)
+                {
+                    <h1>Role: @role.Name</h1>
+                    <h3>Id: @role.Id</h3>
+                    <tbody>
+                        <tr>
                             @if (users != null)
                             {
                                 @foreach (Entities.User user in users)
@@ -100,43 +116,18 @@
                                     </td>
                                 }
                             }
-                            
-                        </tbody>
-                    }
+                        </tr>
+                    </tbody>
                 }
-                else //displays filtered categories
-                {
-                    @foreach (Entities.Role role in Model.filteredRoles)
-                    {
-                        <h1>Role: @role.Name</h1>
-                        <h3>Id: @role.Id</h3>
-                        <tbody>
-                            <tr>
-                                @if (users != null)
-                                {
-                                    @foreach (Entities.User user in users)
-                                    {
-                                        <td>
-                                            @user.UserName
-                                        </td>
-                                        <td>
-                                            @user.Email
-                                        </td>
-                                    }
-                                }
-                            </tr>
-                        </tbody>
-                    }
-                }
-            </table>
-            @if (Model.roles != null)
-            {
-                @if (Model.roles.Count > 0)
-                {
-                    <a href="@url" class="btn btn-primary">Next</a>
-                }
-                <a href="@previousUrl" class="btn btn-primary">Previous</a>
             }
+        </table>
+        @if (Model.roles != null)
+        {
+            @if (Model.roles.Count > 0)
+            {
+                <a href="@url" class="btn btn-primary">Next</a>
+            }
+            <a href="@previousUrl" class="btn btn-primary">Previous</a>
         }
     }
     else
