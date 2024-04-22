@@ -44,7 +44,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
             optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
     }
-    protected override async void OnModelCreating(ModelBuilder modelBuilder) //data seeding
+    protected override void OnModelCreating(ModelBuilder modelBuilder) //data seeding
     {
         //base.OnModelCreating(modelBuilder);
         Console.WriteLine("------------------------------------------OnModelCreating Initial");
@@ -86,7 +86,6 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
         //seeding user and role table
 
         var hasher = new PasswordHasher<User>();
-
         modelBuilder.Entity<Role>().HasData(
             new Role() 
             {
