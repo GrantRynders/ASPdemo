@@ -123,7 +123,7 @@ app.MapGet("/listings/all", async (ApplicationDbContext db) =>
 });
 app.MapGet("/users", async (ApplicationDbContext db) =>
 {
-    var all = db.Users.Include(p => p.Roles).ToList();
+    var all = db.Users.Include(p => p.Roles).Include(p => p.portfolio).ToList();
     return all;
 });
 

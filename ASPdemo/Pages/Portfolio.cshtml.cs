@@ -84,17 +84,17 @@ public class PortfolioModel : PageModel
     }
     public async Task<IActionResult> OnPost(TempPortfolio tempPortfolio)
     {
-        
-        try
-        {
-            dbContext.PortfolioTokens.ExecuteDelete();
-            dbContext.SaveChanges(); 
-        }
-        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
-        {
-            Console.WriteLine("NO PORTFOLIOS TOKENS TABLE YET! CRAAAAAAAAAAAAAP!");
-            return null;
-        }
+
+        // try
+        // {
+        //     dbContext.PortfolioTokens.ExecuteDelete();
+        //     dbContext.SaveChanges(); 
+        // }
+        // catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
+        // {
+        //     Console.WriteLine("NO PORTFOLIOS TOKENS TABLE YET! CRAAAAAAAAAAAAAP!");
+        //     return null;
+        // }
 
         walletAddress = tempPortfolio.WalletAddress;
         Console.WriteLine("Wallet address: " + walletAddress);
@@ -111,31 +111,33 @@ public class PortfolioModel : PageModel
             }
             if (currentUser != null)
             { 
+
                 Console.WriteLine("currentuser != null");
-                if (currentUser.portfolio == null)
+                if (dbContext.Portfolios.Where(p => p.UserId == currentUser.Id) == null)
                 {
                     Console.WriteLine("Current user portfolio was null");
-                    currentUser.portfolio = new Portfolio() {
-                        WalletAddress = "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be",
-                        PortfolioValue = 0,
-                        UserId = currentUser.Id
-                    };
-
-
+                    Portfolio portfolio = new Portfolio();
+                    portfolio.WalletAddress = "0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be";
+                    portfolio.PortfolioValue = 0;
+                    portfolio.UserId = currentUser.Id;
+                    dbContext.Portfolios.Add(portfolio);
+                    dbContext.SaveChanges();
                 }
                 else
                 { 
                     Console.WriteLine("User portfolio is in fact not null"); 
                 }
                 userName = currentUser.UserName;
-                if (tempPortfolio.WalletAddress != null && tempPortfolio.WalletAddress != string.Empty)
-                {
-                    currentUser.portfolio.WalletAddress = tempPortfolio.WalletAddress;
-                }
-                else
-                {
-                    Console.WriteLine("View data wallet address is null");
-                }
+                dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress = walletAddress;
+                Console.WriteLine("Wallet address: " + dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress);
+                // if (tempPortfolio.WalletAddress != null && tempPortfolio.WalletAddress != string.Empty)
+                // {
+                //     currentUser.portfolio.WalletAddress = tempPortfolio.WalletAddress;
+                // }
+                // else
+                // {
+                //     Console.WriteLine("View data wallet address is null");
+                // }
                 if (currentUser.portfolio.WalletAddress != null && currentUser.portfolio.WalletAddress != string.Empty)
                 {
                     var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
@@ -219,7 +221,6 @@ public class PortfolioModel : PageModel
 
                                         }
                                     }
-
                                     PortfolioTokens = dbContext.PortfolioTokens.Where(p => p.UserId == currentUser.Id).ToList(); 
 
                                     return Page(); 
