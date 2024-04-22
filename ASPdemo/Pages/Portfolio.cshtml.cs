@@ -139,7 +139,7 @@ public class PortfolioModel : PageModel
                 // {
                 //     Console.WriteLine("View data wallet address is null");
                 // }
-                if (currentUser.portfolio.WalletAddress != null && currentUser.portfolio.WalletAddress != string.Empty)
+                if (dbContext.Portfolios.Where(p => p.UserId == currentUser.Id).FirstOrDefault().WalletAddress != string.Empty)
                 {
                     var url = new UriBuilder("https://api.etherscan.io/api?module=account&action=balance&address=" + walletAddress + "&tag=latest&apikey=JVV4MYE725TUVIR7E6UNMYIZ6V2G67VXNT");
                     ViewData["Test"] = url;
