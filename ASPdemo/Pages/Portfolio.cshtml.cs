@@ -84,8 +84,16 @@ public class PortfolioModel : PageModel
     }
     public async Task<IActionResult> OnPost(TempPortfolio tempPortfolio)
     {
-        dbContext.PortfolioTokens.ExecuteDelete();
-        dbContext.SaveChanges(); 
+        try
+        {
+            dbContext.PortfolioTokens.ExecuteDelete();
+            dbContext.SaveChanges(); 
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException) //catches if the users table does not exist yet
+        {
+            Console.WriteLine("NO PORTFOLIOS TOKENS TABLE YET! CRAAAAAAAAAAAAAP!");
+            return null;
+        }
 
         walletAddress = tempPortfolio.WalletAddress;
         Console.WriteLine("Wallet address: " + walletAddress);
