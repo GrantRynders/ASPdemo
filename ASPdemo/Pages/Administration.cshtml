@@ -47,10 +47,9 @@
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Administration</h1>
     @if (SignInManager.IsSignedIn(User))
     {
-        <p>You're not an admin you silly goose</p>
         <form method="post">
             <input asp-for="Search!.SearchTerm" placeholder="Search Roles by Name"/>
         <input type="submit" />
