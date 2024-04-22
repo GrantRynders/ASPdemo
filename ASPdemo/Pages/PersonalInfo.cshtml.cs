@@ -3,10 +3,7 @@ using ASPdemo.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ASPdemo.Entities;
-using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Security.Claims;
+using ASPdemo.Entities; 
 using Microsoft.EntityFrameworkCore;
 
 public class PersonalInfoModel : PageModel

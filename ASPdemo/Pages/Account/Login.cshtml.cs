@@ -29,23 +29,20 @@ namespace ASPdemo.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
+        //private readonly IUserEmailStore<User> _userEmailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
 
         public LoginModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
-        {
+            ILogger<RegisterModel> logger)
+        {//IUserEmailStore<User> userEmailStore
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = (IUserEmailStore<User>)GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            //_userEmailStore = userEmailStore;
         }
 
         [BindProperty]
@@ -104,27 +101,6 @@ namespace ASPdemo.Pages.Account
                     {
                         Console.WriteLine("idk man. no work good");
                     }
-                    //var userId = await _userManager.GetUserIdAsync(user);
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    // var callbackUrl = Url.Page(
-                    //     "/Account/ConfirmEmail",
-                    //     pageHandler: null,
-                    //     values: new { area = "", userId = userId, code = code, returnUrl = returnUrl },
-                    //     protocol: Request.Scheme);
-
-                    // await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    // if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    // {
-                    //     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    // }
-                    // else
-                    // {
-                    //     await _signInManager.SignInAsync(user, isPersistent: false);
-                    //     return LocalRedirect(returnUrl);
-                    // }
             }
             
             // If we got this far, something failed, redisplay form

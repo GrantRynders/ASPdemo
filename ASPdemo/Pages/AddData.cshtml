@@ -1,0 +1,72 @@
+﻿@page
+@model ASPdemo.Pages.AddDataModel
+@{
+}
+
+<script>
+    var shouldDisplay = false; 
+    var url = "http://127.0.0.1:5220/fetch_progress";
+
+        let intervalId = setInterval(() => {
+    fetch(url)
+        .then(response => response.json())
+        .then(json => { 
+            if (shouldDisplay && json != null && json != "") {
+                const categoriesCount = json['CategoriesCount'];
+                const currenciesCount = json['CurrenciesCount']; 
+
+                const progressCategories = document.getElementById("progressCategories");
+                progressCategories.innerText = categoriesCount + "/200"; 
+
+                const progressCurrencies = document.getElementById("progressCurrencies");
+                progressCurrencies.innerText = currenciesCount + "/200"; 
+
+                // Check if both categoriesCount and currenciesCount have reached 200
+                if (categoriesCount >= 200 && currenciesCount >= 200) {
+                    clearInterval(intervalId); // Stop the interval
+                }
+            }
+        })
+}, 1000);
+
+
+    function AddCoinsAndCategories(event){
+        event.preventDefault(); 
+        // https://stackoverflow.com/questions/11563638/how-do-i-get-the-value-of-text-input-field-using-javascript
+        var numCoins = 10; 
+        var numCategories = 10;
+
+        var url = "http://127.0.0.1:5220/start_fetch"; 
+
+        shouldDisplay = true; 
+
+        fetch(url,
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'NumCoins': numCoins, 'NumCategories': numCategories })
+            }).then(res => res.json())
+            .then(res => console.log(res));
+    }
+</script>
+<style>
+
+</style>
+<h1>No data? Click submit. Watch the progress and don't close the tab!</h1>
+<text style="color:red; font-weight:bold">Warning: </text> running this first deletes all of the categories and currencies first. 
+<form method="post" onsubmit="AddCoinsAndCategories(event)"> 
+    <input type="submit"/>
+</form>
+<h1>Step 1: Update categories</h1>
+<div id="categoriesProgress">
+    <text>Progress:</text>
+    <text id="progressCategories">0/200</text>
+</div>
+<h1>Step 2: Update currencies</h1>
+<div id="currenciesProgress">
+    <text>Progress: </text>
+    <text id="progressCurrencies">0/200</text>
+</div>

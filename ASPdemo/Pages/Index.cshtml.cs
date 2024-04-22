@@ -16,10 +16,13 @@ public class IndexModel : PageModel
     {
         _logger = logger;
     }
-      
+     
+	[FromQuery]
+	public int SkipPrevious { get; set; }
+
 
 	[FromQuery]
-	public int SkipId { get; set; }
+	public int SkipId { get; set; } 
 
 	[BindProperty]
     public List<Currency> Currency { get; set; } 

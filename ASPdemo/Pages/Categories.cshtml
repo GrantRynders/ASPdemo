@@ -5,24 +5,68 @@
 @{
     ViewData["Title"] = "Categories";
 
+    var FilteredCategories = new List<Entities.Category>(); 
+
+    try
+    {
+        FilteredCategories = ViewData["FilteredCategories"] as List<Entities.Category>;
+    }
+    catch
+    {
+    }
+
     var skipId = ViewData["SkipId"];
+    var skipPrevious = ViewData["SkipPrevious"];
     var url = "";
+    var previousUrl = "";
 
     if (skipId != null)
     {
         int skipInt = Convert.ToInt16(skipId);
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        }
         skipInt = skipInt + 10; 
         url = "/Categories/?SkipId=" + skipInt;
+        previousUrl = "/Categories/?SkipId=" + skipPreviousInt;
     }
     else
     {
         url = "/Categories/?SkipId=" + 10;
     }
+    
 }
+
+<style>
+    tbody tr:nth-child(even) {
+        background: gray;
+        border: 0px;
+        color: white;
+    }
+
+    tbody tr:nth-child(odd) {
+        background: #0d6efd;
+		color: white;
+    }
+    .categorya{
+		color: white;
+        font-weight: bold;
+    }
+    .categorya:hover{
+        color: white;
+    }
+</style>
 
 <div class="text-center">
     <h1 class="display-4">Search by Category</h1> 
-
+    @if (Model.Categories.Count == 0)
+    {
+        <h1 style="color:red">
+            No data? Go to the "add data" tab to add categories and currencies
+        </h1>
+    }
     <form method="post">
         <input type="text" asp-for="@Model.Search!.SearchTerm" placeholder="Search by name"/>
        <input type="submit" />
@@ -48,45 +92,52 @@
                 </th>
             </tr>
         </thead>
-        @if (Model.Categories != null)
-	    {
-            @if (Model.Categories.Count > 1)
+        @if (FilteredCategories != null)
+        {
+            @foreach (Entities.Category category in FilteredCategories)
             {
-                @foreach (Entities.Category category in Model.Categories)
-                {
-                    <tbody>
-                        <tr>
-                            <td><a href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
-                            <td>@category.Volume</td>
-                            <td>@category.MarketCap</td>
-                            <td>@category.MarketCapChange</td>
-                            <td>@category.NumTokens</td>
-                        </tr> 
-                    </tbody>
-                }
+                <tbody>
+                    <tr>
+                        <td><a class="categorya" href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
+                        <td>@category.Volume</td>
+                        <td>@category.MarketCap</td>
+                        <td>@category.MarketCapChange</td>
+                        <td>@category.NumTokens</td>
+                    </tr>
+                </tbody>
             }
         }
         else
         {
-            @if (Model.filteredCategories != null)
-	        {
-                @foreach (Entities.Category category in Model.filteredCategories) 
+            @if (Model.Categories != null)
+            {
+                @if (Model.Categories.Count >= 1)
                 {
-                    <tbody>
+                    @foreach (Entities.Category category in Model.Categories)
+                    {
+                        <tbody>
                             <tr>
-                                <td>@category.CategoryName</td>
+                                <td><a class="categorya" href="/Category?CategoryId=@category.CategoryId">@category.CategoryName</a></td>
                                 <td>@category.Volume</td>
                                 <td>@category.MarketCap</td>
                                 <td>@category.MarketCapChange</td>
                                 <td>@category.NumTokens</td>
                             </tr>
-                    </tbody>
+                        </tbody>
+                    }
                 }
             }
         }
     </table>
-    @if (Model.filteredCategories == null)
+    @if (Model.Categories != null)
     {
-        <a href="@url" class="btn btn-primary">Next</a>
+        <a href="@previousUrl" class="btn btn-primary">Previous</a>
+
+        @if (Model.Categories.Count > 0)
+        {
+            <a href="@url" class="btn btn-primary">Next</a>
+            
+        }
     }
+    
 </div>

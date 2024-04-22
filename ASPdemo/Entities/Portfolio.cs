@@ -9,7 +9,6 @@ namespace ASPdemo.Entities
         public string WalletAddress { get; set; }
         public double? PortfolioValue { get; set; }
         public string UserId {  get; set; } //FK for User
-        public User user { get; set; }
-        public List<Currency> currencies { get; set; }
+        public User user { get; set; } 
     }
 }

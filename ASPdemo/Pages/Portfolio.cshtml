@@ -7,23 +7,59 @@
 @{
     ViewData["Title"] = "My Portfolio";
 
-    var maxId = ViewData["MaxId"];
-    var pageId = ViewData["PageId"]; 
-    var searchTerm = ViewData["SearchTerm"]; 
+    var skipId = ViewData["SkipId"];
+    var skipPrevious = ViewData["SkipPrevious"];
+    var url = "";
+    var previousUrl = ""; 
 
-    var url = "/Roles/?MaxId=" + maxId + "&PageId=" + pageId;
-
-    if (searchTerm != null && searchTerm != "")
+    if (skipId != null)
     {
-        url = url + "&SearchTerm="+searchTerm; 
+        int skipInt = Convert.ToInt16(skipId);
+        int skipPreviousInt = 0;
+        if (skipInt > 10)
+        {
+            skipPreviousInt = skipInt - 10;
+        }
+        skipInt = skipInt + 10; 
+        url = "/Currencies/?SkipId=" + skipInt;
+        previousUrl = "/Currencies/?SkipId=" + skipPreviousInt;
+    }
+    else
+    {
+        url = "/Currencies/?SkipId=" + 10;
     }
 }
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+<style>
+    tbody tr:nth-child(even) {
+        background: gray;
+        border: 0px;
+        color: #000;
+    }
 
+    tbody tr:nth-child(odd) {
+        background: #0d6efd;
+        color: white;
+    }
+</style>
 <div class="text-center">
-    <h1 class="display-4">@Model.userName's Portfolio</h1>
-    <h1 class="display-4">Value: $@if(@Model.userPortfolio != null){@Model.userPortfolio.PortfolioValue}</h1>
-    <text>@ViewData["Test"]</text>
+    @if (Model.userName == "" || Model.userName == string.Empty)
+    {
+        <h1 class="display-4" style="font-size:20px; font-weight:bold">Please login</h1>
+    }
+    else
+    {
+        <h1 class="display-4" style="font-size:20px; font-weight:bold">My Portfolio</h1>
+    } 
+    <h1 class="display-4" style="font-size:20px">Try it out with this address: 0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be</h1>
+    <h1 class="display-4" style="font-size:20px; color: red">Warning: takes around 10 seconds to pull listings, be patient </h1>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form method="post">
+            <input type="text" asp-for="@Model.TempPortfolio!.WalletAddress" placeholder="Wallet Address" />
+            <input type="submit" />
+        </form>
+    }
     @if (SignInManager.IsSignedIn(User))
     {   
         <table class="table">
@@ -32,49 +68,19 @@
                     Name
                 </th>
                 <th>
-                    Price
-                </th> 
-                <th>
-                    24h %
-                </th>
-                <th>
-                    7d %
-                </th>
-                <th>
-                    Market Cap
-                </th>
+                    Amount
+                </th>  
             </thead>
-            @if (Model.userPortfolio != null)
-            {
-                @if (Model.userPortfolio.currencies != null)
+            <tbody>
+                @foreach (Entities.PortfolioToken token in Model.PortfolioTokens)
                 {
-                    @if (Model.userPortfolio.currencies.Count != 0)
-                    {
-                        @foreach (Entities.Currency currency in Model.userPortfolio.currencies)
-                        {
-                            <tbody>
-                                <tr>
-                                    <td>@currency.CurrencyName</td>
-                                    <td>@currency.Price</td>
-                                    <td>@currency.PercentChange24Hr</td>
-                                    <td>@currency.PercentChange7d</td>
-                                    <td>@currency.MarketCap</td>
-                                </tr>
-                            </tbody>
-                        }
-                    }
+                    <tr>
+                        <td>@token.TokenName</td>
+                        <td>@token.TokenAmount</td>
+                    </tr>
                 }
-                else
-                {
-                    <p>Uh oh currencies is null</p>
-                }
-            }
-            else
-            {
-                <p> Uh oh the portfolio is null</p>
-            }
+            </tbody>
         </table>
-        <a href="@url" class="btn btn-primary">Next</a>
     }
     else
     {

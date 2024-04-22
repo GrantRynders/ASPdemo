@@ -16,6 +16,8 @@ public class CategoriesModel : PageModel
 
     [FromQuery]
     public int SkipId { get; set; }
+    [FromQuery]
+    public int SkipPrevious { get; set; }
 
     [BindProperty]
     public List<Category> Categories { get; set; }
@@ -62,24 +64,27 @@ public class CategoriesModel : PageModel
 
                     var currencyDb = new List<Currency>(); 
 
-                    foreach (var coin in coins)
+                    if (coins != null)
                     {
-                        var currency = new Currency();
+                        foreach (var coin in coins)
+                        {
+                            var currency = new Currency();
 
-                        currency.CurrencyId = coin.currencyId; 
-                        currency.CurrencyName = coin.currencyName;
-                        currency.CategoryId = coin.categoryId;
-                        currency.Symbol = coin.symbol;
-                        currency.Price = coin.price;
-                        currency.PercentChange1hr = coin.percentChange1;
-                        currency.PercentChange7d = coin.percentChange7d;
-                        currency.PercentChange24Hr = coin.percentChange24Hr;
-                        currency.MarketCap = coin.marketCap; 
-                        currency.TotalSupply = coin.totalSupply;
-                        currency.Slug = coin.slug;
+                            currency.CurrencyId = coin.currencyId;
+                            currency.CurrencyName = coin.currencyName;
+                            currency.CategoryId = coin.categoryId;
+                            currency.Symbol = coin.symbol;
+                            currency.Price = coin.price;
+                            currency.PercentChange1hr = coin.percentChange1;
+                            currency.PercentChange7d = coin.percentChange7d;
+                            currency.PercentChange24Hr = coin.percentChange24Hr;
+                            currency.MarketCap = coin.marketCap;
+                            currency.TotalSupply = coin.totalSupply;
+                            currency.Slug = coin.slug;
 
-                        currencyDb.Add(currency);
-                    } 
+                            currencyDb.Add(currency);
+                        }
+                    }
 
                     category.CategoryId = categoryId;
                     category.MarketCap = marketCap; 
@@ -147,23 +152,27 @@ public class CategoriesModel : PageModel
 
                         var currencyDb = new List<Currency>();
 
-                        foreach (var coin in coins)
+                        if (coins != null)
                         {
-                            var currency = new Currency();
 
-                            currency.CurrencyId = coin.currencyId;
-                            currency.CurrencyName = coin.currencyName;
-                            currency.CategoryId = coin.categoryId;
-                            currency.Symbol = coin.symbol;
-                            currency.Price = coin.price;
-                            currency.PercentChange1hr = coin.percentChange1;
-                            currency.PercentChange7d = coin.percentChange7d;
-                            currency.PercentChange24Hr = coin.percentChange24Hr;
-                            currency.MarketCap = coin.marketCap;
-                            currency.TotalSupply = coin.totalSupply;
-                            currency.Slug = coin.slug;
+                            foreach (var coin in coins)
+                            {
+                                var currency = new Currency();
 
-                            currencyDb.Add(currency);
+                                currency.CurrencyId = coin.currencyId;
+                                currency.CurrencyName = coin.currencyName;
+                                currency.CategoryId = coin.categoryId;
+                                currency.Symbol = coin.symbol;
+                                currency.Price = coin.price;
+                                currency.PercentChange1hr = coin.percentChange1;
+                                currency.PercentChange7d = coin.percentChange7d;
+                                currency.PercentChange24Hr = coin.percentChange24Hr;
+                                currency.MarketCap = coin.marketCap;
+                                currency.TotalSupply = coin.totalSupply;
+                                currency.Slug = coin.slug;
+
+                                currencyDb.Add(currency);
+                            }
                         }
 
                         category.CategoryId = categoryId;
@@ -180,6 +189,10 @@ public class CategoriesModel : PageModel
                         filteredCategories.Add(category);
                     }
                 }
+
+                ViewData["FilteredCategories"] = filteredCategories; 
+
+                return Page(); 
             }
             catch (HttpRequestException)
             {

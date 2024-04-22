@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPdemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240415121240_Initial")]
-    partial class Initial
+    [Migration("20240421034353_ResetModel")]
+    partial class ResetModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,25 +76,72 @@ namespace ASPdemo.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ASPdemo.Entities.CurrenciesCategories", b =>
+            modelBuilder.Entity("ASPdemo.Entities.Conversion", b =>
                 {
-                    b.Property<int>("CurrenciesCategoriesId")
+                    b.Property<int>("ConversionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("CurrencyId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
 
-                    b.HasKey("CurrenciesCategoriesId");
+                    b.Property<double?>("MarketCap")
+                        .HasColumnType("REAL");
 
-                    b.HasIndex("CategoryId");
+                    b.Property<string>("Pair1")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("CurrencyId");
+                    b.Property<string>("Pair2")
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("CurrenciesCategories");
+                    b.Property<double?>("PercentChange1hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("PercentChange24Hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("PercentChange7d")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("SecondDescription")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double?>("SecondMarketCap")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondPercentChange1hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondPercentChange24Hr")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondPercentChange7d")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondPrice")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondTotalSupply")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("SecondVolume24")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("TotalSupply")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Volume24")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ConversionId");
+
+                    b.ToTable("Conversions");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.CurrenciesPortfolios", b =>
@@ -124,6 +171,9 @@ namespace ASPdemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CMCId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("INTEGER");
 
@@ -146,6 +196,9 @@ namespace ASPdemo.Migrations
                     b.Property<double?>("PercentChange7d")
                         .HasColumnType("REAL");
 
+                    b.Property<int?>("PortfolioId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double?>("Price")
                         .HasColumnType("REAL");
 
@@ -165,6 +218,10 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("CurrencyId");
 
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PortfolioId");
+
                     b.ToTable("Currencies");
                 });
 
@@ -174,7 +231,7 @@ namespace ASPdemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("PortfolioValue")
+                    b.Property<double?>("PortfolioValue")
                         .HasColumnType("REAL");
 
                     b.Property<string>("UserId")
@@ -191,6 +248,30 @@ namespace ASPdemo.Migrations
                         .IsUnique();
 
                     b.ToTable("Portfolios");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>
@@ -258,69 +339,6 @@ namespace ASPdemo.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b =>
-                {
-                    b.Property<int>("UsersRolesId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("UsersRolesId");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UsersRoles");
-                });
-
-            modelBuilder.Entity("CategoryCurrency", b =>
-                {
-                    b.Property<int>("CategoriesCategoryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CoinsCurrencyId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CategoriesCategoryId", "CoinsCurrencyId");
-
-                    b.HasIndex("CoinsCurrencyId");
-
-                    b.ToTable("CategoryCurrency");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NormalizedName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityRole");
-
-                    b.UseTptMappingStrategy();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -338,7 +356,7 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRoleClaim");
+                    b.ToTable("IdentityRoleClaim<string>");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -358,7 +376,62 @@ namespace ASPdemo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUserClaim");
+                    b.ToTable("IdentityUserClaim<string>");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProviderKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LoginProvider")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -374,32 +447,6 @@ namespace ASPdemo.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("RoleUser");
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.Role", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.CurrenciesCategories", b =>
-                {
-                    b.HasOne("ASPdemo.Entities.Category", "category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASPdemo.Entities.Currency", "currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("category");
-
-                    b.Navigation("currency");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.CurrenciesPortfolios", b =>
@@ -421,6 +468,19 @@ namespace ASPdemo.Migrations
                     b.Navigation("portfolio");
                 });
 
+            modelBuilder.Entity("ASPdemo.Entities.Currency", b =>
+                {
+                    b.HasOne("ASPdemo.Entities.Category", null)
+                        .WithMany("Coins")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASPdemo.Entities.Portfolio", null)
+                        .WithMany("currencies")
+                        .HasForeignKey("PortfolioId");
+                });
+
             modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
                 {
                     b.HasOne("ASPdemo.Entities.User", "user")
@@ -430,40 +490,6 @@ namespace ASPdemo.Migrations
                         .IsRequired();
 
                     b.Navigation("user");
-                });
-
-            modelBuilder.Entity("ASPdemo.Entities.UsersRoles", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASPdemo.Entities.User", "user")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("role");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("CategoryCurrency", b =>
-                {
-                    b.HasOne("ASPdemo.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASPdemo.Entities.Currency", null)
-                        .WithMany()
-                        .HasForeignKey("CoinsCurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -481,13 +507,14 @@ namespace ASPdemo.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ASPdemo.Entities.Role", b =>
+            modelBuilder.Entity("ASPdemo.Entities.Category", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithOne()
-                        .HasForeignKey("ASPdemo.Entities.Role", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Coins");
+                });
+
+            modelBuilder.Entity("ASPdemo.Entities.Portfolio", b =>
+                {
+                    b.Navigation("currencies");
                 });
 
             modelBuilder.Entity("ASPdemo.Entities.User", b =>

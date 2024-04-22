@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASPdemo.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class ResetModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,15 +35,14 @@ namespace ASPdemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Currencies",
+                name: "Conversions",
                 columns: table => new
                 {
-                    CurrencyId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ConversionId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CurrencyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    Slug = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
-                    Symbol = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Pair1 = table.Column<string>(type: "TEXT", nullable: true),
+                    Pair2 = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     PercentChange24Hr = table.Column<double>(type: "REAL", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Price = table.Column<double>(type: "REAL", nullable: true),
@@ -51,29 +50,23 @@ namespace ASPdemo.Migrations
                     PercentChange1hr = table.Column<double>(type: "REAL", nullable: true),
                     PercentChange7d = table.Column<double>(type: "REAL", nullable: true),
                     MarketCap = table.Column<double>(type: "REAL", nullable: true),
-                    TotalSupply = table.Column<double>(type: "REAL", nullable: true)
+                    TotalSupply = table.Column<double>(type: "REAL", nullable: true),
+                    SecondPercentChange24Hr = table.Column<double>(type: "REAL", nullable: true),
+                    SecondDescription = table.Column<string>(type: "TEXT", nullable: true),
+                    SecondPrice = table.Column<double>(type: "REAL", nullable: true),
+                    SecondVolume24 = table.Column<double>(type: "REAL", nullable: true),
+                    SecondPercentChange1hr = table.Column<double>(type: "REAL", nullable: true),
+                    SecondPercentChange7d = table.Column<double>(type: "REAL", nullable: true),
+                    SecondMarketCap = table.Column<double>(type: "REAL", nullable: true),
+                    SecondTotalSupply = table.Column<double>(type: "REAL", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Currencies", x => x.CurrencyId);
+                    table.PrimaryKey("PK_Conversions", x => x.ConversionId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "IdentityRole",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    NormalizedName = table.Column<string>(type: "TEXT", nullable: false),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IdentityRole", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "IdentityRoleClaim",
+                name: "IdentityRoleClaim<string>",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -84,11 +77,11 @@ namespace ASPdemo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IdentityRoleClaim", x => x.Id);
+                    table.PrimaryKey("PK_IdentityRoleClaim<string>", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "IdentityUserClaim",
+                name: "IdentityUserClaim<string>",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -99,7 +92,47 @@ namespace ASPdemo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IdentityUserClaim", x => x.Id);
+                    table.PrimaryKey("PK_IdentityUserClaim<string>", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    NormalizedName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLogins",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
+                    ProviderKey = table.Column<string>(type: "TEXT", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLogins", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    RoleId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
                 });
 
             migrationBuilder.CreateTable(
@@ -131,70 +164,17 @@ namespace ASPdemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryCurrency",
+                name: "UserTokens",
                 columns: table => new
                 {
-                    CategoriesCategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CoinsCurrencyId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Value = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryCurrency", x => new { x.CategoriesCategoryId, x.CoinsCurrencyId });
-                    table.ForeignKey(
-                        name: "FK_CategoryCurrency_Categories_CategoriesCategoryId",
-                        column: x => x.CategoriesCategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryCurrency_Currencies_CoinsCurrencyId",
-                        column: x => x.CoinsCurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "CurrencyId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CurrenciesCategories",
-                columns: table => new
-                {
-                    CurrenciesCategoriesId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CurrencyId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CurrenciesCategories", x => x.CurrenciesCategoriesId);
-                    table.ForeignKey(
-                        name: "FK_CurrenciesCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CurrenciesCategories_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "CurrencyId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Roles",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Roles_IdentityRole_Id",
-                        column: x => x.Id,
-                        principalTable: "IdentityRole",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_UserTokens", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,7 +184,7 @@ namespace ASPdemo.Migrations
                     PortfolioId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WalletAddress = table.Column<string>(type: "TEXT", nullable: false),
-                    PortfolioValue = table.Column<double>(type: "REAL", nullable: false),
+                    PortfolioValue = table.Column<double>(type: "REAL", nullable: true),
                     UserId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -212,32 +192,6 @@ namespace ASPdemo.Migrations
                     table.PrimaryKey("PK_Portfolios", x => x.PortfolioId);
                     table.ForeignKey(
                         name: "FK_Portfolios_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UsersRoles",
-                columns: table => new
-                {
-                    UsersRolesId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    RoleId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsersRoles", x => x.UsersRolesId);
-                    table.ForeignKey(
-                        name: "FK_UsersRoles_IdentityRole_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "IdentityRole",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UsersRoles_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -269,6 +223,43 @@ namespace ASPdemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Currencies",
+                columns: table => new
+                {
+                    CurrencyId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CMCId = table.Column<string>(type: "TEXT", nullable: true),
+                    CurrencyName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Slug = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Symbol = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    PercentChange24Hr = table.Column<double>(type: "REAL", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Price = table.Column<double>(type: "REAL", nullable: true),
+                    Volume24 = table.Column<double>(type: "REAL", nullable: true),
+                    PercentChange1hr = table.Column<double>(type: "REAL", nullable: true),
+                    PercentChange7d = table.Column<double>(type: "REAL", nullable: true),
+                    MarketCap = table.Column<double>(type: "REAL", nullable: true),
+                    TotalSupply = table.Column<double>(type: "REAL", nullable: true),
+                    PortfolioId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Currencies", x => x.CurrencyId);
+                    table.ForeignKey(
+                        name: "FK_Currencies_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Currencies_Portfolios_PortfolioId",
+                        column: x => x.PortfolioId,
+                        principalTable: "Portfolios",
+                        principalColumn: "PortfolioId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CurrenciesPortfolios",
                 columns: table => new
                 {
@@ -295,19 +286,14 @@ namespace ASPdemo.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryCurrency_CoinsCurrencyId",
-                table: "CategoryCurrency",
-                column: "CoinsCurrencyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CurrenciesCategories_CategoryId",
-                table: "CurrenciesCategories",
+                name: "IX_Currencies_CategoryId",
+                table: "Currencies",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrenciesCategories_CurrencyId",
-                table: "CurrenciesCategories",
-                column: "CurrencyId");
+                name: "IX_Currencies_PortfolioId",
+                table: "Currencies",
+                column: "PortfolioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CurrenciesPortfolios_CurrencyId",
@@ -329,59 +315,49 @@ namespace ASPdemo.Migrations
                 name: "IX_RoleUser_UsersId",
                 table: "RoleUser",
                 column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsersRoles_RoleId",
-                table: "UsersRoles",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsersRoles_UserId",
-                table: "UsersRoles",
-                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CategoryCurrency");
-
-            migrationBuilder.DropTable(
-                name: "CurrenciesCategories");
+                name: "Conversions");
 
             migrationBuilder.DropTable(
                 name: "CurrenciesPortfolios");
 
             migrationBuilder.DropTable(
-                name: "IdentityRoleClaim");
+                name: "IdentityRoleClaim<string>");
 
             migrationBuilder.DropTable(
-                name: "IdentityUserClaim");
+                name: "IdentityUserClaim<string>");
 
             migrationBuilder.DropTable(
                 name: "RoleUser");
 
             migrationBuilder.DropTable(
-                name: "UsersRoles");
+                name: "UserLogins");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "UserTokens");
 
             migrationBuilder.DropTable(
                 name: "Currencies");
 
             migrationBuilder.DropTable(
-                name: "Portfolios");
-
-            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "IdentityRole");
+                name: "Portfolios");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

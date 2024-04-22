@@ -16,11 +16,11 @@
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Here you can view your personal information.</p>
+    <h1 class="display-4">Personal Information</h1>
+    <br>
     @if (signInManager.IsSignedIn(User))
     {
-        <h2>Username</h2>
+        <h2><u><b>Username</b></u></h2>
         <h3>
             @if (@userName != null)
             {
@@ -31,7 +31,9 @@
                 <p>No username to display</p>
             }
         </h3>
-        <h2>Email</h2>
+        <br>
+        <br>
+        <h2><u><b>Email</b></u></h2>
         <h3>
             @if (@userEmail != null)
             {
@@ -42,13 +44,13 @@
                 <p>No email to display</p>
             }
         </h3>
-        <h2>UPDATE USERNAME</h2>
+        <br>
+        <br>
+        <h2><u><b>Update your Username</b></u></h2>
         <form id="newUserNameForm" method="post" runat="server">
-            <input asp-for="Input.newUserName" id="newUserNameForm"/>
+            <input asp-for="Input.newUserName" id="newUserNameForm" placeholder="New Username"/>
             <input type="submit" />
         </form>
-        @* <asp:textbox runat="server" id="inputfield" aria-placeholder="Username"/> *@
-        @* <asp:button runat="server" class="btn btn-primary" onclick=ButtonClick()>Update Username</asp:button> *@
     }
     else
     {
