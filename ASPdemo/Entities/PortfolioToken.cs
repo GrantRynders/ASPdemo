@@ -15,5 +15,10 @@ namespace ASPdemo.Entities
         public string TokenAmount { get; set; }
 
         public string TokenName { get; set; }
+
+        public PortfolioToken()
+        {
+            
+        }
     }
 }
